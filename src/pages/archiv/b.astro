@@ -1,0 +1,178 @@
+---
+import Var from "../../layouts/Var.astro";
+import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY } from "../../data/obsah";
+---
+
+<Var
+  titul="Easy Check — STK Trnava"
+  variant="B — Biely papier"
+  popis="Pokojný papierový základ, obrys drží tvar, žltá len tam kde treba konať"
+  bg="bg-ec-paper"
+>
+  <!-- HERO: text vľavo, foto vpravo -->
+  <section class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-paper">
+    <div class="max-w-[1200px] mx-auto px-4 py-14 md:py-20 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+      <div>
+        <div class="nb-in flex flex-wrap gap-2">
+          <span class="nb-tag bg-ec-yellow">Trnava</span>
+          <span class="nb-tag bg-ec-paper t-num">{FIRMA.hodnotenie} ★ · {FIRMA.recenzie.toLocaleString("sk-SK")} recenzií</span>
+        </div>
+        <h1 class="t-display text-[clamp(2.5rem,6.5vw,5rem)] mt-6 max-w-[14ch] nb-in nb-in-1">
+          Transformujeme nepríjemnú <span class="whitespace-nowrap">STK-čku</span> na bezstarostný zážitok
+        </h1>
+        <p class="mt-6 text-lg max-w-[46ch] nb-in nb-in-2">
+          Technické a emisné kontroly pre všetky druhy vozidiel — bez čakania.
+          Celá objednávka vám zaberie iba 30 sekúnd.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-4 nb-in nb-in-3">
+          <a href={REZERVACIA} class="nb-btn text-base !px-7 !py-4">Rezervovať termín STK</a>
+          <a href={FIRMA.telHref} class="nb-btn !bg-ec-paper text-base !px-7 !py-4 t-num">{FIRMA.tel}</a>
+        </div>
+        <div class="mt-8 flex flex-wrap gap-2 nb-in nb-in-4">
+          {USP.map((u) => <span class="nb-tag bg-ec-paper">{u}</span>)}
+        </div>
+      </div>
+
+      <div class="nb-in nb-in-2">
+        <div class="nb-card overflow-hidden p-0">
+          <img src="/foto/img_4128.jpg" alt="Kontrolná linka Easy Check Trnava" class="w-full h-[340px] md:h-[440px] object-cover block" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PÁSIK dostupnosti -->
+  <section class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+    <div class="max-w-[1200px] mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-1 t-sub text-sm">
+      <span>Po–Pia 07:00–22:00</span>
+      <span class="opacity-40">·</span>
+      <span>Víkendy aj sviatky</span>
+      <span class="opacity-40">·</span>
+      <span>Garancia termínu do 24 hodín</span>
+    </div>
+  </section>
+
+  <!-- PONUKA -->
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink">
+    <div class="max-w-[1200px] mx-auto px-4">
+      <div class="flex items-end justify-between gap-6 mb-10 flex-wrap">
+        <h2 class="t-display text-4xl md:text-6xl">Naša ponuka</h2>
+        <p class="text-sm max-w-[40ch] opacity-80">Všetko na jednom mieste — STK, emisná, kontrola originality, tachograf, ADR aj CEMT.</p>
+      </div>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {
+          PONUKA.map((p, i) => (
+            <div class={`nb-card nb-lift p-6 flex flex-col nb-in nb-in-${(i % 6) + 1}`}>
+              <h3 class="t-display text-2xl">{p.nadpis}</h3>
+              <p class="mt-2.5 text-sm leading-relaxed flex-1 opacity-90">{p.text}</p>
+              <a href={p.href} class="mt-5 t-sub text-xs inline-flex items-center gap-1.5 self-start border-b-[var(--stroke)] border-ec-ink pb-0.5">
+                {p.cta} →
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CENNÍK náhľad -->
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+    <div class="max-w-[1200px] mx-auto px-4 grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:items-center">
+      <div>
+        <h2 class="t-display text-4xl md:text-5xl">Cenník bez prekvapení</h2>
+        <p class="mt-4 text-sm leading-relaxed max-w-[42ch]">
+          Cenník je o čosi vyšší ako konkurencia. Šetríme vám ale to najcennejšie — čas.
+          Opakovaná kontrola v deň pravidelnej za 19 €.
+        </p>
+        <a href="/cennik" class="nb-btn mt-6 !bg-ec-paper text-sm">Celý cenník</a>
+      </div>
+      <div class="nb-card p-0 overflow-hidden">
+        <table class="w-full text-sm">
+          <tbody>
+            {
+              CENY.map((c, i) => (
+                <tr class={i % 2 ? "bg-black/[0.03]" : ""}>
+                  <td class="px-5 py-3.5 border-b border-ec-ink/15">
+                    <div class="t-sub text-xs">{c.co}</div>
+                    <div class="text-xs opacity-60 mt-0.5">{c.pozn}</div>
+                  </td>
+                  <td class="px-5 py-3.5 border-b border-ec-ink/15 text-right t-display text-xl t-num whitespace-nowrap">
+                    {c.cena}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOSTUPNOSŤ -->
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink">
+    <div class="max-w-[1200px] mx-auto px-4">
+      <span class="nb-tag bg-ec-cyan text-white">Kedykoľvek, bez čakania a stresu</span>
+      <h2 class="t-display text-4xl md:text-6xl mt-5 mb-10 max-w-[18ch]">STK už nemusí byť nočná mora!</h2>
+      <div class="grid gap-6 md:grid-cols-3">
+        {
+          DOSTUPNOST.map((d, i) => (
+            <div class={`nb-card p-6 nb-in nb-in-${i + 1}`}>
+              <span class="nb-tag bg-ec-yellow">{d.stitok}</span>
+              <h3 class="t-display text-2xl mt-4">{d.nadpis}</h3>
+              <p class="mt-2 text-sm leading-relaxed opacity-90">{d.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- VÝHODY -->
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink bg-ec-paper">
+    <div class="max-w-[1200px] mx-auto px-4">
+      <h2 class="t-display text-4xl md:text-6xl mb-10">STK s výhodami</h2>
+      <div class="grid gap-8 lg:grid-cols-2">
+        <div>
+          <div class="t-sub text-sm mb-4 nb-tag bg-ec-green text-white">Pre ľudí</div>
+          <div class="space-y-4">
+            {VYHODY_LUDIA.map((v) => (
+              <div class="nb-card p-5">
+                <h3 class="t-sub text-base">{v.nadpis}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed opacity-90">{v.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div class="t-sub text-sm mb-4 nb-tag bg-ec-red text-white">Pre firmy</div>
+          <div class="space-y-4">
+            {VYHODY_FIRMY.map((v) => (
+              <div class="nb-card p-5">
+                <h3 class="t-sub text-base">{v.nadpis}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed opacity-90">{v.text}</p>
+              </div>
+            ))}
+            <div class="nb-card p-0 overflow-hidden">
+              <img src="/foto/img_7321.jpg" alt="Easy Check Trnava" class="w-full h-[180px] object-cover block" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 md:py-24 bg-ec-ink">
+    <div class="max-w-[1200px] mx-auto px-4 text-center">
+      <span class="nb-tag bg-ec-yellow">Garancia do 24 hodín</span>
+      <h2 class="t-display text-4xl md:text-6xl text-ec-paper mt-5">Nepovieme vám nie</h2>
+      <p class="mt-4 text-ec-paper/80 text-lg max-w-[50ch] mx-auto">
+        Stačí sa objednať alebo zavolať a už dnes môžete byť na linke.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={REZERVACIA} class="nb-btn text-base !px-8 !py-4">Rezervovať termín</a>
+        <a href={FIRMA.telHref} class="nb-btn !bg-ec-paper text-base !px-8 !py-4 t-num">{FIRMA.tel}</a>
+      </div>
+    </div>
+  </section>
+</Var>

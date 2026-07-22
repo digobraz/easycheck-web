@@ -1,0 +1,306 @@
+@import "tailwindcss";
+
+/* ============================================================
+   EASY CHECK — Neo-brutalist design system
+   Brand: vstupy/Brand + project_easycheck_brand_manual
+   Pravidlo štýlu: hrubý obrys, tvrdý tieň, ostré rohy, plné farby.
+   Žiadne jemné tiene, žiadne gradienty, žiadny border-radius.
+   ============================================================ */
+
+@theme {
+  /* --- brand farby (LOCKED, z loga + FB) --- */
+  --color-ec-yellow: #FFE600;   /* primary surface */
+  --color-ec-green:  #5BBA47;   /* EASY */
+  --color-ec-red:    #E12128;   /* CHECK */
+  --color-ec-cyan:   #18B6E4;   /* maskot */
+  --color-ec-ink:    #231F20;   /* text / obrys */
+  --color-ec-paper:  #FFFDF5;   /* papier */
+
+  /* TYPOGRAFIA ZAMKNUTÁ 2026-07-22 — dve rodiny, tri váhy.
+     Saira nesie nadpis aj štítok: tá istá rodina, iná váha.
+     Anton (jediná váha 400) vyradený — práve on si vynucoval tretí font. */
+  --font-display: "Saira Condensed", system-ui, sans-serif;
+  --font-sub: "Saira Condensed", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+:root {
+  --ink: #231F20;
+  --stroke: 3px;          /* hrúbka obrysu */
+  --stroke-thick: 5px;
+  --shadow-x: 6px;
+  --shadow-y: 6px;
+}
+
+@media (max-width: 640px) {
+  :root { --stroke: 2.5px; --stroke-thick: 4px; --shadow-x: 4px; --shadow-y: 4px; }
+}
+
+html {
+  font-family: var(--font-body);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; }
+
+/* --- typografia --- */
+@utility t-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  line-height: 0.88;
+  letter-spacing: 0.01em;
+  font-weight: 800;
+}
+@utility t-sub {
+  font-family: var(--font-sub);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+@utility t-num { font-variant-numeric: tabular-nums; }
+
+/* --- neobrutalistické primitívy --- */
+
+/* obrysový blok = základ celého webu */
+@utility nb {
+  border: var(--stroke) solid var(--ink);
+  border-radius: 0;
+  background: #FFFDF5;
+}
+
+/* tvrdý tieň — nie rozostrený, plný ink */
+@utility nb-shadow {
+  box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--ink);
+}
+@utility nb-shadow-sm {
+  box-shadow: 3px 3px 0 0 var(--ink);
+}
+
+/* karta = obrys + tieň */
+@utility nb-card {
+  border: var(--stroke) solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--ink);
+  background: #FFFDF5;
+}
+
+/* tlačidlo — stlačenie posunie blok do tieňa */
+@utility nb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: var(--stroke) solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--ink);
+  font-family: var(--font-sub);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.9rem 1.6rem;
+  background: #FFE600;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.nb-btn:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 0 var(--ink); }
+.nb-btn:active { transform: translate(var(--shadow-x), var(--shadow-y)); box-shadow: 0 0 0 0 var(--ink); }
+
+/* karta ktorá reaguje na hover rovnakou logikou */
+@utility nb-lift {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.nb-lift:hover { transform: translate(-2px, -2px); box-shadow: 9px 9px 0 0 var(--ink); }
+
+/* pásik / štítok */
+@utility nb-tag {
+  display: inline-block;
+  border: var(--stroke) solid var(--ink);
+  border-radius: 0;
+  padding: 0.25rem 0.7rem;
+  font-family: var(--font-sub);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+  background: #fff;
+}
+
+/* --- vstupné animácie (nie hover) --- */
+@keyframes nbUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nb-in { animation: nbUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.nb-in-1 { animation-delay: 0.05s; }
+.nb-in-2 { animation-delay: 0.10s; }
+.nb-in-3 { animation-delay: 0.15s; }
+.nb-in-4 { animation-delay: 0.20s; }
+.nb-in-5 { animation-delay: 0.25s; }
+.nb-in-6 { animation-delay: 0.30s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-in { animation: none; }
+  .nb-btn, .nb-lift { transition: none; }
+}
+
+/* bodkované pozadie (Pinterest referencia)
+   POZOR: plný ink robil bodky cez text → zle čitateľný lead. Držať nízky kontrast. */
+@utility nb-dots {
+  background-image: radial-gradient(rgb(35 31 32 / 0.16) 1.3px, transparent 1.3px);
+  background-size: 20px 20px;
+}
+
+/* ============================================================
+   PROTOTYP — pohyb
+   ============================================================ */
+
+/* --- marquee pásik --- */
+@keyframes nbMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.nb-marquee {
+  display: flex;
+  width: max-content;
+  animation: nbMarquee 28s linear infinite;
+}
+.nb-marquee-fast { animation-duration: 18s; }
+.nb-marquee-rev { animation-direction: reverse; }
+
+/* --- scroll reveal (IntersectionObserver pridá .is-in) --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-in { opacity: 1; transform: none; }
+.reveal-1 { transition-delay: 0.06s; }
+.reveal-2 { transition-delay: 0.12s; }
+.reveal-3 { transition-delay: 0.18s; }
+.reveal-4 { transition-delay: 0.24s; }
+.reveal-5 { transition-delay: 0.30s; }
+
+/* --- razítko: jemné pootočenie bloku ---
+   Na mobile VYPNUTÉ: rotácia + tvrdý tieň pretekali cez pravý okraj (390px). */
+@utility nb-tilt-l { transform: rotate(-1.2deg); }
+@utility nb-tilt-r { transform: rotate(1.2deg); }
+@media (max-width: 640px) {
+  .nb-tilt-l, .nb-tilt-r { transform: none; }
+}
+
+/* --- pulz na štítku "termín ihneď" --- */
+@keyframes nbPulse {
+  0%, 100% { box-shadow: 4px 4px 0 0 var(--ink); }
+  50%      { box-shadow: 7px 7px 0 0 var(--ink); }
+}
+.nb-pulse { animation: nbPulse 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-marquee { animation: none; }
+  .nb-pulse { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ============================================================
+   PROTOTYP 2 — SCI-FI PUNK (Optimus / Cybertron)
+   Samostatná vrstva. Neobrutalistické `nb-*` sa tu NEPOUŽÍVAJÚ.
+   Brand farby ostávajú, len sa menia na svetlo v tme.
+   ============================================================ */
+
+@theme {
+  --color-sf-void: #05070A;   /* takmer čierna */
+  --color-sf-deep: #0B111A;   /* panel */
+  --color-sf-line: #1B2A3D;   /* obrys */
+}
+
+@utility sf-mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+/* --- HUD panel: zrezaný roh, svetelný obrys --- */
+@utility sf-panel {
+  position: relative;
+  background: rgb(11 17 26 / 0.82);
+  border: 1px solid rgb(24 182 228 / 0.35);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  backdrop-filter: blur(6px);
+}
+@utility sf-panel-y {
+  border-color: rgb(255 230 0 / 0.42);
+}
+
+/* --- rohové značky HUD --- */
+@utility sf-corner {
+  position: absolute;
+  width: 12px; height: 12px;
+  border: 2px solid var(--color-ec-yellow);
+}
+
+/* --- neónový text --- */
+@utility sf-glow-c { color: #18B6E4; text-shadow: 0 0 12px rgb(24 182 228 / 0.65); }
+@utility sf-glow-y { color: #FFE600; text-shadow: 0 0 14px rgb(255 230 0 / 0.55); }
+@utility sf-glow-r { color: #E12128; text-shadow: 0 0 12px rgb(225 33 40 / 0.6); }
+
+/* --- mriežka podlahy (Cybertron) --- */
+@utility sf-grid {
+  background-image:
+    linear-gradient(rgb(24 182 228 / 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(24 182 228 / 0.10) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* --- skenovacie linky --- */
+@utility sf-scan {
+  background-image: repeating-linear-gradient(
+    0deg, rgb(0 0 0 / 0.30) 0 1px, transparent 1px 3px
+  );
+}
+
+/* --- piedestál: rotujúce prstence --- */
+@keyframes sfSpin { to { transform: rotate(360deg); } }
+@keyframes sfSpinRev { to { transform: rotate(-360deg); } }
+.sf-ring { animation: sfSpin 14s linear infinite; transform-origin: center; }
+.sf-ring-2 { animation: sfSpinRev 22s linear infinite; transform-origin: center; }
+.sf-ring-3 { animation: sfSpin 34s linear infinite; transform-origin: center; }
+
+/* --- pulzujúca svetelná základňa --- */
+@keyframes sfBase {
+  0%, 100% { opacity: 0.45; transform: scaleX(1); }
+  50%      { opacity: 0.85; transform: scaleX(1.06); }
+}
+.sf-base { animation: sfBase 3.4s ease-in-out infinite; }
+
+/* --- materializácia vozidla pri prepnutí --- */
+@keyframes sfMaterialize {
+  0%   { opacity: 0; filter: brightness(3) blur(7px); transform: translateY(8px) scale(0.97); }
+  55%  { opacity: 1; filter: brightness(1.6) blur(1px); }
+  100% { opacity: 1; filter: none; transform: none; }
+}
+.sf-materialize { animation: sfMaterialize 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* --- jemné vznášanie --- */
+@keyframes sfFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+.sf-float { animation: sfFloat 5s ease-in-out infinite; }
+
+/* --- glitch na nadpise --- */
+@keyframes sfGlitch {
+  0%, 92%, 100% { transform: none; opacity: 1; }
+  93% { transform: translate(-2px, 1px); opacity: 0.85; }
+  95% { transform: translate(2px, -1px); }
+  97% { transform: translate(-1px, 0); }
+}
+.sf-glitch { animation: sfGlitch 7s steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-ring, .sf-ring-2, .sf-ring-3, .sf-base, .sf-float, .sf-glitch { animation: none; }
+  .sf-materialize { animation: none; }
+}

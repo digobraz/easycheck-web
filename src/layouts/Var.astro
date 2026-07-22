@@ -1,0 +1,106 @@
+---
+import "../styles/global.css";
+import { FIRMA, NAV, REZERVACIA } from "../data/obsah";
+
+interface Props {
+  titul: string;
+  variant: string;
+  popis: string;
+  bg?: string;
+}
+const { titul, variant, popis, bg = "bg-ec-paper" } = Astro.props;
+---
+
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{titul}</title>
+    <meta name="description" content={popis} />
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class={bg}>
+    <!-- lišta variantu (len pre výber, na ostrom webe nebude) -->
+    <div
+      class="bg-ec-ink text-white text-xs t-sub flex items-center justify-between px-4 py-2 gap-4"
+    >
+      <span>Variant {variant} — {popis}</span>
+      <span class="flex gap-3">
+        <a href="/" class="underline underline-offset-2 hover:text-ec-yellow">Späť na výber</a>
+      </span>
+    </div>
+
+    <!-- hlavička -->
+    <header
+      class="sticky top-0 z-50 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-ink"
+    >
+      <div class="max-w-[1200px] mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
+        <a href="/" class="flex items-center shrink-0">
+          <img src="/brand/easycheck-logo.svg" alt="Easy Check" class="h-9 md:h-11 w-auto" />
+        </a>
+        <nav class="hidden lg:flex items-center gap-1">
+          {
+            NAV.map((n) => (
+              <a
+                href={n.h}
+                class="t-sub text-xs px-3 py-2 border-[var(--stroke)] border-transparent hover:border-ec-ink hover:bg-ec-yellow transition-colors"
+              >
+                {n.t}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="flex items-center gap-2 shrink-0">
+          <a href={FIRMA.telHref} class="hidden md:block t-sub text-sm t-num hover:underline"
+            >{FIRMA.tel}</a
+          >
+          <a href={REZERVACIA} class="nb-btn text-xs md:text-sm !px-3 md:!px-5 !py-2.5"
+            >Rezervovať</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <!-- pätička -->
+    <footer class="border-t-[var(--stroke-thick)] border-ec-ink bg-ec-ink text-ec-paper">
+      <div class="max-w-[1200px] mx-auto px-4 py-12 grid gap-8 md:grid-cols-4">
+        <div class="md:col-span-2">
+          <div class="t-display text-3xl mb-3">
+            <span class="text-ec-green">Easy</span><span class="text-ec-red">Check</span>
+          </div>
+          <p class="text-sm opacity-80 max-w-sm">
+            {FIRMA.popis}. Transformujeme nepríjemnú STK-čku na bezstarostný zážitok.
+          </p>
+        </div>
+        <div>
+          <div class="t-sub text-xs mb-3 text-ec-yellow">Kontakt</div>
+          <ul class="text-sm space-y-1.5 opacity-90">
+            <li>{FIRMA.adresa}</li>
+            <li class="t-num">{FIRMA.tel}</li>
+            <li>{FIRMA.mail}</li>
+          </ul>
+        </div>
+        <div>
+          <div class="t-sub text-xs mb-3 text-ec-yellow">Otváracie hodiny</div>
+          <p class="text-sm opacity-90">{FIRMA.hodiny}</p>
+        </div>
+      </div>
+      <div
+        class="border-t border-white/20 px-4 py-4 text-center text-xs opacity-60 max-w-[1200px] mx-auto"
+      >
+        © {new Date().getFullYear()} Easy Check, s.r.o. — návrh, nie ostrá verzia
+      </div>
+    </footer>
+  </body>
+</html>

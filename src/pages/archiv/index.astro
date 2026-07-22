@@ -1,0 +1,89 @@
+---
+import "../../styles/global.css";
+
+const VARIANTY = [
+  {
+    k: "A",
+    h: "/archiv/a",
+    nazov: "Žltá stena",
+    popis:
+      "Žltá nesie celú stránku, obrysové bloky na nej ležia. Najhlasnejší a najodvážnejší — nedá sa prehliadnuť, ale je ho veľa.",
+    farba: "bg-ec-yellow",
+  },
+  {
+    k: "B",
+    h: "/archiv/b",
+    nazov: "Biely papier",
+    popis:
+      "Pokojný papierový základ, obrys drží tvar, žltá svieti len tam, kde treba konať. Najlepšie čitateľný, obsah dýcha. Používa tvoje fotky z haly.",
+    farba: "bg-ec-paper",
+  },
+  {
+    k: "C",
+    h: "/archiv/c",
+    nazov: "Farebná mozaika",
+    popis:
+      "Každý blok má vlastnú farbu a obrys — zelená, červená, cyan, žltá. Najbližšie k tvojim referenciám z Pinterestu. Najhravejší.",
+    farba: "bg-ec-green",
+  },
+];
+---
+
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Easy Check — výber vizuálneho smeru</title>
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-[#F4F1E8] nb-dots min-h-screen">
+    <div class="max-w-[1100px] mx-auto px-4 py-12 md:py-16">
+      <div class="nb-card bg-ec-paper p-7 md:p-10 nb-in">
+        <img src="/brand/easycheck-logo.svg" alt="Easy Check" class="h-12 w-auto" />
+        <h1 class="t-display text-4xl md:text-6xl mt-6 max-w-[18ch]">Vyber šaty pre nový web</h1>
+        <p class="mt-4 max-w-[62ch] leading-relaxed">
+          Tri varianty homepage. <b>Obsah je vo všetkých rovnaký a autentický</b> — texty sú vytiahnuté
+          priamo z easycheck.sk, nič som neprepisoval. Rezervácia vedie na existujúcu Acuity
+          (<span class="t-num">klasik.as.me</span>), logika sa zatiaľ nemení.
+        </p>
+        <p class="mt-3 max-w-[62ch] leading-relaxed text-sm opacity-80">
+          Všetky tri sú neobrutalistické podľa tvojich referencií — hrubý čierny obrys, tvrdý tieň, ostré
+          rohy, brand farby. Líšia sa tým, ako ďaleko to tlačia.
+        </p>
+      </div>
+
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {
+          VARIANTY.map((v, i) => (
+            <a
+              href={v.h}
+              class={`nb-card nb-lift p-6 flex flex-col nb-in nb-in-${i + 1} ${v.farba} ${v.k === "C" ? "text-white" : ""}`}
+            >
+              <div class="t-display text-6xl">{v.k}</div>
+              <h2 class="t-display text-2xl mt-2">{v.nazov}</h2>
+              <p class="mt-3 text-sm leading-relaxed flex-1 opacity-95">{v.popis}</p>
+              <span class="mt-5 t-sub text-xs border-b-[var(--stroke)] border-current pb-0.5 self-start">
+                Pozrieť →
+              </span>
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="mt-8 nb-card bg-ec-ink text-ec-paper p-6 nb-in nb-in-4">
+        <div class="t-sub text-xs text-ec-yellow">Ako to čítať</div>
+        <p class="mt-2 text-sm leading-relaxed opacity-90 max-w-[70ch]">
+          Nemusíš si vybrať jednu celú. Pokojne povedz „hero z C, ale pokoj z B" — miešanie je v poriadku,
+          práve na to tie tri sú. Zaujíma ma hlavne: sedí ti tá miera krikľavosti, alebo to mám potiahnuť
+          tichšie / ešte odvážnejšie?
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ZRKADLO prototypu: EASYCHECK/vystupy/WEB-hero/prototyp/live.html (1:1).
+     Needituj tu — uprav zdroj a spusti `npm run sync-hero`. Jediny pridany riadok = robots noindex. -->
+<meta name="robots" content="noindex, nofollow">
+<title>EASYCHECK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Nadpisy: Saira Condensed · Body: DM Sans · Orbitron len pre Google logo (.g-logo-big).
+     Typografia zamknutá 2026-07-22 spolu s webom — brand-manual/smery-v1.html v4. -->
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  @property --beam-deg { syntax:'<angle>'; initial-value:0deg; inherits:false; }
+  /* Nadpisy vs body cez premenné. */
+  :root { --font-head:'Saira Condensed', sans-serif; --font-body:'DM Sans', sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; background:#05080a; }
+  body {
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    user-select:none; -webkit-user-select:none;
+  }
+  /* NADPISY / výrazné displej prvky → --font-head */
+  .motto, .sec-t, .hud-q, .lb, .kick, .big,
+  .promo-navbtn, .g-head, .g-count-big, .tel, .addr {
+    font-family:var(--font-head);
+  }
+  /* Google logo ostáva stabilné, prepínač sa ho nedotýka */
+  .g-logo-big { font-family:'Orbitron', sans-serif; }
+
+  /* ---------- viewport: scéna drží 16:9 a pokrýva celú obrazovku ---------- */
+  .viewport {
+    position:fixed; inset:0; overflow:hidden;
+    cursor:grab; touch-action:pan-y;
+    /* Rovnaká farba ako body — na mobile je .stage nižšia než obrazovka a nad/pod
+       ňou vidno toto pozadie, do ktorého fadeuje .stage::after. Farba je TU na
+       skutočnom elemente (nie len na body), aby okolie a koniec prechodu boli
+       garantovane ten istý #05080a; canvas pozadie z body sa v niektorých
+       renderovacích cestách nemaľuje (headless capture ho ignoruje úplne). */
+    background:#05080a;
+  }
+  .viewport:active { cursor:grabbing; }
+  .stage {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:100vw; height:56.25vw;          /* 16:9 */
+    min-height:100vh; min-width:177.78vh; /* cover */
+    background:url('assets/hala.png') center/cover no-repeat;
+    /* perspektíva pre rámy — spoločný úbežník. preserve-3d ZÁMERNE nie:
+       netreba ho (rámy sú priame deti) a rozbíja mix-blend-mode na beame/žiare. */
+    perspective:1400px; perspective-origin:50% 50%;
+  }
+
+  /* ---------- svetelný opar ---------- */
+  .glow {
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:52%; aspect-ratio:2/1; pointer-events:none; mix-blend-mode:screen;
+    background:radial-gradient(ellipse at center, rgba(150,205,240,.14) 0%, rgba(150,205,240,.05) 45%, transparent 70%);
+  }
+
+  /* ---------- vozidlá (vrstvy z v12, svetlo scény zapečené) ---------- */
+  .vehicle {
+    position:absolute; transform:translate(-50%,-50%);
+    transform-origin:center center; pointer-events:none;
+    will-change:transform, opacity, filter;
+  }
+  .vehicle.beetle, .reflect.beetle { width:26.7%; }
+  .vehicle.truck,  .reflect.truck  { width:24.8%; }
+  .vehicle.moto,   .reflect.moto   { width:17.4%; }
+  .vehicle.beetle { left:49.9%; top:53.3%; }
+  .vehicle.truck  { left:49.2%; top:43.2%; }
+  .vehicle.moto   { left:49.4%; top:49.4%; }
+  .reflect.beetle { left:49.9%; }
+  .reflect.truck  { left:49.2%; }
+  .reflect.moto   { left:49.4%; }
+  .vehicle .inner { display:block; width:100%; }
+  .vehicle img { display:block; width:100%; height:auto; }
+
+  .reflect {
+    position:absolute; top:64.5%; transform:translateX(-50%);
+    pointer-events:none; opacity:.35; will-change:transform, opacity;
+  }
+  .reflect .rinner { display:block; width:100%; }
+  .reflect img { display:block; width:100%; height:auto; }
+
+  /* ---------- idle levitácia ---------- */
+  .vehicle.idle .inner  { animation:levitate 3.6s ease-in-out infinite; }
+  .reflect.idle .rinner { animation:reflectFloat 3.6s ease-in-out infinite; }
+  @keyframes levitate {
+    0%,100% { transform:translateY(0) rotate(-.25deg); }
+    50%     { transform:translateY(-2.2%) rotate(.25deg); }
+  }
+  @keyframes reflectFloat {
+    0%,100% { transform:translateY(0); opacity:1; }
+    50%     { transform:translateY(1.6%); opacity:.72; }
+  }
+
+  /* ---------- beam + flash ---------- */
+  .flash {
+    position:absolute; left:50%; top:66%; transform:translate(-50%,-50%);
+    width:44%; aspect-ratio:3/1; border-radius:50%;
+    background:radial-gradient(ellipse at center, rgba(230,248,255,.95) 0%, rgba(160,220,255,.45) 40%, transparent 72%);
+    opacity:0; pointer-events:none; mix-blend-mode:screen;
+  }
+  .flash.fire { animation:flash .62s ease-out; }
+  @keyframes flash {
+    0%   { opacity:0; transform:translate(-50%,-50%) scale(.75); }
+    35%  { opacity:1; transform:translate(-50%,-50%) scale(1.12); }
+    100% { opacity:0; transform:translate(-50%,-50%) scale(1.3); }
+  }
+  .beam {
+    position:absolute; left:50%; top:19%; transform:translateX(-50%);
+    width:26%; height:47%; opacity:0; pointer-events:none; mix-blend-mode:screen;
+    background:linear-gradient(to bottom, rgba(220,244,255,.5), rgba(190,232,255,.12) 70%, transparent);
+    clip-path:polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  }
+  .beam.fire { animation:beampulse .62s ease-out; }
+  @keyframes beampulse { 0%,100% { opacity:0; } 40% { opacity:1; } }
+
+  /* ---------- prechod ---------- */
+  .vehicle.out { animation:beamOut .42s cubic-bezier(.4,0,.9,.35) forwards; }
+  @keyframes beamOut {
+    0%   { transform:translate(-50%,-50%) translateY(0) scale(1); opacity:1; filter:none; }
+    55%  { opacity:.75; }
+    100% { transform:translate(-50%,-50%) translateY(-190px) scale(.82); opacity:0; filter:saturate(2.4) brightness(2.2) blur(9px); }
+  }
+  .vehicle.in { animation:beamIn .52s cubic-bezier(.15,.7,.3,1) forwards; }
+  @keyframes beamIn {
+    0%   { transform:translate(-50%,-50%) translateY(-190px) scale(.82); opacity:0; filter:saturate(2.4) brightness(2.2) blur(9px); }
+    45%  { opacity:.9; }
+    100% { transform:translate(-50%,-50%) translateY(0) scale(1); opacity:1; filter:none; }
+  }
+  .reflect.out { animation:refOut .42s ease-in forwards; }
+  @keyframes refOut { to { opacity:0; } }
+  .reflect.in { animation:refIn .52s ease-out forwards; }
+  @keyframes refIn { from { opacity:0; } to { opacity:.35; } }
+
+  /* ---------- HUD ---------- */
+  /* .actions (Ďalej + Pokračovať na web) ZMAZANÉ (Matej 2026-07-17) — nahradené
+     jedným CTA priamo na piedestáli (.pedestal-cta nižšie), nie v HUD-e. */
+
+  .hud {
+    position:absolute; left:50%; top:83%;
+    /* -30px navyše k centrovaniu (Matej: „obsah a tlačidlá posuň hore o 30px") */
+    transform:translate(-50%, calc(-50% - 30px));
+    display:flex; flex-direction:column; align-items:center; gap:14px; z-index:6;
+    width:max-content;
+  }
+  /* nadpis bol krátko v hornom svetle (top:13%), Matej ho vrátil späť NAD tlačidlá
+     (do .hud, pred .typ) — pozícia teraz zase relatívna vo flex-column .hud, font
+     +30% (19.5px) ostáva, len umiestnenie sa zmenilo. */
+  .hud-q {
+    position:relative; font-size:24px; font-weight:700; letter-spacing:.18em;
+    text-transform:uppercase; color:#fff;
+    text-shadow:0 0 20px rgba(255,230,0,.65), 0 2px 10px rgba(0,0,0,.85);
+    padding:0 26px; white-space:nowrap;
+  }
+  .hud-q::before, .hud-q::after {
+    content:''; position:absolute; top:50%; width:18px; height:1px;
+    background:linear-gradient(90deg, transparent, #FFE600);
+    box-shadow:0 0 8px rgba(255,230,0,.9);
+  }
+  .hud-q::before { left:0; }
+  .hud-q::after  { right:0; transform:scaleX(-1); }
+
+  /* stredové tlačidlá (OSOBNÉ/NÁKLADNÉ/MOTORKA) — Matej: „zväčši a urob v tvare
+     našich tlačidiel" → prepísané z rounded-rect + backdrop-blur skla na rovnaký
+     .sf oblý systém ako .sf-tel/nav tlačidlá (SVG border cez buildSf() JS).
+     Zväčšené: min-width 170→210px, padding 14→18px, container 520→600px,
+     rozostup stredov 178→205px (inak by sa väčšie tlačidlá prekrývali). */
+  .typ { position:relative; width:600px; height:64px; }
+  .typ button {
+    --sc:#FFE600; --sg:rgba(255,230,0,.55);
+    /* width:auto PREPISUJE .sf-ov width:100% — bez toho by sa position:absolute
+       tlačidlo roztiahlo na 100% .typ kontajnera (600px) namiesto vlastnej šírky
+       podľa obsahu (min-width). */
+    position:absolute; left:50%; top:50%; width:auto;
+    min-width:210px; padding:18px 30px 17px;
+    border:none; background:transparent;
+    color:rgba(255,248,200,.9);
+    filter:drop-shadow(0 0 14px rgba(255,230,0,.45));
+    cursor:pointer; text-align:center; white-space:nowrap;
+    transition:transform .42s cubic-bezier(.25,.8,.3,1), opacity .42s ease, filter .3s ease;
+  }
+  .typ .lb {
+    position:relative; z-index:2; display:block;
+    font-size:18px; font-weight:900; letter-spacing:.10em; text-transform:uppercase;
+    text-shadow:0 1px 8px rgba(0,0,0,.7);
+  }
+  .typ button[data-rel="0"] {
+    transform:translate(-50%,-50%) perspective(90px) rotateX(-3.2deg) scale(1);
+    opacity:1; z-index:3;
+    filter:drop-shadow(0 0 34px rgba(255,230,0,.95)) drop-shadow(0 0 60px rgba(255,230,0,.5));
+  }
+  /* aktívny typ = PLNÁ výplň (rovnaký vzor ako zelené nav tlačidlá — fill na
+     rect, nie CSS background, inak by prekryl oblé rohy ostrým obdĺžnikom) */
+  .typ button[data-rel="0"] > svg.sfb rect { fill:#FFE600; }
+  .typ button[data-rel="0"] .lb { color:rgba(8,14,18,.72); text-shadow:none; }
+  .typ button[data-rel="-1"] { transform:translate(calc(-50% - 205px),-50%) perspective(90px) rotateX(-3.2deg) scale(.82); opacity:.3; z-index:1; }
+  .typ button[data-rel="1"]  { transform:translate(calc(-50% + 205px),-50%) perspective(90px) rotateX(-3.2deg) scale(.82); opacity:.3; z-index:1; }
+  .typ button[data-rel="-1"]:hover, .typ button[data-rel="1"]:hover { opacity:.6; }
+
+  /* Pedestal CTA (červené tlačidlo "Vyber kontrolu") SKÚSENÉ vo dvoch verziách
+     (text v tlačidle → text nad tlačidlom+pulzujúca šípka), Matej 2026-07-17 nakoniec
+     „daj preč červené tlačítko" — celý koncept ZMAZANÝ, žiadna náhrada zatiaľ. */
+
+
+  /* ================= TRI HOLO RÁMY (podľa AR vizualizácie ar7/O2) =================
+     Pozície sú 1:1 z Matejovho Canva mockupu (1600×900):
+       ľavý  x  4→28 %  ·  y 15→84 %   žltý
+       pravý x 72→96 %  ·  y 15→84 %   zelený
+       dolný x 31→69 %  ·  y 78→95 %   žltý = OBJEDNÁVKA
+
+     Oblé rohy NEROBIŤ cez border-radius na divu — border by sa dal, ale žiara nie
+     (box-shadow nekopíruje alfa tvar). Riešenie: SVG <rect rx ry>, fill:none + stroke
+     → presný tvar, PRIEHĽADNÉ vnútro, žiara cez filter:drop-shadow().
+     vector-effect:non-scaling-stroke drží hrúbku čiary aj pri preserveAspectRatio="none".
+
+     ⚠️ rx ≠ ry ZÁMERNE. viewBox je 0..100 a preserveAspectRatio="none", takže sa
+     osi roztiahnu rôzne. Elipsovitý roh vo viewBox súradniciach sa po roztiahnutí
+     zobrazí ako KRUHOVÝ. Rovnaké rx aj ry = na obrazovke vajce. Čísla sú prevzaté
+     z pôvodných oktagónových zrezov, ktoré tú istú kompenzáciu už mali.
+
+     Náklon: perspektíva na .stage → všetky tri rámy zdieľajú jeden úbežník
+     = jedna zakrivená plocha pred okom, nie tri nezávislé dosky. */
+  .frm {
+    position:absolute; z-index:5; pointer-events:none;
+    /* levitácia: `translate` je SAMOSTATNÁ vlastnosť → nekoliduje s rotateY v `transform`.
+       Rozdielne dĺžky vľavo/vpravo zámerne — rovnaké by šklbali synchrónne. */
+    animation:holoFlicker 6s steps(1,end) infinite, frmFloat var(--fd,5.4s) ease-in-out infinite;
+  }
+  @keyframes frmFloat {
+    0%,100% { translate:0 0; }
+    50%     { translate:0 -1.5%; }
+  }
+  /* žiara PATRÍ NA SVG, nie na .frm — na .frm by rozžiarila aj obsah vnútri rámu */
+  .frm svg {
+    display:block; width:100%; height:100%; overflow:visible;
+    filter:drop-shadow(0 0 4px #fff)
+           drop-shadow(0 0 12px var(--c))
+           drop-shadow(0 0 30px var(--c))
+           drop-shadow(0 0 66px var(--g));
+  }
+  .frm rect { fill:none; stroke:var(--c); stroke-width:2.6; vector-effect:non-scaling-stroke; }
+
+  /* ---- obsah vnútri rámu (dedí náklon aj levitáciu od .frm) ---- */
+  .frm-in {
+    position:absolute; inset:0; padding:5.5% 7% 10%;
+    display:flex; flex-direction:column; align-items:center; gap:3.2%;
+    pointer-events:auto; text-align:center;
+    background:transparent; transition:background .3s ease;
+  }
+
+  /* ---- HOLOGRAM PLANÉTY (v žltom ľavom ráme, vedľa hodín, BEZ VLASTNÉHO RÁMIKA) ----
+     Drôtený glóbus = 7 poludníkov (Y os) + 7 rovnobežiek (X os) = skutočná zemepisná
+     sieť. Farba ŽLTÁ (zjednotená s rámom okolo — Matej zrušil pôvodný teal kontrast).
+     Os rotácie NAKLONENÁ (.globe-tilt, statické rotateX/rotateZ) → glóbus sa netočí
+     „kolmo" (rovno spredu), ale ako nakláňaná planéta. Naklonenie je na SAMOSTATNOM
+     obale, lebo `animation` na .globe by inak PREPÍSALA akýkoľvek statický transform
+     na tom istom prvku (keyframe transform nekomponuje so základným pravidlom). */
+  .globe-wrap { position:relative; perspective:420px; width:78%; margin:0 auto; }
+  .globe-tilt {
+    width:100%; aspect-ratio:1; transform-style:preserve-3d;
+    transform:rotateX(-15deg) rotateZ(7deg);      /* statický náklon osi */
+  }
+  .globe {
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d; animation:globeSpin 34s linear infinite;  /* pomalšie */
+  }
+  @keyframes globeSpin { to { transform:rotateY(360deg); } }
+  /* poludníky — plné kružnice, JS im rozdelí rotateY rovnomerne 0–150° (6–7 kusov) */
+  .globe .mer {
+    position:absolute; inset:0; border-radius:50%;
+    border:1px solid rgba(255,225,60,.6);
+    box-shadow:0 0 7px rgba(255,214,0,.42), inset 0 0 10px rgba(255,214,0,.12);
+  }
+  /* rovnobežky — KAŽDÁ vlastný --dy (translateY% = % PRIEMERU, presné podľa R·sin θ)
+     a --s (zmenšenie smerom k pólu = cos θ). scale() sa aplikuje PRED rotateX, takže
+     translateY% sa počíta zo 100%-ného (nezmenšeného) rozmeru boxu → presné
+     umiestnenie bez ohľadu na to, aké malé je pólové kruhy. RG rovnaká sila (border +
+     box-shadow) ako poludníky, inak by boli tenšie/menej viditeľné a sieť by
+     nevyzerala ako mriežka, len ako zväzok zvislých čiar. */
+  .globe .lat {
+    position:absolute; inset:0; border-radius:50%;
+    border:1px solid rgba(255,225,60,.5);
+    box-shadow:0 0 7px rgba(255,214,0,.35);
+    transform:translateY(var(--dy,0%)) rotateX(90deg) scale(var(--s,1));
+  }
+  .globe .lat.eq { border-color:rgba(255,240,150,.85); box-shadow:0 0 11px rgba(255,214,0,.55); }
+  .globe-glow {
+    position:absolute; inset:-16%; border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle at 50% 50%, rgba(255,214,0,.20), transparent 62%);
+  }
+  /* hviezdy okolo planéty — jemne blikajú, rozladené fázy (nie synchrónne) */
+  .sf-globe .dot {
+    position:absolute; z-index:1; left:var(--dx); top:var(--dy);
+    width:2.6px; height:2.6px; border-radius:50%; background:#fff6cf;
+    box-shadow:0 0 4px #ffe97d, 0 0 9px rgba(255,214,0,.75);
+    animation:dotBlink 3.2s ease-in-out infinite; animation-delay:var(--dd,0s);
+  }
+  @keyframes dotBlink { 0%,100% { opacity:.3; } 50% { opacity:1; } }
+  /* jemné stmavenie pozadia za planétou — Matej: „môžeš jemne stmaviť, aby vyniklo".
+     len na .sf-globe, ostatné rámiky ostávajú priehľadné podľa pravidla „žiadna výplň".
+     BEZ OKRAJA — box je zámerne bez octagon rámika (Matej: „daj preč rámik"),
+     glóbus tak pláva voľne, len s vlastnou žiarou. */
+  .sf-globe { background:radial-gradient(ellipse 90% 78% at 50% 44%, rgba(10,9,2,.42), transparent 72%); }
+
+  .addr {
+    margin-top:7px; font-size:10px; font-weight:700; letter-spacing:.08em; line-height:1.5;
+    color:#fff3b0; text-transform:uppercase;
+    text-shadow:0 0 12px rgba(255,214,0,.9), 0 0 28px rgba(255,214,0,.5), 0 1px 6px rgba(0,0,0,.9);
+  }
+  .addr b { color:#fff; text-shadow:0 0 14px rgba(255,245,200,.95); }
+
+  /* ---- RIADOK hodiny + planéta vedľa seba (Matej: hodiny doľava, uvoľní miesto vpravo) ---- */
+  .frm-row { display:flex; width:100%; gap:6%; align-items:stretch; }
+  .frm-row > .sf, .frm-row > .sf-globe { width:auto; flex:1 1 0; }
+  /* .sf-globe = rovnaké rozloženie ako .sf (padding, centrovanie), ale ZÁMERNE
+     BEZ SVG obrysu — nemá triedu .sf, takže ju buildSf() v JS nezasiahne. */
+  .sf-globe { position:relative; padding:9px 13px 10px; text-align:center; }
+
+  /* ---- POD-RÁMIKY ----
+     Oblý obrys cez SVG <rect rx> v REÁLNYCH px (viewBox = w×h), stavia ho buildSf().
+     Nie border-radius na divu — ten by nešiel rozsvietiť, drop-shadow potrebuje
+     alfa tvar SVG. Nie clip-path — ten odreže obrys aj žiaru. */
+  .sf {
+    --sc:rgba(255,230,0,.85);
+    position:relative; width:100%; padding:9px 13px 10px; text-align:center;
+    /* žiadna výplň — vnútro ostáva priehľadné, presvitá hala */
+  }
+  /* Obrys pod-rámika: SVG rect s rádiusom, ktorý JS postaví v REÁLNYCH px rozmeroch
+     prvku (viewBox = w×h) → rádius je všade rovnakých 16 px a nič sa nedeformuje,
+     bez ohľadu na to, akú má ktorý pod-rámik proporciu. Vnútro ostáva priehľadné. */
+  .sf > svg.sfb {
+    position:absolute; inset:0; width:100%; height:100%; overflow:visible;
+    pointer-events:none; z-index:0;
+    filter:drop-shadow(0 0 4px var(--sc)) drop-shadow(0 0 14px var(--sg,rgba(255,230,0,.45)));
+  }
+  .sf > svg.sfb rect { fill:none; stroke:var(--sc); stroke-width:1.6; }
+  .sf > *:not(svg) { position:relative; z-index:1; }
+
+  /* pozadie dotmavené LEN tu (rovnaká výnimka ako .sf-globe — pravidlo „žiadna
+     výplň" platí pre ostatné pod-rámiky) + flex centrovanie, nech číslo sedí
+     v strede boxu, nie pri spodnom okraji (predtým ho tam ťahal .tel margin-top). */
+  .sf-tel {
+    --sc:#FFE600; --sg:rgba(255,230,0,.6); width:82%; min-height:46px;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse 85% 80% at 50% 50%, rgba(8,7,2,.55), transparent 74%);
+    transition:transform .22s ease;
+  }
+  .sf-tel .tel { margin-top:0; }
+  .sf-tel:hover { transform:scale(1.07); }
+  .sf-motto { padding:5px 13px 6px; }         /* menší padding — box bol zbytočne vysoký */
+  /* width:100% je NUTNÉ — inak sa .sf-plain roztiahne na max-content marquee
+     a overflow:hidden v .mq nemá čo orezať → text vytečie cez celú scénu. */
+  .sf-plain { width:100%; padding:4px 0 2px; }
+
+  .frm-l { left:4%;  width:24%; top:20%; height:65.5%; --fd:5.4s;
+           --c:#FFE600; --g:rgba(255,230,0,.55);
+           transform-origin:right center; transform:rotateY(var(--tl,15deg));
+           /* pointer-events:auto NAMIESTO zdedeného .frm none — chceme hover na
+              CELOM bloku, nielen na .frm-in obsahu (border/žiara musí tiež reagovať). */
+           pointer-events:auto; transition:transform .3s ease; }
+  /* pravý blok ROZDELENÝ na dva samostatné rámy (Matej 2026-07-17): horný zelený
+     (rotujúce akcie/oznamy), dolný modrý (statické Google recenzie). Rovnaký
+     skos-vzor ako .frm-l/.frm-r, ale PRESEKANÝ na inú výšku → y-offset osemuholníka
+     prepočítaný zvlášť pre každý (skos v PX musí byť rovnaký, viď HTML komentár). */
+  /* zelený blok mierne ŠIRŠÍ než modrý (Matej 2026-07-17): left 72→70%, width 24→27%
+     (pravý okraj 97% vs modrý 96%, ľavý o 2 body viac doľava) — skos v HTML polygon
+     bode PREPOČÍTANÝ pre novú šírku (x=1800/w_px, w teraz 432px namiesto 384px). */
+  .frm-r-top { left:70%; width:27%; top:20%; height:30%; --fd:6.3s;
+           --c:#38E04A; --g:rgba(56,224,74,.55);
+           transform-origin:left center;  transform:rotateY(calc(-1 * var(--tl,15deg)));
+           pointer-events:auto; transition:transform .3s ease; }
+  .frm-r-bot { left:72%; width:24%; top:53%; height:32.5%; --fd:5.8s;
+           --c:#2f8fff; --g:rgba(47,143,255,.55);
+           transform-origin:left center;  transform:rotateY(calc(-1 * var(--tl,15deg)));
+           pointer-events:auto; transition:transform .3s ease; }
+  /* ---- HOVER na celom bloku (žltý aj oba pravé): pridá náklon + pozadie stmaví ----
+     Pravé rámy majú OPAČNÉ znamienko náklonu (base transform násobí --tl cez -1), takže
+     hover im musí pridať -3deg (nie +3deg), aby to bol vizuálne ten istý „nakláňa sa
+     k divákovi" smer ako na .frm-l. */
+  .frm-l:hover { transform:rotateY(calc(var(--tl,15deg) + 3deg)); }
+  .frm-r-top:hover, .frm-r-bot:hover { transform:rotateY(calc(-1 * (var(--tl,15deg) + 3deg))); }
+  .frm-l:hover .frm-in, .frm-r-top:hover .frm-in, .frm-r-bot:hover .frm-in {
+    background:radial-gradient(ellipse 88% 88% at 50% 50%, rgba(0,0,0,.42), transparent 78%);
+  }
+
+  /* ================= BOČNÉ PANELY — starý obsah, nahradený rámami =================
+     výška: od úrovne stropného svetla (~17 %) po úroveň otázky (~78 %) */
+  .side { display:none; }
+  .side-old {
+    position:absolute; top:17%; bottom:22%; z-index:5;
+    width:min(27vw, 400px); display:flex; flex-direction:column;
+    pointer-events:none;
+  }
+  .side-l { left:3.4%; justify-content:center; text-align:center; }
+  .side-r { right:3.4%; align-items:flex-end; text-align:right; }
+  .side > * { pointer-events:auto; }
+
+  /* ================= HOLOGRAM V ZORNOM POLI (nie levitujúce objekty) =================
+     Kľúč, prečo to predtým vyzeralo ako sklenená doska vo vzduchu:
+       1) backdrop-filter:blur() = fyzické sklo, ktoré rozmazáva scénu za sebou → OBJEKT.
+          Projekcia v priezore nič nerozmazáva, len PRIDÁVA svetlo → mix-blend-mode:screen.
+       2) box-shadow s tmavou zložkou = vrhaný tieň → objem. Hologram tieň nevrhá, len žiari.
+     Preto: žiadny blur, žiadny tmavý tieň, len aditívne svetlo.
+
+     PERSPEKTÍVA JE NA KONTAJNERI, nie na blokoch — všetky bloky tak zdieľajú JEDEN úbežník
+     a čítajú sa ako jedna zakrivená plocha pred okom, nie ako N nezávislých doštičiek. */
+  .side-l, .side-r { perspective:var(--persp,900px); transform-style:preserve-3d; }
+  .side-l { perspective-origin:160% 50%; }
+  .side-r { perspective-origin:-60% 50%; }
+
+  /* ---- logo vnútri panela ---- */
+  .logo-in {
+    margin:0 auto 2%; width:86%; display:block;
+    /* Žiara VLASTNÝMI FARBAMI loga:
+       drop-shadow() vie svietiť len JEDNOU farbou → preto bola biela.
+       SVG feGaussianBlur rozmaže SourceGraphic a ZACHOVÁ jeho farby
+       → červená svieti červeno, modrá modro, zelená zeleno. */
+    filter:url(#logoGlow);
+  }
+
+  /* ---- MOTTO: TITULKY — vždy VIDITEĽNÝ LEN JEDEN RIADOK, riadky sa strieda ----
+     Box nemá fixnú výšku (na rozdiel od starého 3-riadkového bloku) — sedí len na
+     výšku aktuálneho jedného riadku, JS strieda text+farbu, crossfade cez opacity. */
+  .motto {
+    font-size:17px; font-weight:800; line-height:1.3; letter-spacing:.02em;
+    text-align:center; text-transform:uppercase; opacity:0;
+    transition:opacity .25s ease;
+  }
+  /* STK červená / EK zelená — recyklované z .c-stk / .c-ek (Kontroly marquee),
+     nie nové odtiene, nech drží farebný jazyk celej scény. */
+  .motto.mw-w { color:#fff; text-shadow:0 0 20px rgba(255,255,255,.9), 0 0 46px rgba(255,255,255,.5); }
+  .motto.mw-r { color:#ff3a41; text-shadow:0 0 18px rgba(225,33,40,.95), 0 0 42px rgba(225,33,40,.55); }
+  .motto.mw-g { color:#6fd857; text-shadow:0 0 18px rgba(91,186,71,.95), 0 0 42px rgba(91,186,71,.55); }
+
+  /* ---- SEGMENTOVANÉ HOLO BLOKY (ľavá strana) ----
+     --ry = náklon bloku, --w = šírka (nesúmernosť), --rx = zakrivenie priezoru hore/dole */
+  .hstack { display:flex; flex-direction:column; gap:9px; align-items:flex-end; }
+  .hblk {
+    position:relative; width:var(--w,100%); margin-left:auto;
+    padding:14px 18px 15px; text-align:center;
+    transform-origin:right center;
+    transform:rotateY(var(--ry,15deg)) rotateX(var(--rx,0deg));
+    /* ---- neónová karta: tmavá výplň + svietiaci obrys + bloom (ref: Claude Desktop) ----
+       Stále ŽIADNY backdrop-filter (to by z toho spravilo sklo = levitujúci objekt)
+       a ŽIADNY tmavý tieň — von ide len farebná žiara. */
+    border-radius:18px;
+    background:linear-gradient(150deg, rgba(10,16,22,.62), rgba(6,11,16,.42));
+    border:1.5px solid var(--c, rgba(255,230,0,.8));
+    box-shadow:
+      0 0 20px var(--g, rgba(255,230,0,.38)),          /* tesná žiara */
+      0 0 60px var(--g2, rgba(255,230,0,.16)),         /* mäkký bloom */
+      inset 0 0 26px var(--gi, rgba(255,230,0,.07));   /* podsvietenie zvnútra */
+    animation:holoFlicker 6s steps(1,end) infinite;
+  }
+  .hblk.logo-blk { padding:14px 12px 10px; background:none; border:none; box-shadow:none; }
+
+  /* ---- (legacy) jednoliaty panel — nahradený .hstack/.hblk ---- */
+  .panel {
+    position:relative; text-align:center; padding:0; border-radius:20px;
+    background:linear-gradient(165deg, rgba(255,238,140,.05), rgba(255,230,0,.015) 50%, rgba(180,240,255,.035));
+    -webkit-backdrop-filter:blur(9px) saturate(1.25) brightness(1.04);
+            backdrop-filter:blur(9px) saturate(1.25) brightness(1.04);
+    box-shadow:0 0 40px rgba(255,230,0,.22), 0 0 110px rgba(255,214,0,.1);   /* len žiara — NIE tieň */
+    animation:holoFlicker 6s steps(1,end) infinite;
+  }
+  @keyframes holoFlicker {
+    0%,100% { opacity:1; } 41% { opacity:1; } 42% { opacity:.87; } 43% { opacity:1; }
+    77% { opacity:.93; } 78% { opacity:1; }
+  }
+  /* okraj — svetelná linka, aditívna */
+  .panel::before {
+    content:''; position:absolute; inset:0; border-radius:inherit; padding:1px;
+    background:linear-gradient(150deg,
+      rgba(255,230,0,.85) 0%, rgba(255,230,0,.18) 34%,
+      rgba(190,245,255,.5) 50%, rgba(255,230,0,.22) 68%, rgba(255,230,0,.8) 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    mix-blend-mode:screen; pointer-events:none; z-index:2;
+  }
+  /* obiehajúce svetlo po hrane */
+  .panel::after {
+    content:''; position:absolute; inset:0; border-radius:inherit; padding:1.4px;
+    background:conic-gradient(from var(--beam-deg),
+      transparent 0deg, transparent 40deg,
+      rgba(220,255,255,.9) 50deg, #FFE600 56deg, rgba(255,230,0,.35) 66deg,
+      transparent 84deg, transparent 220deg,
+      rgba(255,230,0,.3) 236deg, #FFE600 244deg, rgba(220,255,255,.85) 250deg,
+      transparent 266deg, transparent 360deg);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    filter:drop-shadow(0 0 6px rgba(255,230,0,.95));
+    mix-blend-mode:screen;
+    animation:beamSpin 7s linear infinite;
+    pointer-events:none; z-index:3;
+  }
+  @keyframes beamSpin { to { --beam-deg:360deg; } }
+  /* rohové značky — tenké, svetelné */
+  .panel .cx {
+    position:absolute; width:15px; height:15px; z-index:4; pointer-events:none;
+    border:1px solid rgba(255,230,0,.85);
+    filter:drop-shadow(0 0 5px rgba(255,230,0,.9));
+    mix-blend-mode:screen;
+    animation:cxBlink 4.5s ease-in-out infinite;
+  }
+  .panel .cx.tl { top:6px; left:6px;     border-right:none; border-bottom:none; border-radius:7px 0 0 0; }
+  .panel .cx.tr { top:6px; right:6px;    border-left:none;  border-bottom:none; border-radius:0 7px 0 0; animation-delay:.3s; }
+  .panel .cx.bl { bottom:6px; left:6px;  border-right:none; border-top:none;    border-radius:0 0 0 7px; animation-delay:.6s; }
+  .panel .cx.br { bottom:6px; right:6px; border-left:none;  border-top:none;    border-radius:0 0 7px 0; animation-delay:.9s; }
+  @keyframes cxBlink { 0%,100% { opacity:.45; } 50% { opacity:.95; } }
+  /* ---- statický žltý okraj (základ) ---- */
+  .panel::before {
+    content:''; position:absolute; inset:0; border-radius:inherit; padding:1.2px;
+    background:linear-gradient(150deg,
+      rgba(255,230,0,.9) 0%, rgba(255,230,0,.3) 32%,
+      rgba(255,255,255,.45) 50%, rgba(255,230,0,.35) 70%, rgba(255,230,0,.85) 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    pointer-events:none; z-index:2;
+  }
+  /* ---- ANIMOVANÝ okraj: svetlo obieha po obvode ---- */
+  .panel::after {
+    content:''; position:absolute; inset:0; border-radius:inherit; padding:1.6px;
+    background:conic-gradient(from var(--beam-deg),
+      transparent 0deg, transparent 32deg,
+      rgba(255,255,255,.95) 44deg, #FFE600 52deg, rgba(255,230,0,.5) 62deg,
+      transparent 78deg, transparent 180deg,
+      rgba(255,230,0,.4) 200deg, #FFE600 232deg, rgba(255,255,255,.9) 240deg,
+      rgba(255,230,0,.35) 250deg, transparent 268deg, transparent 360deg);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    filter:drop-shadow(0 0 5px rgba(255,230,0,.9)) drop-shadow(0 0 12px rgba(255,214,0,.55));
+    animation:beamSpin 7s linear infinite;
+    pointer-events:none; z-index:3;
+  }
+  @keyframes beamSpin { to { --beam-deg:360deg; } }
+  .panel-in { position:relative; padding:20px 22px 22px; border-radius:inherit; overflow:hidden; }
+  /* rastr projekcie — jemné scanlines */
+  .panel-in::before {
+    content:''; position:absolute; inset:0; pointer-events:none; z-index:1;
+    background:repeating-linear-gradient(0deg,
+      rgba(255,240,150,.05) 0px, rgba(255,240,150,.05) 1px, transparent 1px, transparent 4px);
+    mix-blend-mode:screen;
+  }
+  /* prebiehajúca projekčná linka */
+  .panel-in::after {
+    content:''; position:absolute; left:0; right:0; height:30px; z-index:1;
+    background:linear-gradient(to bottom, transparent, rgba(255,240,160,.1), transparent);
+    animation:scan 6s linear infinite; pointer-events:none; mix-blend-mode:screen;
+  }
+  @keyframes scan { 0% { top:-30px; } 100% { top:100%; } }
+  .divider {
+    position:relative; height:1px; margin:17px 0;
+    background:linear-gradient(90deg, transparent, rgba(255,230,0,.4), transparent);
+  }
+  .divider::after {
+    content:''; position:absolute; left:50%; top:50%; width:4px; height:4px;
+    transform:translate(-50%,-50%) rotate(45deg);
+    background:rgba(255,230,0,.9); box-shadow:0 0 9px rgba(255,230,0,1);
+  }
+
+  /* ---- nadpis sekcie ---- */
+  .sec-t {
+    font-size:8px; font-weight:700; letter-spacing:.32em; text-transform:uppercase;
+    color:rgba(255,255,255,.42); margin-bottom:9px;
+    display:flex; align-items:center; gap:7px;
+  }
+  .sec-t { justify-content:center; color:rgba(255,230,0,.62); }
+  .sec-t::before, .sec-t::after {
+    content:''; width:13px; height:1px; background:rgba(255,230,0,.6);
+    box-shadow:0 0 8px rgba(255,230,0,.7);
+  }
+  .side-r .sec-t { flex-direction:row-reverse; }
+
+  /* ---- služby v rámiku ---- */
+  .svc { display:flex; flex-wrap:wrap; gap:7px 13px; justify-content:center; }
+
+  /* ---- KONTROLY: jeden riadok, nekonečný prúd ----
+     Obsah je v markupe 2× za sebou → posun o -50 % vráti pás do identickej
+     pozície, takže slučka je bezšvová. Bez zdvojenia by na konci vznikla diera.
+     mask-image = mäkké okraje namiesto tvrdého odseknutia. */
+  .mq { width:100%; overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 11%, #000 89%, transparent);
+            mask-image:linear-gradient(90deg, transparent, #000 11%, #000 89%, transparent); }
+  .mq-in { display:flex; width:max-content; gap:0; animation:mqRun var(--mqd,13s) linear infinite; }
+  .mq-in .svc { flex-wrap:nowrap; gap:0 15px; padding-right:15px; }
+  @keyframes mqRun { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  /* druhý riadok ide OPAČNÝM smerom — rovnaké keyframes, len prehratie odzadu
+     (obsah je zdvojený rovnako ako pri .mq-in, takže -50%→0% je tiež bezšvové). */
+  .mq-in.mq-rev { animation-direction:reverse; }
+  .mq2 { margin-top:8px; }
+  .side-r .svc span { margin-left:auto; }
+  /* farby podľa loga; TACHO = neónová ružová */
+  .c-stk   { color:#ff3a41 !important; text-shadow:0 0 14px rgba(225,33,40,.95), 0 0 32px rgba(225,33,40,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .c-ek    { color:#6fd857 !important; text-shadow:0 0 14px rgba(91,186,71,.95), 0 0 32px rgba(91,186,71,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .c-ko    { color:#33cdf5 !important; text-shadow:0 0 14px rgba(24,182,228,.95), 0 0 32px rgba(24,182,228,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .c-tacho { color:#ff4fa8 !important; text-shadow:0 0 14px rgba(255,60,150,.95), 0 0 32px rgba(255,60,150,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .c-adr   { color:#ffa23a !important; text-shadow:0 0 14px rgba(255,140,20,.95), 0 0 32px rgba(255,140,20,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .c-cemt  { color:#bf85ff !important; text-shadow:0 0 14px rgba(160,90,255,.95), 0 0 32px rgba(160,90,255,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  /* nový riadok služieb (Matej 2026-07-17): tmavšia modrá / tyrkysová / hnedá */
+  .c-blue2 { color:#3d6fe0 !important; text-shadow:0 0 14px rgba(40,80,200,.95), 0 0 32px rgba(40,80,200,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .c-turq  { color:#22d8c3 !important; text-shadow:0 0 14px rgba(20,190,175,.95), 0 0 32px rgba(20,190,175,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .c-brown { color:#b5793a !important; text-shadow:0 0 14px rgba(150,100,40,.9), 0 0 32px rgba(150,100,40,.5), 0 1px 6px rgba(0,0,0,.9) !important; }
+  .svc-2 { margin-top:9px; }
+  .svc span:hover { filter:brightness(1.35); letter-spacing:.14em; }
+
+  /* ---- info ---- */
+  .info {
+    font-size:11px; line-height:1.8; color:rgba(226,240,248,.72);
+    text-shadow:0 1px 8px rgba(0,0,0,.9);
+  }
+  .info .hi { color:#fff; font-weight:700; text-shadow:0 0 12px rgba(255,255,255,.5); }
+  /* užší stĺpec (polovica riadku) → menšie písmo, dni a čas na SAMOSTATNÝCH riadkoch,
+     inak by sa čas typu 07:00–19:00 zalomil napoly cez pomlčku (bolo). */
+  .sf-open .info { font-size:9.5px; line-height:1.62; }
+  .sf-open .info .hi { font-size:14px; letter-spacing:.03em; }
+  .sf-open { padding:13px 11px 15px; }
+  .tel {
+    display:inline-block; margin-top:12px; text-decoration:none;
+    font-size:19px; font-weight:900; letter-spacing:.03em; color:#FFE600; display:block; margin-top:9px;
+    text-shadow:0 0 16px rgba(255,230,0,.85), 0 0 40px rgba(255,230,0,.45);
+    transition:text-shadow .18s ease;
+  }
+  .tel:hover { text-shadow:0 0 24px #FFE600, 0 0 55px rgba(255,230,0,1); }
+
+  /* ================= PRAVÁ: rotujúce akcie — plávajúce ================= */
+  .promo { position:relative; pointer-events:auto; width:100%; }
+  .promo-slide { animation:promoIn .55s ease; }
+  @keyframes promoIn {
+    from { opacity:0; transform:translateY(12px); filter:blur(4px); }
+    to   { opacity:1; transform:none; filter:none; }
+  }
+  /* ikonka nad kick nadpisom — vlastné inline SVG (ICONS v JS), farba+žiara cez
+     currentColor/filter, nie samostatný obrázkový asset */
+  .promo-icon {
+    /* zväčšené 25→44px (Matej: „nie je rozoznať čo je na nej") */
+    width:44px; height:44px; margin:0 auto 8px; color:#5bba47;
+    filter:drop-shadow(0 0 7px rgba(91,186,71,.85)) drop-shadow(0 0 17px rgba(91,186,71,.45));
+  }
+  .promo-icon svg { width:100%; height:100%; display:block; }
+  .promo .kick {
+    font-size:9px; font-weight:700; letter-spacing:.3em; text-transform:uppercase;
+    color:#5bba47; text-shadow:0 0 16px rgba(91,186,71,1); margin-bottom:9px;
+  }
+  .promo .big {
+    font-size:30px; font-weight:900; line-height:1.12; letter-spacing:.01em;
+    color:#fff; text-transform:uppercase;
+    text-shadow:0 0 22px rgba(91,186,71,.9), 0 0 55px rgba(91,186,71,.5), 0 2px 10px rgba(0,0,0,.9);
+  }
+  .promo .sub {
+    margin-top:11px; font-size:12px; line-height:1.6; color:rgba(226,246,226,.7);
+    text-shadow:0 1px 8px rgba(0,0,0,.9);
+  }
+  .promo-dots { display:flex; gap:5px; margin-top:18px; justify-content:flex-end; }
+  .promo-dots i { width:18px; height:2px; background:rgba(255,255,255,.16); transition:all .3s; }
+  .promo-dots i.on { background:#5bba47; box-shadow:0 0 10px rgba(91,186,71,1); }
+  /* #promo teraz sedí v .frm-in (užší, centrovaný rám) namiesto pôvodného širokého
+     .side-r panela (text-align:right) → doladenie na stred + menšie písmo, nech sa
+     "4,8 ★ · najviac recenzií na SK" zmestí na šírku bez zalomenia. */
+  .frm-in .promo { text-align:center; }
+  .frm-in .promo-dots { justify-content:center; }
+  .frm-in .promo .big { font-size:18px; }
+  .frm-in .promo .sub { font-size:10px; }
+
+  /* ---- zelený blok — 70/30 SPLIT (Matej: „tlačítka sú moc malé, daj ich na pravú
+     stranu pod seba a oznamy posunúť do ľava 70/30") ----
+     .frm-in-promo prepisuje base .frm-in flex-direction:column na row — dva stĺpce
+     vedľa seba namiesto pôvodného vertikálneho radenia nav→carousel. */
+  .frm-in-promo { flex-direction:row; align-items:center; justify-content:center; gap:4%; }
+  .promo-col-left { flex:0 0 68%; width:68%; min-width:0; }
+  .promo-col-right { flex:0 0 26%; width:26%; }
+
+  /* nav tlačidlá PRAVÁ strana, POD SEBOU. Tvar = rovnaký .sf oblý pod-rámik systém
+     ako .sf-tel (SVG oblý border postavený JS-om `buildSf()`). Pôvodne červený outline →
+     Matej: „daj zelenej farby a plnej farby čierny text" — teraz PLNÁ zelená výplň
+     (jediné miesto v scéne s vyplneným .sf; pravidlo „žiadna výplň" je zámerne
+     prelomené LEN tu, rovnaký vzorec výnimky ako .sf-globe/.sf-tel v predch. kolách).
+     Fill ide na `rect`, nie na `.sf.promo-navbtn` ako CSS background — inak by fill
+     bol obdĺžnik a prekryl by osemuholníkový tvar cez rohy. */
+  .promo-nav { display:flex; flex-direction:column; gap:7px; }
+  .sf.promo-navbtn {
+    --sc:#38E04A; --sg:rgba(56,224,74,.6);
+    -webkit-appearance:none; appearance:none; background:transparent; border:none; outline:none;
+    font-family:inherit; cursor:pointer;
+    color:#000; font-size:11px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+    transition:transform .2s ease;
+  }
+  .sf.promo-navbtn > svg.sfb rect { fill:var(--sc); }
+  .sf.promo-navbtn:hover { transform:scale(1.05); }
+
+  /* ---- karuselové šípky po krajoch ĽAVÉHO stĺpca — prepínajú PROMOS ručne ---- */
+  .promo-carousel { display:flex; align-items:center; gap:5px; width:100%; }
+  .promo-arrow {
+    flex:0 0 auto; background:transparent; border:none; cursor:pointer;
+    font-size:20px; font-weight:900; line-height:1; padding:2px 3px;
+    color:rgba(91,186,71,.55); transition:color .2s ease, text-shadow .2s ease, transform .2s ease;
+  }
+  .promo-arrow:hover { color:#5bba47; text-shadow:0 0 14px rgba(91,186,71,.9); transform:scale(1.15); }
+  .promo-carousel .promo { flex:1 1 auto; min-width:0; }
+
+  /* ---- Google recenzie (dolný modrý rám, statické) — neónové písmená v Google farbách ----
+     Kolo 2 (Matej): nadpis → veľké logo → hodnotenie v „pilulke" → PRESNÝ počet.
+     Kolo 3 (Matej: „roztiahnuté... zväčši obsah a centruj"): veľký gap ZRUŠENÝ — obsah je
+     teraz KOMPAKTNÁ skupina (malý gap), zväčšená a vycentrovaná v strede bloku, nie
+     roztiahnutá cez celú výšku. */
+  .frm-in-google { gap:4%; justify-content:center; }
+  .g-head {
+    font-size:14px; font-weight:700; line-height:1.35; letter-spacing:.02em;
+    color:rgba(210,230,255,.85); text-shadow:0 1px 8px rgba(0,0,0,.9);
+  }
+  .g-logo-big { font-size:42px; font-weight:900; letter-spacing:.01em; }
+  .g-logo-big span, .g-logo span { text-shadow:0 0 10px currentColor, 0 0 24px currentColor; }
+  .g-b { color:#4285F4; } .g-r { color:#EA4335; } .g-y { color:#FBBC05; } .g-g { color:#34A853; }
+  /* pilulka — zaoblený badge okolo hviezdičkového hodnotenia */
+  .g-pill {
+    display:inline-block; padding:7px 20px; border-radius:999px;
+    background:rgba(47,143,255,.14); border:1.5px solid rgba(120,190,255,.55);
+    box-shadow:0 0 16px rgba(47,143,255,.4), inset 0 0 12px rgba(47,143,255,.15);
+    font-size:17px; font-weight:800; color:#FFC93C;
+    text-shadow:0 0 10px rgba(255,201,60,.75), 0 0 22px rgba(255,201,60,.4);
+  }
+  .g-count-wrap { display:flex; flex-direction:column; align-items:center; }
+  .g-count-big {
+    font-size:58px; font-weight:900; line-height:1; color:#fff;
+    text-shadow:0 0 22px rgba(47,143,255,.9), 0 0 56px rgba(47,143,255,.6), 0 2px 10px rgba(0,0,0,.9);
+  }
+  .g-count-label {
+    margin-top:4px; font-size:12.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+    color:rgba(200,225,255,.8);
+  }
+
+
+  .spacer { flex:1; }
+
+  /* stmavené pozadie za otvoreným popupom — len mobil (v .pop-back{display:block}
+     v @media nižšie). z-index 19 = pod popupom (20), nad všetkým ostatným. */
+  .pop-back {
+    display:none; position:fixed; inset:0; z-index:19;
+    background:rgba(2,5,8,.72); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  body.has-pop .pop-back { opacity:1; pointer-events:auto; }
+
+  @media (max-width:1100px) { .side { display:none; } }
+
+  @media (max-width:700px) {
+    /* .hud prepnuté na position:fixed (bolo absolute voči .stage) — MUSÍ byť v
+       ROVNAKEJ stackovacej rovine ako .frm-l/.frm-r-* (tie sú tiež fixed nižšie),
+       inak z-index medzi nimi nie je vzájomne porovnateľný (fixed prvok mimo
+       .stage stacking kontextu vie prekryť aj vyšší z-index vnútri .stage) —
+       presne toto spôsobilo, že žltý/zelený peek pruh prekrýval NÁKLADNÉ/OSOBNÉ
+       tlačidlá na Matejovom screenshote. z-index:15 > .frm 5 → .hud teraz vyhráva. */
+    .hud { position:fixed !important; top:calc(var(--sy) + 80vh); gap:11px; z-index:15; }
+    .hud-q { font-size:19px; letter-spacing:.12em; padding:0 18px; }   /* ešte väčšie (Matej) */
+
+    /* .typ ZÚŽENÝ + overflow:hidden → bočné tlačidlá ukážu len malý okraj, NIE
+       celý text (Matej: „aby sa vedľajšie položky nezmestili napísané celé").
+       Aktívne tlačidlo VÝRAZNE zväčšené (predtým rovnaká veľkosť ako neaktívne,
+       len iná farba/opacity). */
+    /* Matej 2026-07-17 „oprav tlačítko": okolo OSOBNÉ svietil tvrdý žltý obdĺžnik a
+       susedné popisky boli seknuté uprostred písmen. Príčina = `overflow:hidden`
+       orezal drop-shadow žiaru aktívneho tlačidla (0 0 34px + 0 0 60px) presne na
+       hranu 270×64 boxu → z mäkkej žiary sa stal obdĺžnik.
+       Fix: box vyšší (64→112px), nech sa žiara zvisle zmestí, + mask na OBOCH osiach,
+       takže žiara aj susedné tlačidlá sa na krajoch rozplynú namiesto tvrdého rezu.
+       overflow:hidden MUSÍ ostať — mask sa bez neho `repeat`-uje a susedov vráti späť. */
+    .typ { width:min(72vw, 270px); height:112px; overflow:hidden;
+      -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%),
+                         linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%);
+              mask-image:linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%),
+                         linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%);
+      -webkit-mask-composite:source-in; mask-composite:intersect; }
+    .typ button { min-width:135px; padding:13px 18px 12px; }
+    .typ .lb { font-size:10.5px; letter-spacing:.06em; }
+    .typ button[data-rel="0"] { padding:22px 36px; }
+    .typ button[data-rel="0"] .lb { font-size:17px; }
+    .typ button[data-rel="-1"] { transform:translate(calc(-50% - 130px),-50%) perspective(90px) rotateX(-3.2deg) scale(.8); }
+    .typ button[data-rel="1"]  { transform:translate(calc(-50% + 130px),-50%) perspective(90px) rotateX(-3.2deg) scale(.8); }
+
+    /* biela šípka + text POD tlačidlom, ukazuje na žlté aktívne tlačidlo (Matej:
+       „bude biela šípka ukazovať na žlté tlačítko: klikni na výber") */
+    .typ-hint { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .typ-hint-arrow {
+      font-size:20px; line-height:1; color:#fff;
+      text-shadow:0 0 10px rgba(255,255,255,.9), 0 0 22px rgba(255,255,255,.5);
+      animation:hintBounce 1.4s ease-in-out infinite;
+    }
+    .typ-hint-text {
+      font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:#fff; text-shadow:0 0 8px rgba(255,255,255,.7), 0 1px 6px rgba(0,0,0,.9);
+    }
+    @keyframes hintBounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
+
+    /* ================= MOBILE PEEK-IN (Matej 2026-07-17) =================
+       Na mobile robí .stage cover-crop (min-width:177.78vh) scénu OMNOHO širšiu
+       než viewport → .frm-l/.frm-r-top/.frm-r-bot (percentá voči .stage) sedia
+       úplne MIMO viditeľnú x 37–63 % oblasť, teda sú neviditeľné. Riešenie:
+       na mobile prepnuté na position:fixed VOČI VIEWPORTU (nie voči .stage), takže
+       ich dá umiestniť priamo na skutočné okraje obrazovky, nezávisle od cropu.
+       V pokoji prečnieva len PEEK pruh, po klepnutí na šípku sa blok vysunie na
+       left/right:0. 3D náklon (transform:rotateY) na mobile VYPNUTÝ — pri fixed
+       pozícii a peek-in posune by len komplikoval, netreba ho tu. */
+    /* ================= ZOOM OUT CELEJ SCÉNY (Matej 2026-07-17) =================
+       „je treba urobiť zoom out aby bol vidno celý piedestál... horný a dolný okraj
+       ošetri overlayom aby nebolo vidno okraj obrázku"
+
+       Piedestál (vrátane žltého prstenca) zaberá v hala.png x 400–1220 z 1600 px
+       = 51 % šírky obrazu. Pri pôvodnom cover-cropе (stage 177.78vh) bolo na mobile
+       vidno len 100vw/177.78vh ≈ 32 % šírky obrazu → prstenec bol odseknutý.
+
+       Riešenie: stage prestane pokrývať obrazovku a dostane PEVNÉ 16:9 rozmery
+       širšie než viewport. Viditeľná časť obrazu = 100vw / --sw = 58 % → celý
+       piedestál sa zmestí. Cover na 16:9 boxe = presné sadnutie, takže sa zmenší
+       ÚMERNE VŠETKO (pozadie aj vozidlá) a kompozícia ostane presne ako na
+       desktope — žiadne dolaďovanie odrazu ako pri predošlom zoome popredia.
+       ⚠️ --sh MUSÍ ostať 16:9 k --sw: vozidlá majú x aj y v % zo stage, pri inom
+       pomere by auto odletelo z piedestálu. */
+    :root { --sw:172vw; --sh:96.75vw; }   /* 96.75 = 172 / 1.7778 */
+    .stage { width:var(--sw); height:var(--sh); min-width:0; min-height:0; }
+
+    /* Stage je nižšia než viewport → nad a pod ňou svieti čierne body pozadie a
+       vidno tvrdú hranu obrázka. Overlay ju rozpustí do #05080a. Stred (14–84 %)
+       ostáva úplne čistý — tam je stropné svetlo, vozidlo aj piedestál (ten končí
+       na 78 % výšky obrazu, takže sa ho spodný fade nedotkne).
+       z-index 4 = pod rámami (5) a HUD (15), nad vozidlom (auto) — v strede je
+       aj tak priehľadný. */
+    .stage::after {
+      content:''; position:absolute; inset:0; z-index:4; pointer-events:none;
+      background:linear-gradient(to bottom, #05080a 0%, rgba(5,8,10,0) 14%,
+                                            rgba(5,8,10,0) 84%, #05080a 100%);
+    }
+
+    /* ---- PEEK PRUHY + POPUP ----
+       Peek 24px → 13vw: pruh musí byť vidieť ako farebný okraj bloku, nie ako
+       nitka. Pravé bloky posunuté z `right` na `left:calc(100vw - peek)` — inak
+       by prechod do popupu menil `right`→`auto` a to sa NEDÁ animovať (skok).
+       Takto celý pohyb beží po jednej vlastnosti (left) a plynulo prejde. */
+    /* 🔑 --sx / --sy = ĽAVÝ HORNÝ ROH VIEWPORTU v súradniciach .stage.
+       `position:fixed` sa TU NEVIAŽE NA VIEWPORT: .stage má `transform` aj
+       `perspective` a obe robia z prvku containing block pre fixed potomkov
+       (odmerané: .frm-l s left:-266px reálne sedela na x=-405). Pôvodný komentár
+       „fixed voči viewportu" bol mylný — preto nebolo vidieť ani starý 24px peek.
+       Stage je centrovaná v oboch osiach, takže jej roh leží (--sw - 100vw)/2 vľavo
+       a (--sh - 100vh)/2 nad viewportom (--sy vyjde ZÁPORNÉ, stage je nižšia než
+       obrazovka — to je správne). Čokoľvek chceš mať na skutočnom okraji obrazovky,
+       pripočítaj --sx/--sy. */
+    :root {
+      --peek:min(8vw, 32px); --fw:min(82vw,320px);   /* Matej 2026-07-17: „bloky trochu viac schovaj" (13vw/54px → 8vw/32px) */
+      --sx:calc((var(--sw) - 100vw) / 2);
+      --sy:calc((var(--sh) - 100vh) / 2);
+    }
+    .frm-l, .frm-r-top, .frm-r-bot {
+      position:fixed !important; top:calc(var(--sy) + 14vh) !important; width:var(--fw) !important;
+      transform:none !important; cursor:pointer;
+      transition:left .38s cubic-bezier(.25,.8,.3,1), top .38s cubic-bezier(.25,.8,.3,1),
+                 width .38s cubic-bezier(.25,.8,.3,1), height .38s cubic-bezier(.25,.8,.3,1);
+    }
+    .frm-l     { left:calc(var(--sx) - (var(--fw) - var(--peek))) !important; height:60vh !important; }
+    .frm-r-top { left:calc(var(--sx) + 100vw - var(--peek)) !important; right:auto !important; height:26vh !important; }
+    .frm-r-bot { left:calc(var(--sx) + 100vw - var(--peek)) !important; right:auto !important;
+                 top:calc(var(--sy) + 42vh) !important; height:30vh !important; }
+
+    /* farebný nádych na trčiacej hrane — aby sa peek čítal ako pruh (Matejova fotka),
+       nie ako odseknutý obsah. Žiara rámu ostáva, toto len podfarbí trčiacu časť.
+       V popupe zhasne (obsah musí byť čitateľný). */
+    .frm-l::before, .frm-r-top::before, .frm-r-bot::before {
+      content:''; position:absolute; top:0; bottom:0; width:var(--peek); z-index:2;
+      pointer-events:none; transition:opacity .3s ease;
+    }
+    .frm-l::before     { right:0; background:linear-gradient(270deg,
+                          color-mix(in srgb, var(--c) 34%, transparent), transparent); }
+    .frm-r-top::before, .frm-r-bot::before { left:0; background:linear-gradient(90deg,
+                          color-mix(in srgb, var(--c) 34%, transparent), transparent); }
+    .frm.pop::before { opacity:0; }
+
+    /* v zasunutom stave obsah NEVIDNO — inak by z pruhu trčali odseknuté slabiky
+       („...cenl", pol hodín) a pruh by vyzeral ako rozbitý layout, nie ako okraj
+       bloku. Peek = čistá farebná hrana (Matejova fotka), obsah odhalí až popup. */
+    .frm:not(.pop) .frm-in { opacity:0; }
+    .frm .frm-in { transition:opacity .3s ease .06s; }
+
+    /* POPUP: blok sa vysunie na stred cez takmer celú šírku. z-index 20 > .hud 15,
+       inak by ho prekryli tlačidlá typu vozidla. Výšky per blok — ľavý má najviac
+       obsahu (logo/motto/marquee/hodiny/glóbus), pravé sú kratšie. */
+    .frm.pop { left:calc(var(--sx) + 6vw) !important; width:88vw !important; z-index:20 !important; }
+    .frm-l.pop     { top:calc(var(--sy) + 11vh) !important; height:72vh !important; }
+    .frm-r-top.pop { top:calc(var(--sy) + 20vh) !important; height:52vh !important; }
+    .frm-r-bot.pop { top:calc(var(--sy) + 23vh) !important; height:46vh !important; }
+
+    /* inset:0 by pokrylo len box .stage (je nižší než obrazovka) → pásy hore/dole
+       by ostali nestmavené. --sx/--sy = roh viewportu, takže toto sadne presne naň. */
+    .pop-back { display:block; inset:auto; top:var(--sy); left:var(--sx);
+                width:100vw; height:100vh; }
+
+    /* šípky v strede obrazovky — žltá ukazuje doprava (dovnútra, k žltému bloku),
+       zeleno-modrá doľava (k pravým blokom). Skryté na desktope nižšie. */
+    /* Matej 2026-07-17 „šipky daj pri bloky" — boli na `left:calc(50% - 50px)`, teda
+       uprostred scény priamo na aute (splývali s ním). Teraz sedia tesne vedľa
+       trčiaceho peek pruhu, každá zvisle v strede bloku, ktorý otvára:
+       žltá = stred ľavého bloku (14vh + 60vh/2 = 44vh), zelená = stred zeleného (27vh).
+       Modrý blok šípku nemá — otvára sa klepnutím priamo naň (nevymýšľam tretiu). */
+    /* Ikonkove cipy namiesto sipiek (Matej 2026-07-21): zlta info, zelena sprava
+       (neprecitana), modra hviezda recenzie. Kazdy otvara svoj bocny panel. */
+    .mobile-arrow {
+      position:fixed; z-index:16; cursor:pointer;
+      width:46px; height:46px; border-radius:999px; padding:0;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(8,14,20,.6); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+      border:1.5px solid currentColor; -webkit-appearance:none; appearance:none; outline:none;
+    }
+    .mobile-arrow svg { width:23px; height:23px; display:block; }
+    .mobile-arrow-unread { position:absolute; top:7px; right:7px; width:10px; height:10px;
+      border-radius:999px; background:#ff3b3b; box-shadow:0 0 8px rgba(255,59,59,.95);
+      border:1.6px solid rgba(8,14,20,.85); }
+    .mobile-arrow-l {   /* INFO — lavy panel (identita/info), zlta */
+      top:calc(var(--sy) + 44vh); transform:translateY(-50%);
+      left:calc(var(--sx) + var(--peek) + 6px); color:#FFE600;
+      box-shadow:0 0 13px rgba(255,230,0,.5), inset 0 0 10px rgba(255,230,0,.14);
+    }
+    /* translate(-100%) = ukotvenie PRAVOU hranou k pruhu (fixed je voci .stage, nie viewportu) */
+    .mobile-arrow-r {   /* SPRAVA/oznam (neprecitana) — zeleny panel */
+      top:calc(var(--sy) + 27vh); transform:translate(-100%,-50%);
+      left:calc(var(--sx) + 100vw - var(--peek) - 6px); right:auto; color:#38E04A;
+      box-shadow:0 0 13px rgba(56,224,74,.5), inset 0 0 10px rgba(56,224,74,.14);
+    }
+    .mobile-arrow-b {   /* RECENZIE (hviezda) — modry panel */
+      top:calc(var(--sy) + 57vh); transform:translate(-100%,-50%);
+      left:calc(var(--sx) + 100vw - var(--peek) - 6px); right:auto; color:#5aa9ff;
+      box-shadow:0 0 13px rgba(66,133,244,.5), inset 0 0 10px rgba(66,133,244,.16);
+    }
+
+    /* animovaná scroll ikonka v hornom svetle (Matej: „pridať animovanú ikonku
+       v hornom svetle na scroll") */
+    .scroll-hint {
+      position:fixed; left:50%; top:6%; transform:translateX(-50%); z-index:16;
+      font-size:22px; color:#fff;
+      text-shadow:0 0 12px rgba(255,255,255,.9), 0 0 26px rgba(255,255,255,.5);
+      animation:hintBounce 1.4s ease-in-out infinite;
+      pointer-events:none;
+    }
+  }
+  @media (min-width:701px) { .typ-hint, .scroll-hint { display:none; } }
+  @media (min-width:701px) { .mobile-arrow { display:none; } }
+</style>
+
+<!-- ===== MOBILE: horné logo + hamburger, väčší výber vozidla (Matej 2026-07-21) =====
+     Izolovaný blok — desktop necháva nedotknutý (.m-top/.m-menu/.typ-arrow display:none). -->
+<style>
+  .m-top, .m-menu, .typ-arrow, .m-status { display:none; }
+  .typ-wrap { display:flex; align-items:center; justify-content:center; }
+  /* modry ramik: "+" tlacidlo vedla hviezdiciek -> pridat Google recenziu (Matej 2026-07-21) */
+  .g-rate-row { display:flex; align-items:center; justify-content:center; gap:10px; }
+  .g-add {
+    display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+    width:34px; height:34px; border-radius:999px; padding-bottom:2px;
+    font-size:26px; font-weight:400; line-height:1; text-decoration:none; cursor:pointer;
+    color:#fff; background:rgba(47,143,255,.16);
+    border:1.5px solid rgba(120,190,255,.6);
+    box-shadow:0 0 16px rgba(47,143,255,.45), inset 0 0 10px rgba(47,143,255,.18);
+    text-shadow:0 0 10px rgba(120,190,255,.8);
+    transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .g-add:hover { transform:scale(1.12); background:rgba(47,143,255,.3); box-shadow:0 0 22px rgba(47,143,255,.7); }
+
+  @media (max-width:700px) {
+    /* --- horné centrované logo + hamburger pod ním --- */
+    .m-top {
+      display:flex; flex-direction:column; align-items:center; gap:9px;
+      position:fixed; top:50px; left:50%; transform:translateX(-50%); z-index:30;
+    }
+    .m-logo { height:64px; width:auto; display:block; filter:url(#logoGlow); }
+    /* rotujuce info medzi logom a hamburgerom */
+    .m-ticker { min-height:15px; display:flex; align-items:center; justify-content:center; }
+    .m-ticker-txt {
+      font-family:var(--font-head); font-size:11.5px; font-weight:700;
+      letter-spacing:.08em; text-transform:uppercase; line-height:1.2;
+      text-align:center; color:#eaf2f7; transition:opacity .3s ease;
+    }
+    .m-ticker-txt.free { color:#38E04A; text-shadow:0 0 10px rgba(56,224,74,.55); }
+
+    /* cerveny stavovy riadok nad logom — rotujuce zakladne info v nekonecnej slucke */
+    .m-status {
+      display:flex; align-items:center; overflow:hidden;
+      position:fixed; top:0; left:0; width:100vw; height:29px; z-index:31;
+      background:linear-gradient(90deg,#b81818,#e23a3a,#b81818);
+      box-shadow:0 2px 14px rgba(210,40,40,.45);
+    }
+    .m-status-track { display:inline-flex; white-space:nowrap; will-change:transform;
+      animation:statusScroll 24s linear infinite; }
+    .m-status-item { display:inline-flex; align-items:center; gap:9px; padding:0 20px;
+      font-family:var(--font-head); font-size:12px; font-weight:700; letter-spacing:.07em;
+      text-transform:uppercase; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,.35); }
+    .m-status-item::before { content:"•"; color:rgba(255,255,255,.65); font-size:14px; }
+    @keyframes statusScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .m-burger {
+      display:flex; flex-direction:column; justify-content:center; gap:4px;
+      width:40px; height:31px; padding:6px 8px; cursor:pointer;
+      background:rgba(8,14,20,.55); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+      border:1px solid rgba(120,200,255,.30); border-radius:9px;
+      -webkit-appearance:none; appearance:none;
+    }
+    .m-burger span { display:block; height:2.5px; width:100%; border-radius:2px;
+      background:#eaf2f7; transition:transform .28s ease, opacity .2s ease; }
+    .m-burger.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
+    .m-burger.open span:nth-child(2) { opacity:0; }
+    .m-burger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
+
+    .m-menu {
+      display:flex; flex-direction:column; gap:8px;
+      position:fixed; top:176px; left:50%; z-index:29; width:min(74vw,300px);
+      padding:12px; border-radius:14px;
+      background:rgba(8,14,20,.93); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+      border:1px solid rgba(120,200,255,.28); box-shadow:0 12px 40px rgba(0,0,0,.6);
+      opacity:0; pointer-events:none;
+      transform:translateX(-50%) translateY(-8px);
+      transition:opacity .26s ease, transform .26s ease;
+    }
+    .m-menu.open { opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
+    .m-menu button {
+      all:unset; cursor:pointer; text-align:center; padding:12px; border-radius:9px;
+      font-family:var(--font-head); font-size:15px; font-weight:700; letter-spacing:.06em;
+      text-transform:uppercase; color:#eaf2f7; background:rgba(255,255,255,.05);
+      border:1px solid rgba(120,200,255,.16);
+    }
+    .m-menu button:active { background:rgba(120,200,255,.14); }
+
+    /* pri otvorenom bocnom paneli (has-pop) ide logo+ticker+menu ZA popup,
+       aby ho neprekryval (Matej 2026-07-21). z-index:-1 = pod .stage (transform). */
+    body.has-pop .m-top, body.has-pop .m-menu, body.has-pop .m-status { z-index:-1; pointer-events:none; }
+
+    /* zeleny popup: promo obsah roztiahnut na celu plochu ramu + citatelnejsie (Matej 2026-07-21) */
+    .frm-r-top.pop .promo-col-left { display:flex; height:100%; }
+    .frm-r-top.pop .promo-carousel { height:100%; }
+    .frm-r-top.pop .promo { height:100%; }
+    .frm-r-top.pop .promo-slide { height:100%; display:flex; flex-direction:column;
+      justify-content:space-evenly; align-items:center; padding:6% 0; }
+    .frm-r-top.pop .promo-icon { width:58px; height:58px; margin:0; }
+    .frm-r-top.pop .promo .kick { font-size:12px; letter-spacing:.26em; margin:0; }
+    .frm-r-top.pop .promo .big { font-size:29px; line-height:1.15; }
+    .frm-r-top.pop .promo .sub { font-size:14px; line-height:1.5; margin:0; }
+    .frm-r-top.pop .promo-dots { margin:0; }
+    .frm-r-top.pop .promo-dots i { width:22px; height:3px; }
+
+    /* peek glow (::before) ma hranaty vrch/spodok co vytrca nad/pod skoseny roh
+       oktagonu (Matej: overlay vytrcal mimo z vonkajsej strany). Fade vrch/spodok
+       tak, aby glow sedel len na ROVNEJ casti lavej hrany ramu. Ramiky ostavaju! */
+    .frm-l:not(.pop)::before, .frm-r-top:not(.pop)::before, .frm-r-bot:not(.pop)::before {
+      -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+              mask-image:linear-gradient(180deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    }
+
+    /* --- zelený rámik: nav tlačidlá preč (žijú v hamburgeri), promo na plnú šírku --- */
+    .promo-nav { display:none; }
+    .frm-in-promo { flex-direction:column; gap:0; }
+    .promo-col-left { flex:1 1 100%; width:100%; }
+
+    /* --- žlté tlačidlo výberu: väčšie písmo --- */
+    .typ button[data-rel="0"] .lb { font-size:21px; }
+
+    /* --- veľké bočné šípky pri žltom tlačidle (napojené na go(±1)) --- */
+    .typ-arrow {
+      display:block; -webkit-appearance:none; appearance:none;
+      background:none; border:none; cursor:pointer; padding:0; margin:0 -6px; z-index:16;
+      font-size:48px; line-height:1; color:#FFE600;
+      text-shadow:0 0 14px rgba(255,230,0,.9), 0 0 30px rgba(255,230,0,.5);
+    }
+    .typ-arrow-l { animation:arrowNudgeL 1.5s ease-in-out infinite; }
+    .typ-arrow-r { animation:arrowNudgeR 1.5s ease-in-out infinite; }
+    @keyframes arrowNudgeL { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-4px)} }
+    @keyframes arrowNudgeR { 0%,100%{transform:translateX(0)} 50%{transform:translateX(4px)} }
+
+    /* --- hint pod tlačidlom: „Vyber si vozidlo" + „Klikni pre výber" --- */
+    .typ-hint-pick {
+      font-family:var(--font-head);
+      font-size:13px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+      color:#fff; text-shadow:0 0 8px rgba(255,255,255,.7), 0 1px 6px rgba(0,0,0,.9);
+      display:flex; align-items:center; gap:8px;
+    }
+    .typ-hint-pick .thp-a { color:#FFE600; font-size:17px; text-shadow:0 0 10px rgba(255,230,0,.85); }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOBILE hlavicka: logo + hamburger (len mobile, mimo .stage → fixed voci viewportu) -->
+<!-- MOBILE cerveny stavovy riadok (nad logom): rotujuce zakladne info v slucke -->
+<div class="m-status" id="mStatus" aria-live="polite"><div class="m-status-track" id="mStatusTrack"></div></div>
+<div class="m-top" id="mTop">
+  <img class="m-logo" src="assets/logo-outline.svg" alt="Easy Check STK">
+  <button class="m-burger" id="mBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</div>
+<nav class="m-menu" id="mMenu" aria-label="Hlavne menu">
+  <button>Služby</button>
+  <button>Cenník</button>
+  <button>Info</button>
+  <button>Kontakt</button>
+  <button>Blog</button>
+</nav>
+
+<!-- Filter pre žiaru loga: feGaussianBlur rozmaže SourceGraphic a zachová jeho farby.
+     drop-shadow() by svietil len jednou farbou (preto bolo logo biele). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="logoGlow" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="3"  result="g1"/>
+    <feGaussianBlur in="SourceGraphic" stdDeviation="9"  result="g2"/>
+    <feMerge>
+      <feMergeNode in="g2"/><feMergeNode in="g2"/>
+      <feMergeNode in="g1"/><feMergeNode in="g1"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs></svg>
+<div class="viewport" id="viewport">
+  <div class="stage" id="stage">
+    <div class="beam" id="beam"></div>
+    <div class="glow"></div>
+    <div class="reflect idle" id="ref">
+      <div class="rinner"><img id="rimg" src="assets/beetle-scene-reflect.png" alt=""></div>
+    </div>
+    <div class="vehicle idle" id="veh">
+      <div class="inner"><img id="img" src="assets/beetle-scene.png" alt=""></div>
+    </div>
+    <div class="flash" id="flash"></div>
+
+
+    <!-- ĽAVO: identita -->
+    <aside class="side side-l">
+      <div class="hstack">
+        <div class="hblk logo-blk" style="--ry:9deg; --rx:2.5deg; --w:100%">
+          <img class="logo-in" src="assets/logo-outline.svg" alt="Easy Check STK">
+        </div>
+        <div class="hblk" style="--ry:13deg; --rx:1.4deg; --w:97%">
+          <div class="motto">Transformujeme nepríjemnú STK<br><b>na príjemný zážitok</b></div>
+        </div>
+        <div class="hblk" style="--ry:16deg; --rx:0deg; --w:100%">
+          <div class="sec-t">Kontroly</div>
+          <div class="svc"><span class="c-stk">STK</span><span class="c-ek">EK</span>
+            <span class="c-ko">KO</span><span class="c-tacho">TACHO</span></div>
+          <div class="svc svc-2"><span class="c-adr">ADR</span><span class="c-cemt">CEMT</span></div>
+        </div>
+        <div class="hblk" style="--ry:18deg; --rx:-1.4deg; --w:88%">
+          <div class="sec-t">Otvorené</div>
+          <div class="info">
+            Po–Pia <span class="hi">07:00–19:00</span><br>
+            Sobota <span class="hi">07:00–13:00</span> · aj sviatky
+          </div>
+        </div>
+        <div class="hblk tel-blk" style="--ry:21deg; --rx:-2.5deg; --w:74%">
+          <a class="tel" href="tel:033202021">033 20 20 211</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- PRAVO: staré plávajúce rozloženie mŕtve (.side{display:none}), #promo
+         presunuté do .frm-r-top nižšie a naďalej ho renderuje ten istý JS. -->
+    <aside class="side side-r">
+      <div class="spacer"></div>
+      <div class="spacer"></div>
+    </aside>
+
+    <!-- HOLO RÁMY — zatiaľ prázdne, obsah príde ďalej.
+         Osemuholník = VŠETKY 4 rohy skosené. Body x=4.7 / y=2.9 nie sú od oka:
+         viewBox 0..100 sa cez preserveAspectRatio="none" roztiahne na 384×621 px,
+         takže rovnaké čísla by dali hore krátky a po bokoch dlhý skos.
+         4.7 a 2.9 = rovnakých 18 px na oboch osiach. -->
+    <div class="frm frm-l"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+      <rect x="0" y="0" width="100" height="100" rx="4.7" ry="2.9"/></svg>
+      <div class="frm-in">
+        <img class="logo-in" src="assets/logo-outline.svg" alt="Easy Check STK">
+        <div class="sf sf-motto">
+          <div class="motto" id="motto"></div>
+        </div>
+        <div class="sf-plain">
+          <div class="sec-t">Kontroly</div>
+          <div class="mq"><div class="mq-in"><div class="svc"><span class="c-stk">STK</span><span class="c-ek">EK</span><span class="c-ko">KO</span><span class="c-tacho">TACHO</span><span class="c-adr">ADR</span><span class="c-cemt">CEMT</span></div><div class="svc"><span class="c-stk">STK</span><span class="c-ek">EK</span><span class="c-ko">KO</span><span class="c-tacho">TACHO</span><span class="c-adr">ADR</span><span class="c-cemt">CEMT</span></div></div></div>
+          <div class="mq mq2"><div class="mq-in mq-rev" style="--mqd:16s"><div class="svc"><span class="c-blue2">Prehlásenie vozidiel</span><span class="c-turq">Razenie VIN</span><span class="c-brown">Evidencia vozidiel</span></div><div class="svc"><span class="c-blue2">Prehlásenie vozidiel</span><span class="c-turq">Razenie VIN</span><span class="c-brown">Evidencia vozidiel</span></div></div></div>
+        </div>
+        <div class="frm-row">
+          <div class="sf sf-open">
+            <div class="sec-t">Otvorené</div>
+            <div class="info">
+              Po–Pia<br><span class="hi">07:00–19:00</span><br>
+              Sobota<br><span class="hi">07:00–13:00</span><br>
+              aj sviatky
+            </div>
+          </div>
+          <!-- BEZ triedy "sf" — glóbus nemá dostať SVG obrys (Matej: preč rámik).
+               Šírku/flex v .frm-row zdedí cez vlastné pravidlo .sf-globe nižšie. -->
+          <div class="sf-globe">
+            <div class="globe-wrap">
+              <div class="globe-glow"></div>
+              <div class="globe-tilt"><div class="globe">
+                <i class="mer"></i><i class="mer"></i><i class="mer"></i><i class="mer"></i>
+                <i class="mer"></i><i class="mer"></i><i class="mer"></i>
+                <i class="lat eq" style="--dy:0%;    --s:1"></i>
+                <i class="lat"    style="--dy:21.13%; --s:.906"></i>
+                <i class="lat"    style="--dy:-21.13%;--s:.906"></i>
+                <i class="lat"    style="--dy:38.30%; --s:.643"></i>
+                <i class="lat"    style="--dy:-38.30%;--s:.643"></i>
+                <i class="lat"    style="--dy:48.30%; --s:.259"></i>
+                <i class="lat"    style="--dy:-48.30%;--s:.259"></i>
+              </div></div>
+              <i class="dot" style="--dx:6%;  --dy:10%; --dd:.2s"></i>
+              <i class="dot" style="--dx:92%; --dy:16%; --dd:1.4s"></i>
+              <i class="dot" style="--dx:10%; --dy:86%; --dd:.8s"></i>
+              <i class="dot" style="--dx:90%; --dy:78%; --dd:2.1s"></i>
+              <i class="dot" style="--dx:50%; --dy:4%;  --dd:1.7s"></i>
+            </div>
+            <div class="addr">Technická ul.<br><b>Trnava</b></div>
+          </div>
+        </div>
+        <div class="sf sf-tel">
+          <a class="tel" href="tel:033202021">033 20 20 211</a>
+        </div>
+      </div>
+    </div>
+    <!-- Pravý blok ROZDELENÝ na dva rámy (Matej 2026-07-17): horný zelený = rotujúce
+         akcie/oznamy (recyklovaný #promo systém nižšie v JS), dolný modrý = statické
+         Google recenzie. Skos y-offset PREPOČÍTANÝ pre každú výšku zvlášť (18px skos
+         pri inej výške rámu = iný pomer, viď komentár pri .frm-l vyššie). -->
+    <div class="frm frm-r-top"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+      <rect x="0" y="0" width="100" height="100" rx="4.2" ry="6.7"/></svg>
+      <div class="frm-in frm-in-promo">
+        <div class="promo-col-left">
+          <div class="promo-carousel">
+            <button class="promo-arrow promo-prev" id="promoPrev" aria-label="Predchádzajúca">‹</button>
+            <div class="promo" id="promo"></div>
+            <button class="promo-arrow promo-next" id="promoNext" aria-label="Ďalšia">›</button>
+          </div>
+        </div>
+        <nav class="promo-nav promo-col-right">
+          <button class="sf promo-navbtn"><span>Služby</span></button>
+          <button class="sf promo-navbtn"><span>Cenník</span></button>
+          <button class="sf promo-navbtn"><span>Info</span></button>
+          <button class="sf promo-navbtn"><span>Kontakt</span></button>
+          <button class="sf promo-navbtn"><span>Blog</span></button>
+        </nav>
+      </div>
+    </div>
+    <div class="frm frm-r-bot"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+      <rect x="0" y="0" width="100" height="100" rx="4.7" ry="6.2"/></svg>
+      <div class="frm-in frm-in-google">
+        <div class="g-head">Najlepšie hodnotená STK<br>na Slovensku.</div>
+        <div class="g-logo-big"><span class="g-b">G</span><span class="g-r">o</span><span class="g-y">o</span><span class="g-b">g</span><span class="g-g">l</span><span class="g-r">e</span></div>
+        <div class="g-rate-row">
+          <div class="g-pill">4,9 ★★★★★</div>
+          <a class="g-add" href="https://g.page/r/CRQ38XDxcj8CEBM/review" target="_blank" rel="noopener noreferrer" aria-label="Pridať recenziu na Google" title="Pridať recenziu na Google">+</a>
+        </div>
+        <!-- presný počet od Mateja (2026-07-17), NIE zaokrúhlené Google "5,7 tis." -->
+        <div class="g-count-wrap">
+          <div class="g-count-big">5708</div>
+          <div class="g-count-label">recenzií</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- stmavenie za popupom (len mobil) -->
+    <div class="pop-back" id="popBack"></div>
+
+    <!-- mobile šípky (skryté na desktope cez @media min-width:701px) — otvárajú
+         ten istý popup ako klik na trčiaci peek pruh -->
+    <button class="mobile-arrow mobile-arrow-l" id="mobileArrowL" aria-label="Info o stanici">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.3"/><line x1="12" y1="11" x2="12" y2="16.4"/><circle cx="12" cy="7.7" r="1.05" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <button class="mobile-arrow mobile-arrow-r" id="mobileArrowR" aria-label="Oznamy a akcie">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.6A2.6 2.6 0 0 1 6.6 4h10.8A2.6 2.6 0 0 1 20 6.6v6.9A2.6 2.6 0 0 1 17.4 16H9.2L5 19.6V6.6Z"/></svg>
+      <span class="mobile-arrow-unread"></span>
+    </button>
+    <button class="mobile-arrow mobile-arrow-b" id="mobileArrowB" aria-label="Google recenzie">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"><path d="M12 3.6l2.55 5.17 5.7.83-4.13 4.02.98 5.68L12 16.62l-5.08 2.68.98-5.68L3.75 9.6l5.7-.83L12 3.6Z"/></svg>
+    </button>
+
+    <div class="hud">
+      <div class="hud-q">ONLINE OBJEDNÁVKA</div>
+      <div class="typ-wrap">
+        <button class="typ-arrow typ-arrow-l" id="typArrowL" aria-label="Predchadzajuce vozidlo">&#8249;</button>
+        <div class="typ" id="typ"></div>
+        <button class="typ-arrow typ-arrow-r" id="typArrowR" aria-label="Dalsie vozidlo">&#8250;</button>
+      </div>
+      <!-- biela šípka + text, len mobile, ukazuje na aktívne (žlté) tlačidlo -->
+      <div class="typ-hint">
+        <div class="typ-hint-arrow">▲</div>
+        <div class="typ-hint-pick"><span class="thp-a">‹</span> Vyber si vozidlo <span class="thp-a">›</span></div>
+        <div class="typ-hint-text">Klikni pre výber</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ---- rotujúce akcie (obsah doladíme, teraz ide o dizajn) ----
+// "Hodnotenie" vyradené (2026-07-17) — teraz 1:1 duplicita so statickým modrým
+// Google blokom (.frm-r-bot), ktorý to rieši natrvalo bez rotácie.
+// Ikonky = vlastné inline SVG (stroke="currentColor", žiadny externý asset) —
+// farbu aj žiaru dedia z .promo-icon (CSS), rovnaký jazyk ako zvyšok hologramu.
+const ICONS = {
+  discount: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.3"/><circle cx="8.7" cy="8.7" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.3" cy="15.3" r="1.4" fill="currentColor" stroke="none"/><line x1="7" y1="17" x2="17" y2="7"/></svg>`,
+  wheel: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>`,
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12.3 15.8,14.3"/></svg>`,
+  repeat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 1 12.6-5.5"/><polyline points="17.5 3 17.5 6.8 13.7 6.8"/><path d="M19.5 12a7.5 7.5 0 0 1-12.6 5.5"/><polyline points="6.5 21 6.5 17.2 10.3 17.2"/></svg>`,
+  doc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h8l4 4v14h-12z"/><path d="M14.5 3v4h4"/><path d="M8.7 16.3c1-1.2 1.9-1.2 2.8 0s1.8 1.2 2.8 0"/></svg>`,
+};
+const PROMOS = [
+  { icon:'discount', k:'Akcia',    b:'Opakovaná kontrola<br>za 5 €',      s:'Neprešli ste? Nevadí! Doplatíte symbolicky.' },
+  { icon:'wheel',    k:'Koleso šťastia', b:'Každý zákazník<br>vyhráva.',  s:'Vytočte si STK ZDARMA' },
+  { icon:'clock',    k:'Termín',   b:'Termín do<br>24 hodín',             s:'U nás nečakáte.' },
+  { icon:'repeat',   k:'Pick-up',  b:'Výzdvih vozidla',                   s:'Po vozidlo prídeme, skontrolujeme a vrátime' },
+  { icon:'doc',      k:'Na kľúč',  b:'Prihlásenie vozidla<br>bez vás',    s:'Úrady, polícia, pošta — zdarma.' },
+];
+const promoEl = document.getElementById('promo');
+let pi = 0;
+const renderPromo = () => {
+  const P = PROMOS[pi];
+  promoEl.innerHTML =
+    `<div class="promo-slide">
+       <div class="promo-icon">${ICONS[P.icon]}</div>
+       <div class="kick">${P.k}</div>
+       <div class="big">${P.b}</div>
+       <div class="sub">${P.s}</div>
+       <div class="promo-dots">${PROMOS.map((_,i)=>`<i class="${i===pi?'on':''}"></i>`).join('')}</div>
+     </div>`;
+};
+renderPromo();
+// autoplay + ručné šípky zdieľajú JEDEN goto() — klik na šípku len posunie pi
+// mimo poradia, časovač beží ďalej nezávisle (jednoduchšie, prototyp).
+const gotoPromo = dir => { pi = (pi + dir + PROMOS.length) % PROMOS.length; renderPromo(); };
+document.getElementById('promoPrev').addEventListener('click', () => gotoPromo(-1));
+document.getElementById('promoNext').addEventListener('click', () => gotoPromo(1));
+setInterval(() => gotoPromo(1), 6000);
+
+const ORDER = ['beetle', 'truck', 'moto'];
+const TYPES = ['Osobné', 'Nákladné', 'Motorka'];
+let idx = 0, busy = false;
+
+const veh = document.getElementById('veh'), img = document.getElementById('img');
+const ref = document.getElementById('ref'), rimg = document.getElementById('rimg');
+const flash = document.getElementById('flash'), beam = document.getElementById('beam');
+const viewport = document.getElementById('viewport'), typEl = document.getElementById('typ');
+
+/* ---- OBRYSY POD-RÁMIKOV ----
+   viewBox nastavím na SKUTOČNÉ px rozmery prvku → mapovanie 1:1, žiadna deformácia
+   a rádius je všade rovnakých RAD px, nech má pod-rámik akúkoľvek proporciu.
+   Práve preto tu stačí jedno rx — na rozdiel od veľkých rámov, ktoré majú
+   viewBox 0..100 a musia deformáciu kompenzovať rozdielnym rx/ry.
+   Tvar zladený so smerom SOFT SLAB (brand-manual/smery-v1.html v5, radius 16 px). */
+const RAD = 16;
+function buildSf(el) {
+  const w = el.clientWidth, h = el.clientHeight;
+  if (!w || !h) return;
+  let svg = el.querySelector(':scope > svg.sfb');
+  if (!svg) {
+    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.classList.add('sfb');
+    svg.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'rect'));
+    el.prepend(svg);
+  }
+  const r = Math.min(RAD, w / 2, h / 2);
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.setAttribute('preserveAspectRatio', 'none');
+  const rc = svg.querySelector('rect');
+  rc.setAttribute('x', 0); rc.setAttribute('y', 0);
+  rc.setAttribute('width', w); rc.setAttribute('height', h);
+  rc.setAttribute('rx', r); rc.setAttribute('ry', r);
+}
+const sfAll = () => document.querySelectorAll('.sf');
+sfAll().forEach(buildSf);
+/* rozmery sa menia s viewportom (všetko je v %) → prestavať pri resize */
+new ResizeObserver(es => es.forEach(e => buildSf(e.target))).observe(document.body);
+addEventListener('resize', () => sfAll().forEach(buildSf));
+document.fonts && document.fonts.ready.then(() => sfAll().forEach(buildSf));
+
+/* ---- GLÓBUS: poludníky rovnomerne okolo osi Y ---- */
+/* selektor ZÁMERNE len .mer — '.globe i' by chytilo aj .lat rovnobežky
+   a rozhodilo by im rotateY, ktoré nesmú mať (sú rotačne symetrické okolo Y). */
+document.querySelectorAll('.globe .mer').forEach((m, i, arr) => {
+  m.style.transform = `rotateY(${(180 / arr.length) * i}deg)`;
+});
+
+/* ---- MOTTO: TITULKY — jeden riadok naraz, riadky idú za sebou ----
+   3 farebné časti tej istej vety = 3 samostatné "titulky". showLine() zobrazí
+   aktuálny riadok a naplánuje hideLine(); hideLine() ho stiahne (fade) a naplánuje
+   ďalší showLine() — buď rýchlo (FADE, medzi riadkami v tom istom kole), alebo
+   po GAP (keď sa kolo práve zavŕšilo na 3. riadku, wrap späť na 0). */
+const LINES = [
+  { t:'Transformujeme',        c:'mw-w' },
+  { t:'nepríjemnú STK',        c:'mw-r' },
+  { t:'na príjemný zážitok',   c:'mw-g' },
+];
+const mottoEl = document.getElementById('motto');
+const LINE_FADE = 250;  // ms crossfade (= .motto transition)
+const LINE_HOLD = 750;  // ms plne viditeľný riadok → 3 × (FADE+HOLD) ≈ 3000ms čítanie
+const LINE_GAP  = 500;  // ms prázdno pred novým kolom („o polsekundy navyše")
+let li = 0;
+function showLine() {
+  mottoEl.textContent = LINES[li].t;
+  mottoEl.className = 'motto ' + LINES[li].c;
+  mottoEl.style.opacity = '1';
+  li = (li + 1) % LINES.length;
+  setTimeout(hideLine, LINE_HOLD);
+}
+function hideLine() {
+  mottoEl.style.opacity = '0';
+  setTimeout(showLine, li === 0 ? LINE_GAP : LINE_FADE);
+}
+setTimeout(showLine, LINE_GAP);
+
+ORDER.forEach(k => ['-scene','-scene-reflect'].forEach(s => { const i = new Image(); i.src = `assets/${k}${s}.png`; }));
+
+TYPES.forEach((t,i) => {
+  const b = document.createElement('button');
+  b.className = 'sf';
+  b.innerHTML = `<span class="lb">${t}</span>`;
+  b.onclick = () => runTo(i);
+  typEl.appendChild(b);
+  // sfAll().forEach(buildSf) už PREBEHLO vyššie v skripte (tieto tlačidlá vtedy
+  // ešte neexistovali) → postaviť obrys HNEĎ, nespoliehať na ResizeObserver/fonts.ready.
+  buildSf(b);
+});
+
+const paint = () => [...typEl.children].forEach((b,i) => {
+  const n = ((i - idx) % TYPES.length + TYPES.length) % TYPES.length;
+  b.dataset.rel = n === TYPES.length - 1 ? -1 : n;
+});
+
+const apply = i => {
+  const k = ORDER[i];
+  img.src  = `assets/${k}-scene.png`;
+  rimg.src = `assets/${k}-scene-reflect.png`;
+  veh.className = 'vehicle ' + k + ' idle';
+  ref.className = 'reflect ' + k + ' idle';
+};
+apply(idx); paint();
+
+function runTo(next) {
+  if (busy || next === idx) return;
+  busy = true;
+  veh.classList.remove('idle'); ref.classList.remove('idle');
+  veh.classList.add('out');     ref.classList.add('out');
+
+  setTimeout(() => { flash.classList.add('fire'); beam.classList.add('fire'); }, 240);
+  setTimeout(() => {
+    idx = next; apply(idx);
+    veh.classList.add('in'); ref.classList.add('in');
+    paint();
+  }, 420);
+  setTimeout(() => {
+    veh.classList.remove('in','out'); ref.classList.remove('in','out');
+    veh.classList.add('idle'); ref.classList.add('idle');
+    flash.classList.remove('fire'); beam.classList.remove('fire');
+    busy = false;
+  }, 960);
+}
+const go = dir => runTo((idx + dir + ORDER.length) % ORDER.length);
+
+/* ---- MOBILE peek-in šípky: klik vysunie blok, klik na blok mimo interaktívnych
+   prvkov ho zase schová (Matej: „kliknutím hocikde okrem čísla sa človek vráti").
+   Ľavý blok = výnimka `.tel` (telefónne číslo musí ostať klikateľné), pravý blok =
+   výnimka nav tlačidlá/šípky karuselu (tie musia ostať funkčné). */
+const isMobile = () => matchMedia('(max-width:700px)').matches;
+const FRAMES = ['.frm-l', '.frm-r-top', '.frm-r-bot'].map(s => document.querySelector(s));
+const popBack = document.getElementById('popBack');
+
+const closePop = () => {
+  FRAMES.forEach(el => el.classList.remove('pop'));
+  document.body.classList.remove('has-pop');
+};
+const openPop = el => {
+  if (!isMobile()) return;
+  closePop();                       // naraz len jeden otvorený
+  el.classList.add('pop');
+  document.body.classList.add('has-pop');
+};
+
+/* Klik na trčiaci pruh = otvor popup. Klik na otvorený blok = zavri, OKREM
+   interaktívnych prvkov vnútri (telefón musí ostať volateľný, nav tlačidlá a
+   šípky karuselu funkčné). */
+FRAMES.forEach(el => el.addEventListener('click', e => {
+  if (!isMobile()) return;
+  if (!el.classList.contains('pop')) { openPop(el); return; }
+  if (e.target.closest('.tel, .promo-navbtn, .promo-arrow')) return;
+  closePop();
+}));
+popBack.addEventListener('click', closePop);
+document.getElementById('mobileArrowL').onclick = () => openPop(FRAMES[0]);
+document.getElementById('mobileArrowR').onclick = () => openPop(FRAMES[1]);
+const _mab = document.getElementById('mobileArrowB'); if (_mab) _mab.onclick = () => openPop(FRAMES[2]);
+
+addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+});
+
+let sx = null, sy = null;
+/* pri otvorenom popupe swipe NEPREPÍNA vozidlo — stmavené pozadie je vnútri
+   .viewport, takže ťah po ňom by inak prebublal až sem a menil auto za chrbtom. */
+const start = e => {
+  if (document.body.classList.contains('has-pop')) { sx = sy = null; return; }
+  const p = e.touches ? e.touches[0] : e; sx = p.clientX; sy = p.clientY;
+};
+const end = e => {
+  if (sx === null) return;
+  const p = e.changedTouches ? e.changedTouches[0] : e;
+  const dx = p.clientX - sx, dy = p.clientY - sy;
+  if (Math.abs(dx) > 45 || Math.abs(dy) > 45) go((Math.abs(dx) > Math.abs(dy) ? dx : dy) < 0 ? 1 : -1);
+  sx = sy = null;
+};
+viewport.addEventListener('mousedown', start);
+viewport.addEventListener('mouseup', end);
+viewport.addEventListener('touchstart', start, {passive:true});
+viewport.addEventListener('touchend', end);
+
+let wl = 0;
+viewport.addEventListener('wheel', e => {
+  e.preventDefault();
+  const now = Date.now();
+  if (now - wl < 700) return;
+  if (Math.abs(e.deltaY) > 12) { wl = now; go(e.deltaY > 0 ? 1 : -1); }
+}, {passive:false});
+
+/* ---- MOBILE hamburger + bocne sipky vyberu vozidla (Matej 2026-07-21) ---- */
+const mBurger = document.getElementById("mBurger"), mMenu = document.getElementById("mMenu");
+if (mBurger) {
+  mBurger.addEventListener("click", () => {
+    const open = mBurger.classList.toggle("open");
+    mMenu.classList.toggle("open", open);
+    mBurger.setAttribute("aria-expanded", open);
+  });
+  mMenu.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    mBurger.classList.remove("open"); mMenu.classList.remove("open");
+    mBurger.setAttribute("aria-expanded", false);
+  }));
+}
+const typArrowL = document.getElementById("typArrowL"), typArrowR = document.getElementById("typArrowR");
+if (typArrowL) typArrowL.addEventListener("click", () => go(-1));
+if (typArrowR) typArrowR.addEventListener("click", () => go(1));
+
+/* cerveny stavovy riadok (nad logom): rotujuce zakladne info v nekonecnej slucke.
+   "Volne terminy ihned" len v pracovne dni (v nedelu getDay()===0 vypadne). */
+const mStatusTrack = document.getElementById("mStatusTrack");
+if (mStatusTrack) {
+  const workingDay = new Date().getDay() !== 0;
+  const INFO = [];
+  if (workingDay) INFO.push("Voľné termíny ihneď");
+  INFO.push("Otvorené v sobotu aj sviatok");
+  INFO.push("Po–Pia 07:00–19:00 · So 07:00–13:00");
+  INFO.push("Najlepšie hodnotená STK na Slovensku");
+  const set = () => INFO.map(t => `<span class="m-status-item">${t}</span>`).join("");
+  mStatusTrack.innerHTML = set() + set();   // 2× pre plynulu nekonecnu slucku
+}
+</script>
+
+
+</body>
+</html>

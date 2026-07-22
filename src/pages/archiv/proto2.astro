@@ -1,0 +1,374 @@
+---
+import "../../styles/global.css";
+import Vozidlo from "../../components/Vozidlo.astro";
+import { FIRMA, VOZIDLA, DOSTUPNOST, PONUKA } from "../../data/obsah";
+---
+
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Easy Check — STK Trnava</title>
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-sf-void text-white/90">
+    <div class="bg-ec-ink text-white text-xs t-sub flex items-center justify-between px-4 py-2 gap-4 border-b border-sf-line">
+      <span>Prototyp 2 — Sci-fi punk / Cybertron</span>
+      <a href="/" class="underline underline-offset-2 hover:text-ec-yellow">Späť na výber</a>
+    </div>
+
+    <!-- ============ HLAVIČKA ============ -->
+    <header class="sticky top-0 z-50 bg-sf-void/85 backdrop-blur border-b border-sf-line">
+      <div class="max-w-[1240px] mx-auto px-4 h-[68px] flex items-center justify-between gap-4">
+        <img src="/brand/easycheck-logo.svg" alt="Easy Check" class="h-9 w-auto" />
+        <nav class="hidden lg:flex items-center gap-6 sf-mono text-[10px] text-white/60">
+          <a href="/sluzby" class="hover:text-ec-cyan transition-colors">Ponuka</a>
+          <a href="/cennik" class="hover:text-ec-cyan transition-colors">Cenník</a>
+          <a href="/uzitocne-informacie" class="hover:text-ec-cyan transition-colors">Info</a>
+          <a href="/clanky" class="hover:text-ec-cyan transition-colors">Blog</a>
+          <a href="/kontakt" class="hover:text-ec-cyan transition-colors">Kontakt</a>
+        </nav>
+        <a
+          href="#piedestal"
+          class="sf-panel sf-panel-y px-5 py-2.5 t-sub text-xs text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors"
+        >
+          Rezervovať
+        </a>
+      </div>
+    </header>
+
+    <!-- ============ HERO: socha ============ -->
+    <section class="relative overflow-hidden border-b border-sf-line">
+      <!-- pozadie: socha -->
+      <div class="absolute inset-0">
+        <img src="/foto/socha.jpg" alt="" class="w-full h-full object-cover object-[68%_28%] opacity-85" />
+        <div class="absolute inset-0 bg-gradient-to-r from-sf-void via-sf-void/80 to-transparent lg:to-sf-void/10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-sf-void via-transparent to-sf-void/60"></div>
+        <div class="absolute inset-0 sf-scan opacity-40"></div>
+      </div>
+
+      <div class="relative max-w-[1240px] mx-auto px-4 py-24 md:py-32">
+        <div class="max-w-[46ch]">
+          <div class="sf-mono text-[10px] text-ec-cyan flex items-center gap-3">
+            <span class="w-8 h-px bg-ec-cyan"></span>
+            Trnava · Farárske 27 · 07:00–22:00
+          </div>
+
+          <h1 class="t-display text-[clamp(3rem,9vw,7rem)] mt-5 leading-[0.85]">
+            <span class="block sf-glow-y sf-glitch">STK bez</span>
+            <span class="block text-white">stresu</span>
+          </h1>
+
+          <p class="mt-6 text-lg md:text-xl text-white/75 max-w-[36ch] leading-snug">
+            Transformujeme nepríjemnú STK-čku na bezstarostný zážitok.
+          </p>
+
+          <div class="mt-9 flex flex-wrap gap-4">
+            <a
+              href="#piedestal"
+              class="sf-panel sf-panel-y px-7 py-4 t-sub text-sm text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors"
+            >
+              Vybrať vozidlo →
+            </a>
+            <a
+              href={FIRMA.telHref}
+              class="sf-panel px-7 py-4 t-sub text-sm text-ec-cyan t-num hover:bg-ec-cyan hover:text-sf-void transition-colors"
+            >
+              {FIRMA.tel}
+            </a>
+          </div>
+
+          <!-- HUD stats -->
+          <div class="mt-12 flex flex-wrap gap-8">
+            <div>
+              <div class="t-display text-4xl sf-glow-c t-num">{FIRMA.hodnotenie}★</div>
+              <div class="sf-mono text-[9px] text-white/45 mt-1">Hodnotenie</div>
+            </div>
+            <div>
+              <div class="t-display text-4xl text-white t-num">{FIRMA.recenzie.toLocaleString("sk-SK")}</div>
+              <div class="sf-mono text-[9px] text-white/45 mt-1">Recenzií</div>
+            </div>
+            <div>
+              <div class="t-display text-4xl sf-glow-y t-num">24h</div>
+              <div class="sf-mono text-[9px] text-white/45 mt-1">Garancia termínu</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PIEDESTÁL ============ -->
+    <section id="piedestal" class="relative border-b border-sf-line sf-grid overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-sf-void via-transparent to-sf-void"></div>
+
+      <div class="relative max-w-[1240px] mx-auto px-4 py-20 md:py-24">
+        <div class="text-center mb-12">
+          <div class="sf-mono text-[10px] text-ec-cyan">Krok 01 / výber vozidla</div>
+          <h2 class="t-display text-4xl md:text-6xl mt-3 text-white">Čo dnes kontrolujeme?</h2>
+        </div>
+
+        <div class="grid gap-10 lg:grid-cols-[1fr_360px] lg:items-center">
+          <!-- ---- piedestál ---- -->
+          <div class="relative">
+            <div class="relative aspect-[4/3] flex items-center justify-center">
+              <!-- rotujúce prstence -->
+              <svg viewBox="0 0 400 400" class="absolute inset-0 w-full h-full opacity-70">
+                <g class="sf-ring" style="transform-origin:200px 200px">
+                  <ellipse cx="200" cy="290" rx="168" ry="46" fill="none" stroke="#18B6E4" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="14 9" />
+                </g>
+                <g class="sf-ring-2" style="transform-origin:200px 200px">
+                  <ellipse cx="200" cy="290" rx="140" ry="38" fill="none" stroke="#FFE600" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="4 12" />
+                </g>
+                <g class="sf-ring-3" style="transform-origin:200px 200px">
+                  <ellipse cx="200" cy="290" rx="196" ry="54" fill="none" stroke="#18B6E4" stroke-opacity="0.22" stroke-width="1" stroke-dasharray="30 18" />
+                </g>
+                <ellipse cx="200" cy="290" rx="120" ry="32" fill="url(#gl)" opacity="0.5" />
+                <defs>
+                  <radialGradient id="gl">
+                    <stop offset="0%" stop-color="#18B6E4" stop-opacity="0.55" />
+                    <stop offset="100%" stop-color="#18B6E4" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+              </svg>
+
+              <!-- svetelná základňa -->
+              <div class="sf-base absolute bottom-[22%] left-1/2 -translate-x-1/2 w-[52%] h-[3px] bg-ec-cyan blur-[2px]"></div>
+
+              <!-- vozidlo -->
+              <div id="vozidlo-slot" class="relative w-[78%] sf-float -mt-10 text-ec-cyan drop-shadow-[0_0_22px_rgba(24,182,228,0.55)]">
+                {
+                  VOZIDLA.map((v, i) => (
+                    <div data-voz={v.id} class={`veh ${i === 0 ? "" : "hidden"}`}>
+                      <Vozidlo id={v.id} class="w-full h-auto" />
+                    </div>
+                  ))
+                }
+              </div>
+
+              <!-- rohové značky -->
+              <span class="sf-corner top-2 left-2 border-r-0 border-b-0"></span>
+              <span class="sf-corner top-2 right-2 border-l-0 border-b-0"></span>
+              <span class="sf-corner bottom-2 left-2 border-r-0 border-t-0"></span>
+              <span class="sf-corner bottom-2 right-2 border-l-0 border-t-0"></span>
+            </div>
+
+            <!-- prepínač -->
+            <div class="mt-4 flex justify-center gap-3">
+              {
+                VOZIDLA.map((v, i) => (
+                  <button
+                    data-btn={v.id}
+                    class={`sf-panel px-5 py-3 t-sub text-xs transition-colors ${i === 0 ? "is-active" : "text-white/55"}`}
+                  >
+                    {v.nazov}
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- ---- HUD karta ---- -->
+          <div class="sf-panel p-7 relative">
+            <span class="sf-corner top-2 left-2 border-r-0 border-b-0"></span>
+            <span class="sf-corner bottom-2 right-2 border-l-0 border-t-0"></span>
+
+            {
+              VOZIDLA.map((v, i) => (
+                <div data-info={v.id} class={`info ${i === 0 ? "" : "hidden"}`}>
+                  <div class="flex items-center justify-between">
+                    <span class="sf-mono text-[10px] text-ec-cyan">Kategória {v.kod}</span>
+                    <span class="sf-mono text-[10px] text-white/40">{v.cas}</span>
+                  </div>
+                  <h3 class="t-display text-3xl mt-3 text-white">{v.nazov}</h3>
+                  <p class="text-sm text-white/60 mt-2 leading-relaxed">{v.popis}</p>
+
+                  <div class="border-t border-sf-line my-5" />
+
+                  <div class="sf-mono text-[9px] text-white/40 mb-3">Úkony</div>
+                  <ul class="space-y-2">
+                    {v.ukony.map((u) => (
+                      <li class="flex items-center gap-2.5 text-sm text-white/80">
+                        <span class="w-1.5 h-1.5 bg-ec-green rotate-45 shrink-0" />
+                        {u}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div class="border-t border-sf-line my-5" />
+
+                  <div class="flex items-end justify-between">
+                    <div>
+                      <div class="sf-mono text-[9px] text-white/40">Od</div>
+                      <div class="t-display text-4xl sf-glow-y t-num">{v.cena}</div>
+                    </div>
+                    <a
+                      href={v.href}
+                      class="sf-panel sf-panel-y px-5 py-3 t-sub text-xs text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors"
+                    >
+                      Rezervovať →
+                    </a>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PONUKA ============ -->
+    <section class="border-b border-sf-line">
+      <div class="max-w-[1240px] mx-auto px-4 py-20">
+        <div class="sf-mono text-[10px] text-ec-cyan">Systémy</div>
+        <h2 class="t-display text-4xl md:text-5xl mt-3 mb-10 text-white">Naša ponuka</h2>
+        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {
+            PONUKA.map((p, i) => (
+              <a href={p.href} class="sf-panel p-6 group hover:border-ec-yellow/60 transition-colors block">
+                <div class="sf-mono text-[9px] text-white/35">{String(i + 1).padStart(2, "0")}</div>
+                <h3 class="t-display text-2xl mt-2 text-white group-hover:sf-glow-y transition-all">{p.nadpis}</h3>
+                <p class="mt-2.5 text-sm text-white/55 leading-relaxed">{p.text}</p>
+                <span class="mt-4 inline-block sf-mono text-[9px] text-ec-cyan">{p.cta} →</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DOSTUPNOSŤ + flotila ============ -->
+    <section class="border-b border-sf-line">
+      <div class="max-w-[1240px] mx-auto px-4 py-20 grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
+        <div>
+          <div class="sf-mono text-[10px] text-ec-cyan">Dostupnosť</div>
+          <h2 class="t-display text-4xl md:text-5xl mt-3 text-white max-w-[14ch]">STK už nemusí byť nočná mora!</h2>
+          <div class="mt-8 space-y-4">
+            {
+              DOSTUPNOST.map((d) => (
+                <div class="sf-panel p-5">
+                  <div class="sf-mono text-[9px] text-ec-yellow">{d.stitok}</div>
+                  <h3 class="t-sub text-base mt-2 text-white">{d.nadpis}</h3>
+                  <p class="text-sm text-white/55 mt-1.5 leading-relaxed">{d.text}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+        <div class="relative">
+          <div class="sf-panel p-2">
+            <img src="/foto/flotila.jpg" alt="Flotila Easy Check" class="w-full h-[420px] object-cover" />
+          </div>
+          <div class="absolute -bottom-4 -left-4 sf-panel sf-panel-y px-5 py-3">
+            <div class="sf-mono text-[9px] text-white/50">Naša flotila</div>
+            <div class="t-display text-xl sf-glow-y">Výzdvih zdarma</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0">
+        <img src="/foto/socha2.jpg" alt="" class="w-full h-full object-cover opacity-30" />
+        <div class="absolute inset-0 bg-gradient-to-t from-sf-void via-sf-void/80 to-sf-void"></div>
+        <div class="absolute inset-0 sf-scan opacity-30"></div>
+      </div>
+      <div class="relative max-w-[1240px] mx-auto px-4 py-24 text-center">
+        <div class="sf-mono text-[10px] text-ec-cyan">Garancia do 24 hodín</div>
+        <h2 class="t-display text-4xl md:text-7xl mt-4 text-white">
+          Nepovieme <span class="sf-glow-y">vám nie</span>
+        </h2>
+        <p class="mt-5 text-white/60 text-lg max-w-[44ch] mx-auto">
+          Stačí sa objednať alebo zavolať a už dnes môžete byť na linke.
+        </p>
+        <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#piedestal" class="sf-panel sf-panel-y px-8 py-4 t-sub text-sm text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors">
+            Vybrať vozidlo
+          </a>
+          <a href={FIRMA.telHref} class="sf-panel px-8 py-4 t-sub text-sm text-ec-cyan t-num hover:bg-ec-cyan hover:text-sf-void transition-colors">
+            {FIRMA.tel}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="border-t border-sf-line py-10">
+      <div class="max-w-[1240px] mx-auto px-4 flex flex-wrap justify-between gap-6 sf-mono text-[10px] text-white/40">
+        <span>Easy Check s.r.o. · {FIRMA.adresa}</span>
+        <span>{FIRMA.hodiny}</span>
+        <span>Prototyp — nie ostrá verzia</span>
+      </div>
+    </footer>
+
+    <style>
+      button.is-active {
+        color: #ffe600;
+        border-color: rgb(255 230 0 / 0.7);
+        background: rgb(255 230 0 / 0.08);
+      }
+    </style>
+
+    <script>
+      const slot = document.getElementById("vozidlo-slot");
+      const btns = document.querySelectorAll<HTMLButtonElement>("[data-btn]");
+      const vehs = document.querySelectorAll<HTMLElement>(".veh");
+      const infos = document.querySelectorAll<HTMLElement>(".info");
+
+      function prepni(id: string) {
+        vehs.forEach((v) => {
+          const je = v.dataset.voz === id;
+          v.classList.toggle("hidden", !je);
+          if (je) {
+            v.classList.remove("sf-materialize");
+            void v.offsetWidth; // reštart animácie
+            v.classList.add("sf-materialize");
+          }
+        });
+        infos.forEach((i) => i.classList.toggle("hidden", i.dataset.info !== id));
+        btns.forEach((b) => {
+          const je = b.dataset.btn === id;
+          b.classList.toggle("is-active", je);
+          b.classList.toggle("text-white/55", !je);
+        });
+      }
+      btns.forEach((b) => b.addEventListener("click", () => prepni(b.dataset.btn!)));
+
+      // --- ťahaním myši sa vozidlo otáča (zatiaľ naklonenie, nie skutočné 3D) ---
+      let drag = false, x0 = 0, uhol = 0;
+      const scena = slot?.parentElement;
+      const uprav = (u: number) => {
+        if (slot) slot.style.transform = `perspective(900px) rotateY(${u}deg)`;
+      };
+      scena?.addEventListener("pointerdown", (e) => {
+        drag = true; x0 = e.clientX; scena.setPointerCapture(e.pointerId);
+        scena.style.cursor = "grabbing";
+      });
+      scena?.addEventListener("pointermove", (e) => {
+        if (!drag) return;
+        uhol = Math.max(-32, Math.min(32, (e.clientX - x0) * 0.28));
+        uprav(uhol);
+      });
+      const koniec = () => {
+        drag = false;
+        if (scena) scena.style.cursor = "grab";
+        // pružinový návrat do základnej polohy
+        const start = uhol, t0 = performance.now();
+        const krok = (t: number) => {
+          const p = Math.min((t - t0) / 420, 1);
+          uprav(start * (1 - (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(krok);
+        };
+        requestAnimationFrame(krok);
+      };
+      scena?.addEventListener("pointerup", koniec);
+      scena?.addEventListener("pointercancel", koniec);
+      if (scena) scena.style.cursor = "grab";
+    </script>
+  </body>
+</html>

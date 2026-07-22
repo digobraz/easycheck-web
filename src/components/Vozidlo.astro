@@ -1,0 +1,96 @@
+---
+/**
+ * Holografická silueta vozidla — vlastné SVG (žiadna cudzia IP, žiadny 3D model).
+ * Kreslené z boku; "3D" dojem robí piedestál + naklonenie + svetlo.
+ * Neskôr sa dá 1:1 vymeniť za turntable fotky reálnych chrobákov (viď Matejov brief).
+ */
+interface Props { id: string; class?: string }
+const { id, class: cls = "" } = Astro.props;
+---
+
+{
+  id === "auto" && (
+    <svg viewBox="0 0 420 170" class={cls} fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+      {/* karoséria */}
+      <path d="M32 128 L32 104 Q34 88 54 84 L104 78 L142 44 Q150 38 164 37 L258 37 Q274 38 284 46 L322 78 L370 86 Q390 90 392 106 L392 128" />
+      <path d="M32 128 L392 128" />
+      {/* okná */}
+      <path d="M150 76 L176 50 Q180 46 188 46 L206 46 L206 76 Z" />
+      <path d="M220 46 L254 46 Q264 46 270 52 L292 76 L220 76 Z" />
+      {/* dvere + kľučka */}
+      <path d="M208 78 L208 126" stroke-opacity="0.5" />
+      <path d="M186 96 L200 96" stroke-opacity="0.7" />
+      {/* svetlá */}
+      <path d="M34 100 L58 100 L58 112 L34 112" />
+      <path d="M390 102 L368 102 L368 114 L390 114" />
+      {/* prah */}
+      <path d="M60 126 L360 126" stroke-opacity="0.35" />
+      {/* kolesá */}
+      <circle cx="112" cy="128" r="27" />
+      <circle cx="112" cy="128" r="13" stroke-opacity="0.6" />
+      <circle cx="312" cy="128" r="27" />
+      <circle cx="312" cy="128" r="13" stroke-opacity="0.6" />
+      {/* blatníky */}
+      <path d="M79 128 Q84 96 112 96 Q140 96 145 128" stroke-opacity="0.45" />
+      <path d="M279 128 Q284 96 312 96 Q340 96 345 128" stroke-opacity="0.45" />
+    </svg>
+  )
+}
+
+{
+  id === "kamion" && (
+    <svg viewBox="0 0 420 170" class={cls} fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+      {/* náves */}
+      <path d="M150 128 L150 30 L392 30 L392 128" />
+      <path d="M150 30 L150 128" stroke-opacity="0.5" />
+      <path d="M172 30 L172 128" stroke-opacity="0.28" />
+      <path d="M240 30 L240 128" stroke-opacity="0.28" />
+      <path d="M308 30 L308 128" stroke-opacity="0.28" />
+      <path d="M376 30 L376 128" stroke-opacity="0.28" />
+      {/* kabína */}
+      <path d="M30 128 L30 62 Q31 46 46 44 L104 44 Q120 45 124 60 L138 96 L146 100 L146 128" />
+      <path d="M46 58 L104 58 L104 88 L52 88 Q46 88 46 82 Z" />
+      {/* výfuk */}
+      <path d="M132 44 L132 20" stroke-opacity="0.6" />
+      {/* nárazník + svetlá */}
+      <path d="M30 108 L30 120 L48 120" />
+      <path d="M32 118 L46 118" stroke-opacity="0.8" />
+      {/* podvozok */}
+      <path d="M30 128 L392 128" />
+      {/* kolesá */}
+      <circle cx="72" cy="128" r="25" />
+      <circle cx="72" cy="128" r="12" stroke-opacity="0.6" />
+      <circle cx="292" cy="128" r="25" />
+      <circle cx="292" cy="128" r="12" stroke-opacity="0.6" />
+      <circle cx="352" cy="128" r="25" />
+      <circle cx="352" cy="128" r="12" stroke-opacity="0.6" />
+    </svg>
+  )
+}
+
+{
+  id === "motorka" && (
+    <svg viewBox="0 0 420 170" class={cls} fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+      {/* kolesá */}
+      <circle cx="112" cy="122" r="34" />
+      <circle cx="112" cy="122" r="14" stroke-opacity="0.55" />
+      <circle cx="308" cy="122" r="34" />
+      <circle cx="308" cy="122" r="14" stroke-opacity="0.55" />
+      {/* rám */}
+      <path d="M112 122 L168 96 L214 62 L262 74 L308 122" />
+      <path d="M168 96 L196 122 L262 122 L262 74" />
+      {/* nádrž + sedadlo */}
+      <path d="M196 78 Q214 62 250 66 L262 74 L236 92 Q212 96 196 88 Z" />
+      <path d="M258 74 L296 66 Q310 65 312 74 L294 82 L262 84 Z" />
+      {/* vidlica + riadidlá */}
+      <path d="M214 62 L134 106" />
+      <path d="M120 100 L112 122" />
+      <path d="M196 50 L242 44" />
+      <path d="M214 62 L214 50" />
+      {/* výfuk */}
+      <path d="M262 122 L316 132 L340 130" stroke-opacity="0.7" />
+      {/* motor */}
+      <path d="M196 96 L236 96 L236 118 L196 118 Z" stroke-opacity="0.45" />
+    </svg>
+  )
+}
