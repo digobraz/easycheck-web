@@ -1,0 +1,151 @@
+---
+/**
+ * /rezervacia/ — najlinkovanejšia URL starého webu (95 interných odkazov).
+ * Zdroj: plan/wp-texty/rezervacia.md. Rezervácie idú cez existujúci Acuity
+ * systém (klasik.as.me/...) — odkazy sú prenesené znak po znaku, viď komentáre
+ * v src/data/rezervacia.ts.
+ *
+ * Ceny zo starého webu (cenník k 01.01.2025) sa nepoužívajú — každá skupina
+ * má namiesto ceny odkaz na aktuálny /cennik/.
+ */
+import Web from "../layouts/Web.astro";
+import { KONTAKT, REZERVACIA } from "../data/firma";
+import { KATEGORIE_REZERVACIA } from "../data/rezervacia";
+
+const DRUHE_CISLO = "+421 908 731 178";
+const DRUHE_CISLO_HREF = "tel:+421908731178";
+---
+
+<Web
+  titul="Rezervácia termínu STK, emisnej a KO — Easy Check"
+  popis="Objednajte si termín technickej, emisnej kontroly, kontroly originality alebo overenia tachografu v Easy Check Trnava. Termín garantujeme do 24 hodín."
+>
+  <!-- 1 · hlavička na žltej ploche -->
+  <header class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+    <div class="max-w-[1100px] mx-auto px-4 py-12 md:py-16">
+      <h1 class="t-display text-4xl md:text-6xl">Rezervácia termínu</h1>
+      <p class="mt-5 text-xl md:text-2xl font-medium max-w-2xl">
+        Termín garantujeme do 24 hodín a online objednávka trvá pol minúty.
+      </p>
+    </div>
+  </header>
+
+  <div class="max-w-[1100px] mx-auto px-4 py-10 md:py-14">
+    <!-- 2 · záložná cesta — nesmie zmiznúť, presne ako na starom webe -->
+    <div class="nb-card bg-ec-cyan text-white p-5 md:p-6">
+      <div class="t-sub text-sm">V prípade výpadku online systému sa objednajte telefonicky</div>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a href={KONTAKT.telHref} class="nb-btn !bg-ec-paper !text-ec-ink text-sm">{KONTAKT.tel}</a>
+        <a href={DRUHE_CISLO_HREF} class="nb-btn !bg-ec-paper !text-ec-ink text-sm">{DRUHE_CISLO}</a>
+      </div>
+    </div>
+
+    <!-- 3 · rýchla navigácia na kategórie -->
+    <nav aria-label="Kategórie vozidiel" class="mt-10 md:mt-14">
+      <h2 class="t-sub text-sm opacity-70">Vyberte kategóriu vozidla</h2>
+      <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          KATEGORIE_REZERVACIA.map((k) => (
+            <li>
+              <a href={`#${k.id}`} class="nb nb-lift block h-full px-4 py-3 bg-ec-paper text-sm">
+                <span class={`nb-tag ${k.farba === "red" ? "bg-ec-red" : "bg-ec-green"} text-white`}>
+                  {k.farba === "red" ? "Úkon kontroly" : "Vybavíme za vás"}
+                </span>
+                <div class="t-sub text-sm mt-2 normal-case tracking-normal">{k.nazov}</div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <!-- 4 · kategórie -->
+    {
+      KATEGORIE_REZERVACIA.map((kategoria) => (
+        <section id={kategoria.id} class="mt-14 md:mt-20 scroll-mt-24">
+          <span class={`nb-tag ${kategoria.farba === "red" ? "bg-ec-red" : "bg-ec-green"} text-white`}>
+            {kategoria.farba === "red" ? "Úkon kontroly" : "Vybavíme za vás"}
+          </span>
+          <h2 class="t-display text-3xl md:text-4xl mt-4">{kategoria.nazov}</h2>
+          {kategoria.uvod && <p class="mt-3 max-w-2xl text-lg">{kategoria.uvod}</p>}
+
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            {kategoria.cennik && (
+              <a href={`/cennik/${kategoria.cennik}`} class="nb-btn !bg-ec-paper text-sm">
+                Ceny — /cennik/
+              </a>
+            )}
+            {kategoria.viacInfo && (
+              <a href={kategoria.viacInfo.href} class="nb-btn !bg-ec-paper text-sm">
+                {kategoria.viacInfo.text}
+              </a>
+            )}
+          </div>
+
+          <div class="mt-6 space-y-8">
+            {kategoria.skupiny.map((skupina) => (
+              <div>
+                <h3 class="t-sub text-sm opacity-70">
+                  {skupina.nazov}
+                  {skupina.poznamka && <span class="opacity-60 normal-case tracking-normal"> — {skupina.poznamka}</span>}
+                </h3>
+                <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {skupina.ukony.map((ukon) => (
+                    <li>
+                      <a
+                        href={ukon.url}
+                        class={`nb nb-lift nb-shadow-sm block h-full px-4 py-3 text-sm md:text-base bg-ec-paper border-l-4 ${
+                          kategoria.farba === "red" ? "border-l-ec-red" : "border-l-ec-green"
+                        }`}
+                      >
+                        <span class="t-sub text-sm">{ukon.nazov}</span>
+                        {ukon.popis && <p class="mt-1 text-xs md:text-sm opacity-70">{ukon.popis}</p>}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {kategoria.bezOdkazu && (
+            <div class="mt-8 nb bg-ec-paper p-5">
+              <div class="t-sub text-sm opacity-70 mb-3">Príplatky — dohodnete priamo pri kontrole</div>
+              <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 text-sm md:text-base">
+                {kategoria.bezOdkazu.map((p) => (
+                  <li class="flex gap-2">
+                    <span aria-hidden="true">·</span>
+                    <span>
+                      {p.nazov}
+                      {p.popis && <span class="opacity-70"> — {p.popis}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      ))
+    }
+
+    <!-- 5 · odkazy na cenník, služby a kontakt -->
+    <div class="mt-16 md:mt-20 nb-card bg-ec-paper p-6 md:p-8">
+      <div class="t-display text-2xl md:text-3xl">Neviete si vybrať alebo chcete poradiť?</div>
+      <p class="mt-2 max-w-xl opacity-80">
+        Kompletný cenník, celú ponuku služieb aj kontaktné údaje máme na jednom mieste.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/cennik/" class="nb-btn">Cenník</a>
+        <a href="/sluzby/" class="nb-btn !bg-ec-paper">Služby</a>
+        <a href="/kontakt/" class="nb-btn !bg-ec-paper">Kontakt</a>
+      </div>
+    </div>
+
+    <!-- 6 · placeholder rezervačného tlačidla mimo kategórií — zachytáva prípad, že
+         niekto pristál na /rezervacia/ bez konkrétneho úkonu (napr. zo starého odkazu bez kotvy) -->
+    <p class="mt-10 text-sm opacity-60 max-w-2xl">
+      Nevedeli ste si vybrať konkrétny úkon? Otvorte
+      <a href={REZERVACIA} class="underline">všeobecnú rezerváciu STK</a> a vyberte kontrolu priamo v systéme.
+    </p>
+  </div>
+</Web>
