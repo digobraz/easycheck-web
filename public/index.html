@@ -710,6 +710,10 @@
   }
   .sf.promo-navbtn > svg.sfb rect { fill:var(--sc); }
   .sf.promo-navbtn:hover { transform:scale(1.05); }
+  /* navigácia bola do 4.8.2026 <button> bez akcie — z homepage sa nedalo nikam kliknúť.
+     Teraz sú to skutočné <a href>, aby web fungoval aj bez JS a aby ich prešiel Google. */
+  a.promo-navbtn { display:block; text-decoration:none; }
+  a.promo-navbtn:focus-visible, .m-menu a:focus-visible { outline:2px solid #FFE600; outline-offset:2px; }
 
   /* ---- karuselové šípky po krajoch ĽAVÉHO stĺpca — prepínajú PROMOS ručne ---- */
   .promo-carousel { display:flex; align-items:center; gap:5px; width:100%; }
@@ -1039,13 +1043,13 @@
       transition:opacity .26s ease, transform .26s ease;
     }
     .m-menu.open { opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
-    .m-menu button {
+    .m-menu button, .m-menu a {
       all:unset; cursor:pointer; text-align:center; padding:12px; border-radius:9px;
       font-family:var(--font-head); font-size:15px; font-weight:700; letter-spacing:.06em;
       text-transform:uppercase; color:#eaf2f7; background:rgba(255,255,255,.05);
       border:1px solid rgba(120,200,255,.16);
     }
-    .m-menu button:active { background:rgba(120,200,255,.14); }
+    .m-menu button:active, .m-menu a:active { background:rgba(120,200,255,.14); }
 
     /* pri otvorenom bocnom paneli (has-pop) ide logo+ticker+menu ZA popup,
        aby ho neprekryval (Matej 2026-07-21). z-index:-1 = pod .stage (transform). */
@@ -1114,11 +1118,11 @@
   <button class="m-burger" id="mBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
 <nav class="m-menu" id="mMenu" aria-label="Hlavne menu">
-  <button>Služby</button>
-  <button>Cenník</button>
-  <button>Info</button>
-  <button>Kontakt</button>
-  <button>Blog</button>
+  <a href="/sluzby/">Služby</a>
+  <a href="/cennik/">Cenník</a>
+  <a href="/uzitocne-informacie/">Info</a>
+  <a href="/kontakt/">Kontakt</a>
+  <a href="/clanky/">Blog</a>
 </nav>
 
 <!-- Filter pre žiaru loga: feGaussianBlur rozmaže SourceGraphic a zachová jeho farby.
@@ -1260,11 +1264,11 @@
           </div>
         </div>
         <nav class="promo-nav promo-col-right">
-          <button class="sf promo-navbtn"><span>Služby</span></button>
-          <button class="sf promo-navbtn"><span>Cenník</span></button>
-          <button class="sf promo-navbtn"><span>Info</span></button>
-          <button class="sf promo-navbtn"><span>Kontakt</span></button>
-          <button class="sf promo-navbtn"><span>Blog</span></button>
+          <a class="sf promo-navbtn" href="/sluzby/"><span>Služby</span></a>
+          <a class="sf promo-navbtn" href="/cennik/"><span>Cenník</span></a>
+          <a class="sf promo-navbtn" href="/uzitocne-informacie/"><span>Info</span></a>
+          <a class="sf promo-navbtn" href="/kontakt/"><span>Kontakt</span></a>
+          <a class="sf promo-navbtn" href="/clanky/"><span>Blog</span></a>
         </nav>
       </div>
     </div>
@@ -1557,7 +1561,7 @@ if (mBurger) {
     mMenu.classList.toggle("open", open);
     mBurger.setAttribute("aria-expanded", open);
   });
-  mMenu.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  mMenu.querySelectorAll("a, button").forEach(b => b.addEventListener("click", () => {
     mBurger.classList.remove("open"); mMenu.classList.remove("open");
     mBurger.setAttribute("aria-expanded", false);
   }));
