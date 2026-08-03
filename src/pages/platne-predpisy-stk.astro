@@ -1,0 +1,133 @@
+---
+import InfoStranka from "../layouts/InfoStranka.astro";
+import Akordeon from "../components/Akordeon.astro";
+---
+<InfoStranka
+  titul="Platné predpisy STK a EK | Easy Check"
+  popis="Zoznam zákonov a vyhlášok, ktoré upravujú technickú a emisnú kontrolu vozidiel na Slovensku, s odkazmi na platné znenia."
+  h1="Platné predpisy STK"
+  odpoved="Technické a emisné kontroly na Slovensku upravuje zákon 106/2018 Z. z. a vyhlášky 137/2018 a 138/2018."
+  zdroj="zákona 106/2018 Z. z. a vykonávacích vyhlášok"
+>
+  <Akordeon otazka="Zákon o prevádzke vozidiel v cestnej premávke" otvorene>
+    <p>
+      Prevádzku vozidiel v cestnej premávke na Slovensku upravuje
+      <a
+        href="https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/106/"
+        target="_blank"
+        rel="noopener"
+        >zákon č. 106/2018 Z. z. o prevádzke vozidiel v cestnej premávke a o zmene a doplnení
+        niektorých zákonov</a
+      > (externý odkaz).
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Vyhlášky k technickej kontrole">
+    <p>
+      Podrobnosti technickej kontroly ustanovuje
+      <a
+        href="https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/137/"
+        target="_blank"
+        rel="noopener"
+        >vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 137/2018 Z. z.</a
+      > (externý odkaz).
+    </p>
+    <p>
+      Túto vyhlášku mení a dopĺňa
+      <a
+        href="https://www.slov-lex.sk/static/pdf/2019/121/ZZ_2019_121_20190515.pdf"
+        target="_blank"
+        rel="noopener">vyhláška č. 121/2019 Z. z.</a
+      > (externý odkaz) s účinnosťou od 15. 5. 2019.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Vyhlášky k emisnej kontrole">
+    <p>
+      Podrobnosti emisnej kontroly ustanovuje
+      <a
+        href="https://www.slov-lex.sk/static/pdf/2018/138/ZZ_2018_138_20190515.pdf"
+        target="_blank"
+        rel="noopener"
+        >vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 138/2018 Z. z.</a
+      > (externý odkaz).
+    </p>
+    <p>
+      Túto vyhlášku mení a dopĺňa
+      <a
+        href="https://www.slov-lex.sk/static/pdf/2019/122/ZZ_2019_122_20190515.pdf"
+        target="_blank"
+        rel="noopener">vyhláška č. 122/2019 Z. z.</a
+      > (externý odkaz) s účinnosťou od 15. 5. 2019.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Ďalšie predpisy">
+    <ul class="list-disc pl-5 space-y-2">
+      <li>
+        <a
+          href="https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/132/"
+          target="_blank"
+          rel="noopener"
+          >Vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 132/2018 Z. z.</a
+        > (externý odkaz), ktorou sa ustanovujú podrobnosti o technických požiadavkách na niektoré
+        vozidlá, systémy, komponenty a samostatné technické jednotky na účely schvaľovania.
+      </li>
+      <li>
+        <a
+          href="https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/133/"
+          target="_blank"
+          rel="noopener"
+          >Vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 133/2018 Z. z.</a
+        > (externý odkaz), ktorou sa ustanovujú podrobnosti o dokladoch vozidla.
+      </li>
+      <li>
+        <a
+          href="https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/134/"
+          target="_blank"
+          rel="noopener"
+          >Vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 134/2018 Z. z.</a
+        > (externý odkaz), ktorou sa ustanovujú podrobnosti o prevádzke vozidiel v cestnej premávke.
+      </li>
+      <li>
+        <a
+          href="https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/136/"
+          target="_blank"
+          rel="noopener"
+          >Vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 136/2018 Z. z.</a
+        > (externý odkaz), ktorou sa ustanovujú podrobnosti o technickej službe overovania.
+      </li>
+    </ul>
+  </Akordeon>
+
+  <Akordeon otazka="Metodické pokyny">
+    <ul class="list-disc pl-5 space-y-2">
+      <li>
+        <a
+          href="http://www.testek.sk/index.php?lang=sk&menuid=275&submenuid=374"
+          target="_blank"
+          rel="noopener">Aktuálne znenia metodických pokynov pre oblasť STK a technických kontrol</a
+        > (externý odkaz na testek.sk).
+      </li>
+      <li>
+        <a
+          href="https://www.seka.sk/stranka/metodika-ek-pravidelnej"
+          target="_blank"
+          rel="noopener">Aktuálne znenia metodických pokynov pre oblasť PEK a emisných kontrol</a
+        > (externý odkaz na seka.sk).
+      </li>
+      <li>
+        <a
+          href="http://www.testek.sk/index.php?lang=sk&menuid=392&submenuid=480"
+          target="_blank"
+          rel="noopener">Nariadenia vlády Slovenskej republiky ohľadom konštrukcie vozidiel</a
+        > (externý odkaz na testek.sk).
+      </li>
+    </ul>
+    <p class="mt-4">
+      Záväzný výklad predpisov pre stanice technickej kontroly vydáva
+      <a href="https://www.testek.sk/" target="_blank" rel="noopener">TESTEK</a> (externý odkaz) ako
+      poverená technická služba.
+    </p>
+  </Akordeon>
+</InfoStranka>

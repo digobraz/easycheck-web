@@ -1,0 +1,124 @@
+---
+import InfoStranka from "../layouts/InfoStranka.astro";
+import Akordeon from "../components/Akordeon.astro";
+---
+<InfoStranka
+  titul="Príprava na STK — čo si pripraviť | Easy Check"
+  popis="Zoznam dokladov na STK a EK aj čo si skontrolovať pred príchodom: svetlá, pneumatiky, zasklenie a povinnú výbavu. Kedy kontrolu nevykonajú."
+  h1="Príprava na STK"
+  odpoved="Vezmite si doklad od vozidla a skontrolujte svetlá, pneumatiky, zasklenie a povinnú výbavu."
+  zdroj="zákona 106/2018 Z. z."
+>
+  <p class="ec-proza mb-6">
+    Vďaka tomuto zoznamu máte veľkú šancu na odhalenie prípadných závad, ktoré viete pred
+    kontrolou STK svojpomocne odstrániť. Jednoduchou 5 minútovou obhliadkou ušetríte čas aj
+    peniaze!
+  </p>
+
+  <Akordeon otazka="Čo si vziať so sebou" otvorene>
+    <p><strong>Technická kontrola</strong></p>
+    <ul>
+      <li>
+        <strong>doklad vozidla</strong> (osvedčenie o evidencii časť I alebo časť II alebo
+        technické osvedčenie vozidla pri vozidle, ktoré nepodlieha prihláseniu do evidencie
+        vozidiel) alebo potvrdenie o zadržaní, ak ide o vozidlo, ktorému je doklad vozidla
+        zadržaný, alebo výpis z karty vozidla vydaný orgánom Policajného zboru, ak je doklad
+        vozidla stratený
+      </li>
+      <li>
+        <strong>protokol o montáži plynového zariadenia</strong> (vozidlo s pohonom na LPG alebo
+        CNG, ktoré nie je vybavené zariadením od výrobcu)
+      </li>
+      <li>
+        <strong>certifikát o vykonaní opravy vozidla vydaný certifikovaným miestom opravy</strong>,
+        ak ide o vozidlo po dopravnej nehode alebo škodovej udalosti, ktorá mala vplyv na hlavné
+        bezpečnostné prvky vozidla, ktorými sú zavesenie kolies, deformačné zóny, systémy airbagov,
+        riadenie alebo brzdy
+      </li>
+    </ul>
+
+    <p class="mt-4"><strong>Emisná kontrola</strong></p>
+    <ul>
+      <li>
+        <strong>osvedčenie o evidencii časť II. alebo osvedčenie o evidencii</strong> – stačí
+        „malý plastový TP“, alebo potvrdenie o zadržaní, ak ide o vozidlo, ktorému je doklad
+        vozidla zadržaný, alebo výpis z karty vozidla vydaný orgánom Policajného zboru, ak je
+        doklad vozidla stratený
+      </li>
+      <li>
+        <strong>protokol o montáži plynového zariadenia</strong> (vozidlo s pohonom na LPG alebo
+        CNG, ktoré nie je vybavené plynovým zariadením od výrobcu)
+      </li>
+      <li>
+        <strong>kópiu platného dokladu o vykonaní emisnej kontroly</strong> v členskom štáte alebo
+        zmluvnom štáte, ak ide o emisnú kontrolu administratívnu pre jednotlivo dovezené vozidlo
+      </li>
+    </ul>
+
+    <p class="mt-4"><strong>Špeciálne prípady</strong></p>
+    <p>
+      Pri technickej a emisnej kontrole vozidla záchrannej služby určeného na prepravu infekčných
+      materiálov alebo pacientov s infekčnými chorobami, vozidla určeného na prepravu uhynutých
+      zvierat a vozidla pohrebnej služby prevádzkovateľ vozidla alebo vodič vozidla predkladá
+      okrem vyššie uvedených dokladov aj potvrdenie o vykonanej dezinfekcii vozidla.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Čo si skontrolovať pred príchodom">
+    <p>
+      <strong>Povinná výbava</strong> — dajte si pozor na dobu expirácie lekárničky.
+      Kompletný zoznam nájdete na stránke <a href="/povinna-vybava/">povinná výbava</a>.
+    </p>
+
+    <p class="mt-4">
+      <strong>Osvetlenie</strong> — krátkou vizuálnou kontrolou pozrite na nasledujúce svetlá:
+    </p>
+    <ul>
+      <li>obrysové</li>
+      <li>stretávacie</li>
+      <li>diaľkové</li>
+      <li>hmlové</li>
+      <li>smerové</li>
+      <li>spätné svetlá</li>
+    </ul>
+
+    <p class="mt-4">
+      <strong>Pneumatiky</strong> — v čase kontroly STK musia byť na vozidle pneumatiky, ktoré sú
+      zapísané v technickom preukaze (predpísaná hĺbka dezénu je minimálne 1,6 mm).
+    </p>
+
+    <p class="mt-4">
+      <strong>Zasklenie</strong> — pozor na praskliny najmä na čelnom skle, kde nesmie presahovať
+      veľkosť cca dvoj-eurovej mince. Na prednom skle a predných bočných sklách nesmú byť
+      umiestnené tieniace fólie.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Kedy kontrolu nie je možné vykonať?">
+    <ul>
+      <li>Ak nepredložíte ustanovené doklady.</li>
+      <li>Ak nemožno naštartovať motor.</li>
+      <li>Ak vozidlo má zjavne neúplné výfukové potrubie.</li>
+      <li>Ak je zistený zjavný únik prevádzkových médií.</li>
+      <li>Ak má vozidlo poruchu na plynovom zariadení.</li>
+    </ul>
+  </Akordeon>
+
+  <Akordeon otazka="Čo keď auto neprejde?">
+    <p>
+      <strong>Opakovaná technická kontrola</strong> sa vykonáva v čiastočnom rozsahu so zameraním
+      na kontrolu odstránenia chýb zistených pri technických kontrolách, a to
+      <strong>do 60 dní</strong> odo dňa vykonania pôvodnej technickej kontroly. Po tomto termíne
+      sa musí vykonať nová technická kontrola v plnom rozsahu.
+    </p>
+    <p class="mt-4">
+      <strong>Opakovaná emisná kontrola</strong> sa vykonáva v plnom rozsahu pôvodnej emisnej
+      kontroly s dôrazom na kontrolu odstránenia chýb zistených pri emisnej kontrole, a to
+      <strong>do 60 dní</strong> odo dňa vykonania pôvodnej kontroly.
+    </p>
+    <p class="mt-4">
+      Lehoty platnosti pre jednotlivé kategórie vozidiel nájdete na stránke
+      <a href="/lehoty-stk/">lehoty STK</a>.
+    </p>
+  </Akordeon>
+</InfoStranka>

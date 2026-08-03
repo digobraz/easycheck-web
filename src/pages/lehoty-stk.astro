@@ -1,0 +1,123 @@
+---
+import InfoStranka from "../layouts/InfoStranka.astro";
+import Akordeon from "../components/Akordeon.astro";
+---
+<InfoStranka
+  titul="Lehoty STK a EK podľa kategórie vozidla | Easy Check"
+  popis="Kedy ide vaše auto na technickú a emisnú kontrolu. Tabuľka lehôt pre všetky kategórie vozidiel podľa platných vyhlášok."
+  h1="Lehoty STK"
+  odpoved="Nové osobné auto ide na prvú technickú kontrolu po 4 rokoch, potom každé 2 roky."
+  zdroj="vyhlášky 137/2018 Z. z. a 138/2018 Z. z."
+>
+  <Akordeon otazka="Kedy ide moje auto na kontrolu?" otvorene>
+    <p>
+      Zápis <strong>4 – 2 – 2</strong> znamená: prvá kontrola po <strong>4 rokoch</strong> od
+      prvého prihlásenia vozidla do evidencie, potom <strong>každé 2 roky</strong>, ďalej
+      <strong>každé 2 roky</strong>.
+    </p>
+    <div class="ec-scroll-x mt-4">
+      <table>
+        <thead>
+          <tr>
+            <th>Kategória alebo druh vozidla</th>
+            <th>Lehoty TK</th>
+            <th>Lehoty EK</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>L1e, L2e (malé motocykle)</td>
+            <td>4 – 4 – 4</td>
+            <td>–</td>
+          </tr>
+          <tr>
+            <td>Motocykle, trojkolky a štvorkolky — L3e, L4e, L5e, L6e, L7e</td>
+            <td>4 – 2 – 2</td>
+            <td>–</td>
+          </tr>
+          <tr>
+            <td>Osobné vozidlá a nákladné vozidlá do 3,5 t — M1, N1</td>
+            <td>4 – 2 – 2</td>
+            <td>
+              4 – 2 – 2 (vznetový motor alebo zážihový so zdokonaleným emisným systémom) ·
+              1 – 1 – 1 (zážihový motor s nezdokonaleným emisným systémom)
+            </td>
+          </tr>
+          <tr>
+            <td>Autobusy — M2, M3</td>
+            <td>1 – 1 – 1 (M3 staršie ako 8 rokov každých 6 mesiacov)</td>
+            <td>1 – 1 – 1</td>
+          </tr>
+          <tr>
+            <td>Nákladné vozidlá a ich prípojné vozidlá — N2, N3, O3, O4</td>
+            <td>1 – 1 – 1</td>
+            <td>1 – 1 – 1</td>
+          </tr>
+          <tr>
+            <td>Prípojné vozidlá do 3,5 t + za traktory — O2, R</td>
+            <td>4 – 4 – 4</td>
+            <td>–</td>
+          </tr>
+          <tr>
+            <td>Kolesové traktory — T, R3, R4</td>
+            <td>4 – 2 – 2</td>
+            <td>4 – 2 – 2</td>
+          </tr>
+          <tr>
+            <td>
+              Vozidlá autoškoly, taxi, záchrannej a plynárenskej poruchovej služby —
+              M, N, O, L, M, N, T
+            </td>
+            <td>1 – 1 – 1</td>
+            <td>1 – 1 – 1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </Akordeon>
+
+  <Akordeon otazka="Ktoré vozidlá na technickú kontrolu nemusia?">
+    <p>
+      Technickej kontrole pravidelnej nepodliehajú kategórie <strong>O1, R1, L1e a L2e</strong>.
+      Výnimka: ak je potrebné takúto kontrolu vykonať na iný účel, napríklad kvôli inej
+      technickej zmene.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Od akého dátumu sa lehota počíta?">
+    <p>
+      Prvým prihlásením vozidla do evidencie sa rozumie dátum prvého pridelenia evidenčného
+      čísla v Slovenskej republike alebo v inom štáte, ktorý sa vyznačuje v osvedčení o
+      evidencii.
+    </p>
+    <p>
+      Ak sa tento dátum nedá zistiť, ale známy je rok výroby vozidla, za prvé prihlásenie
+      vozidla do evidencie sa považuje 1. deň roku výroby vozidla.
+    </p>
+    <p>
+      Ak sa rok prvého prihlásenia vozidla do evidencie v Slovenskej republike uvedený v
+      osvedčení o evidencii nezhoduje s rokom výroby vozidla, pričom medzi rokom výroby vozidla
+      a rokom prvého prihlásenia vozidla do evidencie je rozdiel väčší ako 12 mesiacov, za prvé
+      prihlásenie vozidla do evidencie sa považuje 1. deň roku výroby vozidla.
+    </p>
+    <p>
+      Ak rok výroby vozidla nie je známy, považuje sa zaň modelový rok vozidla, ktorý možno
+      zistiť z identifikačného čísla vozidla VIN.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Ktoré predpisy lehoty určujú?">
+    <p>
+      Lehoty technických kontrol určuje
+      <a href="https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2018/137/" target="_blank" rel="noopener">
+        vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 137/2018 Z. z.
+      </a>, ktorou sa ustanovujú podrobnosti v oblasti technickej kontroly.
+    </p>
+    <p>
+      Lehoty emisných kontrol určuje
+      <a href="https://www.slov-lex.sk/static/pdf/2018/138/ZZ_2018_138_20190515.pdf" target="_blank" rel="noopener">
+        vyhláška Ministerstva dopravy a výstavby Slovenskej republiky č. 138/2018 Z. z.
+      </a>, ktorou sa ustanovujú podrobnosti v oblasti emisnej kontroly.
+    </p>
+  </Akordeon>
+</InfoStranka>

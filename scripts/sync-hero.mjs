@@ -8,7 +8,10 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const proto = resolve(root, '../WEB-hero/prototyp');
 
-const ANCHOR = '<title>EASYCHECK</title>';
+// Kotva = <title> prototypu. Menil sa 3. 8. 2026 spolu s prototypom (starý bol
+// holé „EASYCHECK"). Keď sa titulok v live.html zmení, treba ho prepísať aj tu —
+// inak sync spadne s hláškou nižšie, čo je zámer: radšej padne, než ticho zmrzne.
+const ANCHOR = '<title>Easy Check STK Trnava — technická a emisná kontrola</title>';
 const HEAD = `<!-- ZRKADLO prototypu: EASYCHECK/vystupy/WEB-hero/prototyp/live.html (1:1).
      Needituj tu — uprav zdroj a spusti \`npm run sync-hero\`. Jediny pridany riadok = robots noindex. -->
 <meta name="robots" content="noindex, nofollow">

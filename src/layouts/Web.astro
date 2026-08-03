@@ -15,9 +15,15 @@ interface Props {
   popis: string;
   /** trieda pozadia <body> */
   bg?: string;
+  /**
+   * Obsah meta robots. Default drží celý web mimo indexu, kým beží na testovacej
+   * doméne. Pri prepnutí na ostrý easycheck.sk sa mení TU — a stránky, ktoré majú
+   * ostať mimo indexu navždy, si `robots` posielajú vlastný (napr. prázdny článok).
+   */
+  robots?: string;
 }
 
-const { titul, popis, bg = "bg-ec-paper" } = Astro.props;
+const { titul, popis, bg = "bg-ec-paper", robots = "noindex, nofollow" } = Astro.props;
 const cesta = Astro.url.pathname;
 ---
 

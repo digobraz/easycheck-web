@@ -1,0 +1,157 @@
+---
+/**
+ * /kontakt/ — kontaktné údaje, mapa, otváracie hodiny, rezervácia.
+ * Všetky fakty z src/data/firma.ts (KONTAKT, HODINY, REZERVACIA) — nič natvrdo.
+ */
+import Web from "../layouts/Web.astro";
+import { KONTAKT, HODINY, REZERVACIA } from "../data/firma";
+
+// Otváracie hodiny → JSON-LD openingHoursSpecification.
+// Sviatky a "na dohodu" nie sú pravidelný týždenný cyklus, schema.org ich
+// takto nevie zapísať — v štruktúrovaných dátach preto ostáva len bežný týždeň.
+const DNI_TYZDNA: Record<string, string[]> = {
+  "Pondelok – Piatok": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+  Sobota: ["Saturday"],
+};
+
+const otvaracieHodinySchema = HODINY.filter((h) => DNI_TYZDNA[h.den]).flatMap((h) => {
+  const [opens, closes] = h.cas.split(" – ");
+  return DNI_TYZDNA[h.den].map((den) => ({
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: `https://schema.org/${den}`,
+    opens,
+    closes,
+  }));
+});
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: KONTAKT.nazov,
+  description: KONTAKT.popis,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: KONTAKT.ulica,
+    postalCode: KONTAKT.psc,
+    addressLocality: KONTAKT.mesto,
+    addressCountry: "SK",
+  },
+  telephone: KONTAKT.tel,
+  email: KONTAKT.mail,
+  url: "https://easycheck.sk/kontakt/",
+  hasMap: KONTAKT.mapa,
+  openingHoursSpecification: otvaracieHodinySchema,
+};
+---
+
+<Web titul="Kontakt — Easy Check STK Trnava, Farárske 27" popis="Easy Check, stanica technickej kontroly Trnava, Farárske 27. Telefón, e-mail, otváracie hodiny, mapa a online rezervácia termínu.">
+  <article>
+    <!-- 1 · hlavička -->
+    <header class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+      <div class="max-w-[1100px] mx-auto px-4 py-12 md:py-16">
+        <h1 class="t-display text-5xl md:text-7xl">Kontakt</h1>
+        <p class="mt-5 text-xl md:text-2xl font-medium max-w-2xl">
+          Nájdete nás na adrese {KONTAKT.adresa}. Objednávať sa vopred nemusíte,
+          s dohodnutým termínom to však pôjde rýchlejšie.
+        </p>
+      </div>
+    </header>
+
+    <div class="max-w-[1100px] mx-auto px-4 py-10 md:py-16">
+      <!-- 2 · kde nás nájdete -->
+      <section class="nb-card bg-ec-paper overflow-hidden">
+        <div class="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
+          <div class="p-6 md:p-8">
+            <div class="t-sub text-xs opacity-60 mb-3">Kde nás nájdete</div>
+            <p class="t-display text-2xl md:text-3xl leading-tight">{KONTAKT.adresa}</p>
+            <p class="mt-2 text-sm opacity-70">smer Dolná Krupá</p>
+            <a
+              href={KONTAKT.mapa}
+              target="_blank"
+              rel="noopener"
+              class="nb-btn mt-6 text-sm"
+            >
+              Otvoriť v Google Mapách
+            </a>
+          </div>
+          <div class="border-t-[var(--stroke)] lg:border-t-0 lg:border-l-[var(--stroke)] border-ec-ink">
+            <iframe
+              src={KONTAKT.mapaEmbed}
+              title="Mapa — Easy Check STK Trnava, Farárske 27"
+              loading="lazy"
+              class="w-full h-[280px] lg:h-full min-h-[280px] block"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 · otváracie hodiny (cyan = info) -->
+      <section class="mt-8 nb-card bg-ec-cyan text-white p-6 md:p-8">
+        <div class="t-sub text-xs opacity-80 mb-4">Otváracie hodiny</div>
+        <div class="ec-scroll-x">
+          <table class="w-full text-sm md:text-base">
+            <tbody>
+              {
+                HODINY.map((h) => (
+                  <tr class="border-b border-white/25 last:border-0">
+                    <td class="py-3 pr-4 t-sub whitespace-nowrap">{h.den}</td>
+                    <td class="py-3 t-num font-semibold whitespace-nowrap">{h.cas}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <span class="nb-tag bg-white !text-ec-ink">Otvorené aj v sobotu</span>
+          <span class="nb-tag bg-white !text-ec-ink">Otvorené aj cez sviatky</span>
+        </div>
+        <p class="mt-4 text-sm md:text-base opacity-95 max-w-prose">
+          Potrebujete prísť neskôr? Od 19:00 do 23:00 sa dá dohodnúť individuálny termín —
+          stačí zavolať.
+        </p>
+      </section>
+
+      <!-- 4 · telefón a e-mail -->
+      <section class="mt-8 nb-card bg-ec-paper p-6 md:p-8">
+        <div class="t-sub text-xs opacity-60 mb-4">Telefón a e-mail</div>
+        <div class="flex flex-wrap gap-4">
+          <a href={KONTAKT.telHref} class="nb-btn text-base md:text-lg t-num">{KONTAKT.tel}</a>
+          <a href={`mailto:${KONTAKT.mail}`} class="nb-btn text-base md:text-lg !bg-ec-paper">
+            {KONTAKT.mail}
+          </a>
+        </div>
+        <p class="mt-5 text-sm opacity-70">
+          Doplnkové kontakty: <a href="tel:+421908731178" class="underline">0908 731 178</a>
+          {" · "}
+          <a href="mailto:trnava.stk@gmail.com" class="underline">trnava.stk@gmail.com</a>
+        </p>
+      </section>
+
+      <!-- 5 · sociálne siete -->
+      <section class="mt-8">
+        <div class="t-sub text-xs opacity-60 mb-3">Sociálne siete</div>
+        <p class="flex flex-wrap gap-x-6 gap-y-2 text-sm md:text-base">
+          <a href={KONTAKT.facebook} target="_blank" rel="noopener" class="underline">Facebook</a>
+          <a href={KONTAKT.instagram} target="_blank" rel="noopener" class="underline">Instagram</a>
+          <a href={KONTAKT.youtube} target="_blank" rel="noopener" class="underline">YouTube</a>
+        </p>
+      </section>
+
+      <!-- 6 · CTA rezervácia -->
+      <section class="mt-10 nb-card bg-ec-green text-white p-6 md:p-8">
+        <div class="t-display text-2xl md:text-3xl">Radšej si dohodnite termín</div>
+        <p class="mt-2 text-white/90 max-w-xl">
+          Rezerváciu si vybavíte online za pár sekúnd. Bez rezervácie vás obslúžime tiež,
+          len si možno chvíľu počkáte.
+        </p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href={REZERVACIA} class="nb-btn text-sm">Rezervovať termín</a>
+          <a href={KONTAKT.telHref} class="nb-btn text-sm !bg-ec-paper t-num">{KONTAKT.tel}</a>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+</Web>

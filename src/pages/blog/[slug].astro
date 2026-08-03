@@ -26,7 +26,12 @@ const dalsie = vsetky
   .slice(0, 3);
 ---
 
-<Web titul={d.titulSeo} popis={d.popis}>
+{/* Prázdny článok (0 slov vo WP) drží URL, ale do indexu nesmie ani po prepnutí domény. */}
+<Web
+  titul={d.titulSeo}
+  popis={d.popis}
+  robots={d.prazdny ? "noindex, nofollow" : undefined}
+>
   <article>
     <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
       <div class="max-w-[820px] mx-auto px-4 py-12 md:py-16">

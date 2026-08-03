@@ -10,7 +10,7 @@ export const FIRMA = {
   tel: "033 202 02 11",
   telHref: "tel:0332020211",
   mail: "stk@easycheck.sk",
-  hodiny: "Po–Pia 07:00–22:00 · víkendy a sviatky",
+  hodiny: "Po–Pia 07:00–19:00 · So 07:00–13:00 · sviatky 07:00–15:00",
   recenzie: 5542,
   hodnotenie: "4,8",
 };
@@ -96,7 +96,7 @@ export const PONUKA = [
     nadpis: "Bez byrokracie",
     text: "Nestresujte sa s prihlasovaním, stačí jeden podpis a o všetko sa postaráme my!",
     cta: "Viac o službe",
-    href: "/prihlasovanie-vozidiel",
+    href: "/sluzby/#prihlasovanie",
     kat: "easy" as Kat,
   },
   {

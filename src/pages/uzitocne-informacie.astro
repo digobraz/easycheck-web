@@ -1,0 +1,56 @@
+---
+/**
+ * Rozcestník /uzitocne-informacie/ — jedna obrazovka, žiadny súvislý text.
+ * 1. H1 + veľký chat placeholder (chat sa v tejto dávke nerobí, len komponent).
+ * 2. Statický blok o tlačivách (admin panel na ne príde neskôr).
+ * 3. Nenápadný <details> so 7 stránkami MIMO_MENU — jediná cesta k nim z webu,
+ *    preto skutočné <a href>, nikdy nie JS toggle.
+ */
+import Web from "../layouts/Web.astro";
+import ChatMiesto from "../components/ChatMiesto.astro";
+import { KONTAKT, MIMO_MENU } from "../data/firma";
+---
+
+<Web
+  titul="Užitočné informácie | Easy Check Trnava"
+  popis="Opýtajte sa na STK, EK alebo KO. Tlačivá, lehoty, predpisy aj kategórie vozidiel nájdete tu — telefonicky alebo mailom vám poradíme hneď."
+>
+  <div class="max-w-[1100px] mx-auto px-4 py-10 md:py-16">
+    <h1 class="t-display text-4xl md:text-6xl">Užitočné informácie</h1>
+
+    <div class="mt-6 md:mt-8">
+      <ChatMiesto velky />
+    </div>
+
+    <div class="nb-card bg-ec-paper p-5 md:p-6 mt-6 md:mt-8">
+      <div class="t-sub text-xs text-ec-ink/60">Tlačivá na stiahnutie</div>
+      <p class="mt-2 text-sm md:text-base">
+        Tlačivá pripravujeme. Zatiaľ vám ich radi pošleme mailom na{" "}
+        <a href={`mailto:${KONTAKT.mail}`} class="underline underline-offset-2"
+          >{KONTAKT.mail}</a
+        >, alebo si ich vyzdvihnete priamo na stanici. Zavolajte nám na{" "}
+        <a href={KONTAKT.telHref} class="underline underline-offset-2">{KONTAKT.tel}</a>.
+      </p>
+    </div>
+
+    <details class="mt-8 md:mt-10">
+      <summary
+        class="cursor-pointer list-none inline-flex items-center gap-1.5 text-sm text-ec-ink/60 hover:text-ec-ink underline underline-offset-2 select-none"
+      >
+        Alebo si to prečítaj celé →
+      </summary>
+      <ul class="mt-4 flex flex-col gap-2 max-w-[560px]">
+        {
+          MIMO_MENU.map((s) => (
+            <li>
+              <a href={s.h} class="text-sm underline underline-offset-2">
+                {s.t}
+              </a>
+              <span class="text-sm text-ec-ink/50"> — {s.pod}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
+  </div>
+</Web>

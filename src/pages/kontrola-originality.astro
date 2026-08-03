@@ -1,0 +1,95 @@
+---
+/**
+ * /kontrola-originality/ — jedna zo 7 stránok mimo menu, ale s vlastným dopytom.
+ * Linkuje sa sem zo /sluzby/ (dlaždica "Kontrola originality"), preto má okrem
+ * vysvetlenia aj vlastnú (menšiu) výzvu na objednanie — veľký zelený CTA
+ * na konci dodáva layout InfoStranka, tu sa nepridáva ďalší veľký blok.
+ * Zdroj textu: plan/wp-texty/kontrola-originality.md (bez pätičky WP).
+ */
+import InfoStranka from "../layouts/InfoStranka.astro";
+import Akordeon from "../components/Akordeon.astro";
+
+/** Rezervácia konkrétne na kontrolu originality (iný kalendár než bežná REZERVACIA v firma.ts). */
+const REZERVACIA_KO = "https://klasik.as.me/KLASIK-OSOBNY-AUTOMOBIL-Kontrola-originality";
+---
+
+<InfoStranka
+  titul="Kontrola originality Trnava | Easy Check"
+  popis="Kontrola originality (KO) overí pravosť vozidla a jeho dokladov, na počkanie do 60 minút. Potrebná pri dovoze, vývoze aj zmene údajov v evidencii vozidiel."
+  h1="Kontrola originality"
+  odpoved="Kontrola originality overuje pravosť vozidla a jeho dokladov — či vozidlo nebolo neoprávnene pozmenené alebo odcudzené — a robíme ju na počkanie, približne za hodinu."
+  zdroj="vyhlášky č. 139/2018 Z. z."
+>
+  <!-- vlastná výzva na objednanie — menšia než záverečný CTA z layoutu -->
+  <div class="nb-card bg-ec-red text-white p-5 mb-8 flex flex-wrap items-center gap-4 justify-between">
+    <p class="text-sm md:text-base">
+      Cenu kontroly originality nájdete v <a href="/cennik/#ko" class="underline font-semibold hover:no-underline">cenníku</a>.
+    </p>
+    <a href={REZERVACIA_KO} class="nb-btn text-sm !bg-ec-paper !text-ec-ink shrink-0">Rezervovať termín KO</a>
+  </div>
+
+  <Akordeon otazka="Kedy kontrolu originality potrebujete" otvorene>
+    <p>
+      Kontrola originality je proces overovania pravosti vozidla a jeho dokladov. Skontrolujeme,
+      či sú všetky údaje o vozidle správne a či vozidlo nebolo neoprávnene pozmenené. Potrebná je
+      pri dovoze vozidla zo zahraničia, pri vývoze vozidla alebo pri zmene údajov v evidencii
+      vozidiel. Vykonávame ju pre všetky druhy vozidiel.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Čo kontrola originality overuje">
+    <p>Náš kvalifikovaný personál sa pri kontrole originality venuje týmto úkonom:</p>
+    <ul>
+      <li>
+        Overenie identifikátorov vozidla a jeho dokladov vrátane merania a nedeštruktívneho
+        skúmania, aby sa zistilo, či nedošlo k neoprávneným zásahom.
+      </li>
+      <li>Porovnanie údajov na vozidle s údajmi v dokladoch a dostupných databázach.</li>
+      <li>
+        Kontrola údajov v evidencii vozidiel — či vozidlo nie je odcudzené alebo či sa
+        nepoužívajú falošné tabuľky s evidenčným číslom.
+      </li>
+    </ul>
+    <p>Kontrola trvá približne 60 minút.</p>
+  </Akordeon>
+
+  <Akordeon otazka="Čo si priniesť">
+    <p><strong>Vozidlo prihlásené do evidencie v Slovenskej republike:</strong></p>
+    <ul>
+      <li>Preukaz totožnosti vodiča</li>
+      <li>Osvedčenie o evidencii časť I a II</li>
+    </ul>
+    <p><strong>Vozidlo prihlásené do evidencie v inej krajine (dovezené vozidlá):</strong></p>
+    <ul>
+      <li>Preukaz totožnosti vodiča</li>
+      <li>Doklad o nadobudnutí vozidla (faktúra, kúpna zmluva, darovacia zmluva a pod.)</li>
+      <li>Osvedčenie o evidencii z krajiny pôvodu alebo zo štátu, v ktorom bolo vozidlo evidované</li>
+      <li>
+        Doklad o vyradení vozidla z evidencie v štáte, kde bolo vozidlo evidované (ak tento
+        záznam nie je uvedený v osvedčení o evidencii)
+      </li>
+    </ul>
+    <p><strong>Vozidlo ešte neprihlásené do evidencie (dovezené nové vozidlá):</strong></p>
+    <ul>
+      <li>Preukaz totožnosti vodiča</li>
+      <li>Doklad o nadobudnutí vozidla (faktúra, kúpna zmluva, darovacia zmluva a pod.)</li>
+      <li>Čestné vyhlásenie, že vozidlo nie je a nebolo prihlásené do evidencie v inom štáte</li>
+      <li>Osvedčenie o zhode COC alebo doklad o udelení schválenia v štáte EÚ</li>
+    </ul>
+    <p>
+      Pre ďalšie špecifikácie dokladov potrebných v iných prípadoch si pozrite vyhlášku
+      č. 139/2018 Z. z., alebo nás kontaktujte telefonicky či emailom — poradíme.
+    </p>
+  </Akordeon>
+
+  <Akordeon otazka="Súvisiace služby">
+    <p>
+      <strong>Prihlásenie vozidla.</strong> Celý proces prihlásenia či prehlásenia vozidla
+      vybavíme za vás — <a href="/sluzby/#prihlasovanie" class="underline">viac o tejto službe</a>.
+    </p>
+    <p>
+      <strong>Vyrazenie VIN čísla.</strong> Vyrazíme náhradné identifikačné číslo vozidla (VIN)
+      pre všetky kategórie vozidiel.
+    </p>
+  </Akordeon>
+</InfoStranka>
