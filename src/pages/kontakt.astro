@@ -32,7 +32,6 @@ const jsonLd = {
   address: {
     "@type": "PostalAddress",
     streetAddress: KONTAKT.ulica,
-    postalCode: KONTAKT.psc,
     addressLocality: KONTAKT.mesto,
     addressCountry: "SK",
   },
@@ -44,7 +43,7 @@ const jsonLd = {
 };
 ---
 
-<Web titul="Kontakt — Easy Check STK Trnava, Farárske 27" popis="Easy Check, stanica technickej kontroly Trnava, Farárske 27. Telefón, e-mail, otváracie hodiny, mapa a online rezervácia termínu.">
+<Web titul="Kontakt — Easy Check STK Trnava, Technická ulica" popis="Easy Check, stanica technickej kontroly Trnava, Technická ulica, smer Dolná Krupá. Telefón, e-mail, otváracie hodiny, mapa a rezervácia.">
   <article>
     <!-- 1 · hlavička -->
     <header class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
@@ -77,7 +76,7 @@ const jsonLd = {
           <div class="border-t-[var(--stroke)] lg:border-t-0 lg:border-l-[var(--stroke)] border-ec-ink">
             <iframe
               src={KONTAKT.mapaEmbed}
-              title="Mapa — Easy Check STK Trnava, Farárske 27"
+              title="Mapa — Easy Check STK Trnava, Technická ulica"
               loading="lazy"
               class="w-full h-[280px] lg:h-full min-h-[280px] block"
             ></iframe>

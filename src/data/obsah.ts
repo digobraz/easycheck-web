@@ -6,7 +6,7 @@
 export const FIRMA = {
   nazov: "Easy Check",
   popis: "Stanica technickej kontroly Trnava",
-  adresa: "Farárske 27, 917 00 Trnava",
+  adresa: "Technická ulica, Trnava (smer Dolná Krupá)",  // Farárske 27 = stará adresa (Matej 4.8.2026)
   tel: "033 202 02 11",
   telHref: "tel:0332020211",
   mail: "stk@easycheck.sk",

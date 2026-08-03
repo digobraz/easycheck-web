@@ -17,7 +17,7 @@ import { KONTAKT, HODINY, MENU, REZERVACIA } from "../data/firma";
       <div class="t-sub text-xs text-ec-yellow mb-3">Kontakt</div>
       <address class="not-italic text-sm space-y-1 text-ec-paper/85">
         <div>{KONTAKT.ulica}</div>
-        <div>{KONTAKT.psc} {KONTAKT.mesto}</div>
+        <div>{KONTAKT.mesto} · {KONTAKT.orientacia}</div>
         <div><a href={KONTAKT.telHref} class="hover:text-ec-yellow">{KONTAKT.tel}</a></div>
         <div><a href={`mailto:${KONTAKT.mail}`} class="hover:text-ec-yellow">{KONTAKT.mail}</a></div>
         <div>

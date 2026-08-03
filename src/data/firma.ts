@@ -1,22 +1,27 @@
 /**
  * Zdroj pravdy pre kontaktné údaje, otváracie hodiny a menu nového webu.
- * Hodnoty sú z vstupy/MASTERPROMPT.md §4 a §5 (profil firmy 2026) — NIE z WordPressu.
+ * Hodiny z vstupy/MASTERPROMPT.md §5 (profil firmy 2026) — NIE z WordPressu.
+ *
+ * ⚠️ ADRESA: platí TECHNICKÁ ULICA (Matej, 4. 8. 2026). Stará adresa „Farárske 27",
+ * ktorú nesie MASTERPROMPT §4, časť starého webu a staré články, je NEPLATNÁ.
+ * Číslo popisné na Technickej zatiaľ nemáme → uvádza sa ulica + orientačný bod.
  * Hero prototyp (WEB-hero/prototyp/live.html) drží tie isté hodiny 07:00–19:00.
  */
 
 export const KONTAKT = {
   nazov: "Easy Check",
   popis: "Stanica technickej kontroly Trnava",
-  ulica: "Farárske 27",
-  psc: "917 00",
+  ulica: "Technická ulica",
   mesto: "Trnava",
-  adresa: "Farárske 27, 917 00 Trnava",
+  orientacia: "smer Dolná Krupá",
+  adresa: "Technická ulica, Trnava",
   tel: "033 20 20 211",
   telHref: "tel:+421332020211",
   mail: "stk@easycheck.sk",
   mapa: "https://maps.app.goo.gl/5rPigU95M78qd6Ju9",
+  // embed cez presné súradnice prevádzky — názov ulice sa v mapách líši, bod nie
   mapaEmbed:
-    "https://www.google.com/maps?q=Far%C3%A1rske%2027,%20917%2001%20Trnava&output=embed",
+    "https://www.google.com/maps?q=48.4174872,17.5822691&z=16&output=embed",
   facebook: "https://www.facebook.com/easycheckstk",
   instagram: "https://www.instagram.com/easycheck_tt/",
   youtube: "https://www.youtube.com/@easycheck-stktrnava3471",
