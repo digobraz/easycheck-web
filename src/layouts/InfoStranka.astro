@@ -50,7 +50,10 @@ const ine = MIMO_MENU.filter((s) => s.h !== cesta);
       <ChatMiesto />
 
       <!-- 3 · akordeóny s celým pôvodným textom -->
-      <div class="mt-10 md:mt-14 grid gap-0">
+      <!-- grid-cols-[minmax(0,1fr)]: bez toho má položka gridu min-width:auto a široká
+           tabuľka v akordeóne roztlačí celú stránku do vodorovného scrollu (merané na 360 px).
+           Takto sa scrolluje len tabuľka vo svojom .ec-scroll-x. -->
+      <div class="mt-10 md:mt-14 grid grid-cols-[minmax(0,1fr)] gap-0">
         <slot />
       </div>
 
