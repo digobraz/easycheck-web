@@ -1,7 +1,8 @@
 # STAV — NOC 1 (3. → 4. 8. 2026)
 
 **Web beží:** https://stk.digobraz.sk · **repo:** `vystupy/stk-web/` · celý web je `noindex`
-**Postavené:** 61 stránok · **overené naživo** o 23:20, nie „malo by to fungovať"
+**Postavené:** 67 stránok · **overené naživo** o 23:52, nie „malo by to fungovať"
+**Doplnené po tvojej správe (4. 8., 00:0x):** oprava adresy · živá navigácia z homepage · 5 chýbajúcich URL
 
 ---
 
@@ -21,7 +22,7 @@
 | **C) 7 stránok mimo menu** | ✅ | jednotný layout: veta → chat placeholder → akordeóny → pätička zdroja. V navigácii nie sú |
 | **D) `/uzitocne-informacie/`** | ✅ | chat placeholder + tlačivá + jeden nenápadný riadok „Alebo si to prečítaj celé →" na 7 stránok |
 | **E) Hero — adresa + mapa** | ✅ | v modrom info bloku pod glóbusom, editované v prototype `WEB-hero/prototyp/live.html` |
-| `npm run build` | ✅ | prejde, 61 stránok |
+| `npm run build` | ✅ | prejde, 67 stránok |
 | Mobil 360 px | ✅ | 14 stránok premeraných s **rozbalenými** akordeónmi, nikde vodorovný scroll |
 
 Menu má presne 7 položiek: Domov · Cenník · Služby · Info · Blog · Kontakt + REZERVOVAŤ.
@@ -31,11 +32,12 @@ Menu má presne 7 položiek: Domov · Cenník · Služby · Info · Blog · Kont
 ## 🔴 Čo som našiel a čo s tým treba spraviť
 
 ### 1. Starý web má v obsahu vsunutý spam (nemecké casino texty)
-Nie je to len 6 spam kategórií v blogu — **cudzí text je priamo v tele stránok**:
-`kontrola-originality`, `lehoty-stk`, `platne-predpisy-stk`, `povinna-vybava`, `priprava-na-stk`.
-11 blokov, zoznam v **`plan/SPAM-NALEZY.md`**.
-Do nového webu sa nepreniesol ani jeden — pri konverzii sa odfiltroval.
-**Pre teba:** niekto má prístup do WP a píše ti do stránok. Prezrieť používateľov, nielen zmazať kategórie.
+Cudzí text je priamo v tele 5 stránok, nielen v 6 spam kategóriách. **Na easycheck.sk je
+to stále živé** (overené 4. 8. 2026) a beží to tam **od februára**. Injektáž prebehla
+**5. 2. a 17. 2. 2026** — 17. 2. sa naraz zmenilo aj všetkých 42 článkov a vznikol
+prázdny článok. Odkazy vedú na `gamrfirst-casino.ch`.
+Celý rozbor vrátane toho, čo s tým a čo na to potrebujem: **`plan/SPAM-NALEZY.md`**.
+**Sám to opraviť neviem — do WordPressu nemám žiadny prístup.**
 
 ### 2. Hero mal nefunkčné telefónne číslo a mŕtvu navigáciu
 - **Adresa: platí TECHNICKÁ ULICA** (Matej, 4. 8. 2026). V noci som ju omylom prepísal na
@@ -68,16 +70,16 @@ Ne zatvorené, sviatky `07:00–15:00`, na dohodu `19:00–23:00`. Hero už mal 
 **Zámerne mimo zadania** (bolo v „⛔ Čo NErobiť"): chat, admin panel, scrapery TESTEK/SLOVDEKRA,
 301 presmerovania, prepnutie na ostrú doménu.
 
-**Chýbajúce staré URL — 5 stránok, ktoré tento web ešte nemá.** Na testovacej doméne vracajú 404,
-pred prepnutím na ostrú doménu musia existovať (inak strata pozícií a rozbité odkazy):
+**Chýbajúcich 5 URL je už DOSTAVANÝCH** (4. 8. nadránom), takže z 65 starých adries má
+teraz cieľ **všetkých 65**:
 
-| URL | Prečo je dôležitá |
+| URL | Stav |
 |---|---|
-| `/rezervacia/` | **95 interných odkazov = najlinkovanejšia URL celého webu** |
-| `/koleso-stastia/` | 47 odkazov, živá mechanika. CTA na ňu som zo `/sluzby/` dočasne vybral, aby nevracalo 404 |
-| `/rezervacia-vip/` | živý VIP flow |
-| `/dakujeme/` | potvrdenie po formulári (má byť noindex) |
-| `/brand-manual/` | má byť noindex |
+| `/rezervacia/` | ✅ 95 interných odkazov, 72 unikátnych Acuity odkazov prenesených 1:1 |
+| `/koleso-stastia/` | ✅ 3 kroky + 10 cien, CTA vrátené aj do `/sluzby/` |
+| `/rezervacia-vip/` | ✅ 35 VIP Acuity odkazov |
+| `/dakujeme/` | ✅ trvalý noindex |
+| `/brand-manual/` | ✅ trvalý noindex |
 
 `/ochrana-osobnych-udajov/` som postavil, ale **prevzatú 1:1** (137 slov + odkaz na PDF).
 Právny text som nevymýšľal — čaká na teba, plán ho má prepísať.
@@ -104,7 +106,20 @@ Právny text som nevymýšľal — čaká na teba, plán ho má prepísať.
    (overenie EK). Boli len na starej `/uzitocne-informacie/`. Kam s nimi — do chatu, alebo na stránku?
 9. **12 častých otázok** zo starej `/uzitocne-informacie/` (pokuty, výmena ŠPZ, dezén, OBD, zadržanie
    osvedčenia) sa nikam nezmestilo — je to podklad pre chat, nie pre stránku. Potvrdiť, že tam idú.
-10. **Fáza 0 z plánu stále čaká na teba:** zmazať 6 spam kategórií vo WP, prezrieť WP používateľov,
+10. **Acuity odkazy, ktoré vedú na to isté** — na starom webe majú rôzne položky rovnaký
+    rezervačný odkaz: „Nákladná súprava" = „Nákladná súprava CEMT" = „Nákladná súprava ADR" ·
+    „Traktorová súprava" = „Terénna súprava" · „Nákladné do r. 1995" = „Prípojné vozidlá".
+    Preniesol som ich verbatim, ale over ich v Acuity — zlý odkaz = zákazník objedná zlú kontrolu.
+11. **VIP rezervácia:** v exporte nemá sekciu STK (len KO, tachograf, admin, ADR/CEMT) a nikde
+    nie je napísané, čím sa VIP líši. Doplniť, alebo to nechať ako je?
+12. **Brand manuál** nesie starú paletu (žltá `#FEFF00`) a písma Anton + Exo, kým web má
+    zamknutú žltú `#FFE600` a Saira Condensed + DM Sans. Dal som na stránku poznámku,
+    ale to je náplasť — treba rozhodnúť, ktorá verzia platí.
+13. **Hero promo „Opakovaná kontrola za 5 €"** nesedí s cenníkom 2026 (opakovaná TK osobné
+    20 € v deň / 35 € do 60 dní). Je to akcia, doplatok, alebo starý text?
+14. **10 článkov má v texte starú adresu „Farárske 27"** (napr. `plati-este-odklad-stk`,
+    `prezuvanie-pneumatik...`). Články sú prevzaté 1:1 — mám ich hromadne opraviť na Technickú?
+15. **Fáza 0 z plánu stále čaká na teba:** zmazať 6 spam kategórií vo WP, prezrieť WP používateľov,
     export Google Search Console za 16 mesiacov (bez neho sa nedá spraviť 301 mapa).
 
 ---
