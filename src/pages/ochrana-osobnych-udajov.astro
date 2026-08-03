@@ -1,0 +1,38 @@
+---
+/**
+ * Prevzaté 1:1 zo starého webu (137 slov + odkaz na PDF).
+ * Plán redizajnu hovorí „prepísať — 137 slov nestačí“; text sa v NOCI 1 nevymýšľal,
+ * lebo je to právny dokument. Čaká na Mateja, dovtedy stránka aspoň existuje
+ * a odkazuje na platné PDF, ktoré firma zverejnila.
+ */
+import Web from "../layouts/Web.astro";
+import { KONTAKT } from "../data/firma";
+
+const PDF =
+  "https://easycheck.sk/wp-content/uploads/2020/03/Informácia-o-spracúvaní-osobných-údajov.pdf";
+---
+
+<Web
+  titul="Ochrana osobných údajov — Easy Check STK Trnava"
+  popis="Ako Easy Check STK Trnava spracúva osobné údaje zákazníkov. Kompletné znenie informácie o spracúvaní osobných údajov na stiahnutie v PDF."
+>
+  <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+    <div class="max-w-[860px] mx-auto px-4 py-12 md:py-16">
+      <h1 class="t-display text-4xl md:text-6xl">Ochrana osobných údajov</h1>
+      <p class="mt-5 text-xl max-w-2xl">
+        Súkromie zákazníkov si vážime. Nižšie nájdete dokument o ochrane osobných údajov,
+        kde sa dozviete, ako s údajmi zaobchádzame.
+      </p>
+    </div>
+  </header>
+
+  <div class="max-w-[860px] mx-auto px-4 py-10 md:py-14">
+    <a href={PDF} target="_blank" rel="noopener" class="nb-btn">Znenie dokumentu v PDF →</a>
+
+    <p class="ec-proza mt-8">
+      Otázky k spracúvaniu údajov vám zodpovieme na
+      <a href={`mailto:${KONTAKT.mail}`}>{KONTAKT.mail}</a> alebo na telefónnom čísle
+      <a href={KONTAKT.telHref}>{KONTAKT.tel}</a>.
+    </p>
+  </div>
+</Web>

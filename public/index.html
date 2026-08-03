@@ -314,6 +314,14 @@
     text-shadow:0 0 12px rgba(255,214,0,.9), 0 0 28px rgba(255,214,0,.5), 0 1px 6px rgba(0,0,0,.9);
   }
   .addr b { color:#fff; text-shadow:0 0 14px rgba(255,245,200,.95); }
+  /* .addr je od 3.8.2026 odkaz na mapu — blok bez podčiarknutia, hover len zosilní žiaru. */
+  a.addr { display:block; text-decoration:none; transition:filter .15s ease, transform .15s ease; }
+  a.addr:hover { filter:brightness(1.15); transform:translateY(-1px); }
+  a.addr:focus-visible { outline:2px solid #FFE600; outline-offset:3px; }
+  .addr-map {
+    display:block; margin-top:4px; font-size:8.5px; letter-spacing:.10em;
+    color:#9fe6ff; text-shadow:0 0 10px rgba(24,182,228,.85);
+  }
 
   /* ---- RIADOK hodiny + planéta vedľa seba (Matej: hodiny doľava, uvoľní miesto vpravo) ---- */
   .frm-row { display:flex; width:100%; gap:6%; align-items:stretch; }
@@ -1155,7 +1163,7 @@
           </div>
         </div>
         <div class="hblk tel-blk" style="--ry:21deg; --rx:-2.5deg; --w:74%">
-          <a class="tel" href="tel:033202021">033 20 20 211</a>
+          <a class="tel" href="tel:+421332020211">033 20 20 211</a>
         </div>
       </div>
     </aside>
@@ -1215,11 +1223,17 @@
               <i class="dot" style="--dx:90%; --dy:78%; --dd:2.1s"></i>
               <i class="dot" style="--dx:50%; --dy:4%;  --dd:1.7s"></i>
             </div>
-            <div class="addr">Technická ul.<br><b>Trnava</b></div>
+            <!-- adresa je odkaz na Google Mapy (Matej 3.8.2026: hero má niesť adresu, nielen mesto).
+     Ulica opravená: stanica je na Farárskej 27, nie na Technickej. -->
+            <a class="addr" href="https://maps.app.goo.gl/5rPigU95M78qd6Ju9"
+               target="_blank" rel="noopener" aria-label="Farárske 27, Trnava — zobraziť na mape">
+              Farárske 27<br><b>Trnava</b>
+              <span class="addr-map">Zobraziť na mape →</span>
+            </a>
           </div>
         </div>
         <div class="sf sf-tel">
-          <a class="tel" href="tel:033202021">033 20 20 211</a>
+          <a class="tel" href="tel:+421332020211">033 20 20 211</a>
         </div>
       </div>
     </div>
