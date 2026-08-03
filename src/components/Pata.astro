@@ -1,0 +1,57 @@
+---
+import { KONTAKT, HODINY, MENU, REZERVACIA } from "../data/firma";
+---
+
+<footer class="bg-ec-ink text-ec-paper mt-24">
+  <div class="max-w-[1200px] mx-auto px-4 py-14 grid gap-10 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <div class="t-display text-3xl text-ec-yellow">Easy Check</div>
+      <p class="mt-2 text-sm text-ec-paper/80 max-w-sm">
+        Stanica technickej kontroly Trnava. Technická, emisná, kontrola originality
+        aj tachografy — všetko na jednom mieste.
+      </p>
+      <a href={REZERVACIA} class="nb-btn mt-6 text-sm">Rezervovať termín</a>
+    </div>
+
+    <div>
+      <div class="t-sub text-xs text-ec-yellow mb-3">Kontakt</div>
+      <address class="not-italic text-sm space-y-1 text-ec-paper/85">
+        <div>{KONTAKT.ulica}</div>
+        <div>{KONTAKT.psc} {KONTAKT.mesto}</div>
+        <div><a href={KONTAKT.telHref} class="hover:text-ec-yellow">{KONTAKT.tel}</a></div>
+        <div><a href={`mailto:${KONTAKT.mail}`} class="hover:text-ec-yellow">{KONTAKT.mail}</a></div>
+        <div>
+          <a href={KONTAKT.mapa} class="underline underline-offset-2 hover:text-ec-yellow"
+            >Zobraziť na mape →</a
+          >
+        </div>
+      </address>
+    </div>
+
+    <div>
+      <div class="t-sub text-xs text-ec-yellow mb-3">Otvorené</div>
+      <dl class="text-sm space-y-1 text-ec-paper/85">
+        {
+          HODINY.map((h) => (
+            <div class="flex justify-between gap-3">
+              <dt>{h.den}</dt>
+              <dd class="t-num whitespace-nowrap">{h.cas}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <div class="border-t border-ec-paper/20">
+    <div
+      class="max-w-[1200px] mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-4 text-xs text-ec-paper/70"
+    >
+      <nav class="flex flex-wrap gap-4" aria-label="Pätička">
+        {MENU.map((n) => <a href={n.h} class="hover:text-ec-yellow">{n.t}</a>)}
+        <a href="/ochrana-osobnych-udajov/" class="hover:text-ec-yellow">Ochrana údajov</a>
+      </nav>
+      <div>© {new Date().getFullYear()} Easy Check · Global Partner Service</div>
+    </div>
+  </div>
+</footer>

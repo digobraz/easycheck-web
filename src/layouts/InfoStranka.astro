@@ -1,0 +1,91 @@
+---
+/**
+ * Jednotný layout 7 stránok MIMO menu (plan.html §02).
+ * Zhora nadol:
+ *   1. odpoveď JEDNOU vetou
+ *   2. miesto na chat (placeholder, chat sa zatiaľ nerobí)
+ *   3. akordeóny — celý pôvodný text z WP, zabalený ale v HTML
+ *   4. pätička zdroja
+ *
+ * Tieto stránky NIE SÚ v navigácii. Vedie na ne jeden riadok
+ * z /uzitocne-informacie/ — pre Google existujú presne ako doteraz.
+ */
+import Web from "./Web.astro";
+import ChatMiesto from "../components/ChatMiesto.astro";
+import { OVERENE_DNA, MIMO_MENU, KONTAKT, REZERVACIA } from "../data/firma";
+
+interface Props {
+  titul: string;
+  popis: string;
+  h1: string;
+  /** odpoveď jednou vetou — to najdôležitejšie, hneď hore */
+  odpoved: string;
+  /** napr. „zákona 106/2018 Z. z." */
+  zdroj: string;
+  overene?: string;
+}
+
+const { titul, popis, h1, odpoved, zdroj, overene = OVERENE_DNA } = Astro.props;
+const cesta = Astro.url.pathname.replace(/\/?$/, "/");
+const ine = MIMO_MENU.filter((s) => s.h !== cesta);
+---
+
+<Web titul={titul} popis={popis}>
+  <article>
+    <!-- 1 · odpoveď jednou vetou -->
+    <header class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+      <div class="max-w-[860px] mx-auto px-4 py-12 md:py-16">
+        <nav class="text-xs t-sub mb-5 flex items-center gap-2" aria-label="Omrvinky">
+          <a href="/uzitocne-informacie/" class="hover:underline">Info</a>
+          <span aria-hidden="true">/</span>
+          <span class="opacity-60">{h1}</span>
+        </nav>
+        <h1 class="t-display text-4xl md:text-6xl">{h1}</h1>
+        <p class="mt-5 text-xl md:text-2xl font-medium max-w-2xl">{odpoved}</p>
+      </div>
+    </header>
+
+    <div class="max-w-[860px] mx-auto px-4 py-10 md:py-14">
+      <!-- 2 · miesto na chat -->
+      <ChatMiesto />
+
+      <!-- 3 · akordeóny s celým pôvodným textom -->
+      <div class="mt-10 md:mt-14 grid gap-0">
+        <slot />
+      </div>
+
+      <!-- 4 · pätička zdroja -->
+      <p class="mt-8 text-sm opacity-70">
+        Podľa {zdroj} · overené {overene}
+      </p>
+
+      <div class="mt-10 nb-card bg-ec-green text-white p-6 md:p-8">
+        <div class="t-display text-2xl md:text-3xl">Nechce sa vám to lúštiť?</div>
+        <p class="mt-2 text-white/90 max-w-xl">
+          Zavolajte a technik vám to povie za pol minúty. Alebo si rovno rezervujte termín —
+          termín garantujeme do 24 hodín.
+        </p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href={KONTAKT.telHref} class="nb-btn text-sm">{KONTAKT.tel}</a>
+          <a href={REZERVACIA} class="nb-btn text-sm !bg-ec-paper">Rezervovať termín</a>
+        </div>
+      </div>
+
+      <nav class="mt-12" aria-label="Ďalšie informácie">
+        <div class="t-sub text-xs opacity-60 mb-3">Ďalej sa dočítate</div>
+        <ul class="grid gap-2 sm:grid-cols-2">
+          {
+            ine.map((s) => (
+              <li>
+                <a href={s.h} class="nb block px-4 py-3 nb-lift nb-shadow-sm">
+                  <span class="t-sub text-sm">{s.t}</span>
+                  <span class="block text-xs opacity-60 mt-0.5">{s.pod}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </article>
+</Web>

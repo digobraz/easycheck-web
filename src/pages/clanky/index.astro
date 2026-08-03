@@ -1,0 +1,94 @@
+---
+import { getCollection } from "astro:content";
+import Web from "../../layouts/Web.astro";
+import { KATEGORIE } from "../../data/firma";
+
+const clanky = (await getCollection("blog")).sort((a, b) => +b.data.datum - +a.data.datum);
+const pocet = (slug: string) =>
+  clanky.filter((c) => c.data.kategorie.includes(slug)).length;
+const datum = (d: Date) =>
+  d.toLocaleDateString("sk-SK", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<Web
+  titul="Blog Easy Check — články o STK, emisných a technike"
+  popis="Články zo stanice technickej kontroly Trnava: lehoty, povinná výbava, príprava na STK, oznamy a zaujímavosti zo sveta áut."
+>
+  <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+    <div class="max-w-[1100px] mx-auto px-4 py-12 md:py-16">
+      <h1 class="t-display text-4xl md:text-6xl">Blog</h1>
+      <p class="mt-4 text-lg md:text-xl max-w-2xl">
+        {clanky.length} článkov o kontrolách, technike a tom, čo sa oplatí vedieť skôr,
+        než prídete na stanicu.
+      </p>
+    </div>
+  </header>
+
+  <div class="max-w-[1100px] mx-auto px-4 py-10 md:py-14">
+    <div class="flex flex-wrap gap-2" role="group" aria-label="Filter kategórií">
+      <button class="nb-tag bg-ec-yellow" data-kat="vsetky" aria-pressed="true">
+        Všetky ({clanky.length})
+      </button>
+      {
+        KATEGORIE.map((k) => (
+          <button class="nb-tag bg-ec-paper" data-kat={k.slug} aria-pressed="false">
+            {k.nazov} ({pocet(k.slug)})
+          </button>
+        ))
+      }
+    </div>
+
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" id="ec-zoznam">
+      {
+        clanky.map((c) => (
+          <li class="ec-clanok" data-kat={c.data.kategorie.join(" ")}>
+            <a href={`/blog/${c.id}/`} class="nb-card nb-lift block h-full overflow-hidden">
+              {c.data.obrazok ? (
+                <img
+                  src={c.data.obrazok}
+                  alt=""
+                  loading="lazy"
+                  class="w-full h-44 object-cover border-b-[var(--stroke)] border-ec-ink"
+                />
+              ) : (
+                <div class="w-full h-44 bg-ec-cyan border-b-[var(--stroke)] border-ec-ink flex items-center justify-center">
+                  <span class="t-display text-4xl text-white/90">EC</span>
+                </div>
+              )}
+              <div class="p-4">
+                <div class="text-[11px] t-sub opacity-60">{datum(c.data.datum)}</div>
+                <h2 class="t-sub text-base mt-1 leading-tight normal-case tracking-normal">
+                  {c.data.title}
+                </h2>
+                <p class="mt-2 text-sm opacity-75 line-clamp-3">{c.data.popis}</p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Web>
+
+<script is:inline>
+  (() => {
+    const tlacidla = document.querySelectorAll("[data-kat]");
+    const polozky = document.querySelectorAll(".ec-clanok");
+    document.querySelectorAll("button[data-kat]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const k = b.getAttribute("data-kat");
+        document.querySelectorAll("button[data-kat]").forEach((x) => {
+          const akt = x === b;
+          x.setAttribute("aria-pressed", String(akt));
+          x.classList.toggle("bg-ec-yellow", akt);
+          x.classList.toggle("bg-ec-paper", !akt);
+        });
+        polozky.forEach((p) => {
+          const ok = k === "vsetky" || (p.getAttribute("data-kat") || "").split(" ").includes(k);
+          p.style.display = ok ? "" : "none";
+        });
+      })
+    );
+    void tlacidla;
+  })();
+</script>

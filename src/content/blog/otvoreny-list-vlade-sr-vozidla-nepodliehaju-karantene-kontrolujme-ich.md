@@ -1,0 +1,38 @@
+---
+title: "Otvorený List Vláde SR – Vozidlá Nepodliehajú Karanténe, Kontrolujme Ich!"
+titulSeo: "Otvorený List Vláde SR"
+popis: "Vážený p. Premiér , Minister Dopravy, Minister Zdravotníctva, Minister hospodárstva SR. Chceli by sme Vás poprosiť o prehodnotenie zatvorenia našej…"
+datum: 2020-03-24
+kategorie: ["uzitocne-info-a-upozornenia"]
+obrazok: null
+zdroj: "https://easycheck.sk/blog/otvoreny-list-vlade-sr-vozidla-nepodliehaju-karantene-kontrolujme-ich/"
+prazdny: false
+---
+Vážený p. Premiér , Minister Dopravy, Minister Zdravotníctva, Minister hospodárstva SR.
+
+**Chceli by sme Vás poprosiť o prehodnotenie zatvorenia našej stanice STK z nasledovných dôvodov:**
+
+**Chceli by sme Vás poprosiť o prehodnotenie zatvorenia našej stanice STK z nasledovných dôvodov:**
+
+1. Autoservisy a pneuservisy sú otvorené. Počet ľudí v autoservise a STK je rovnaký. Styk so zákazníkmi dokážeme minimalizovať na 0.
+2. Naša spoločnosť má vytvorený rezervačný systém na presnú hodinu . Z tohoto dôvodu už dlhodobo zamedzujeme hromadeniu sa ľudí na jednom mieste. Máme dve samostatné kontrolné linky a tretiu sa snažíme aktuálne uviesť do chodu. Sme mladá STK , ktorá si hľadá cestu k zákazníkom. Môžte si pozrieť naše recenzie, na ktoré sme právom hrdý.
+3. Počas aktuálneho zatvorenia sme vydezinfikovali celú stanicu , zabezpečili zamestnancom ochranné pracovné prostriedky a prijali zvýšené hygienické opatrenia v spoločnosti.
+4. Zriadili sme dočasnú čakáreň v nevyužitom mestskom autobuse, ktorá bude 2 krát denne vydezinfikovaná ozónovým čistením. Zamedzili sme tak kontakt so zákazníkom. Jediný pracovník , ktorý príde do styku so zákazníkom bude vybavený ochrannými prostriedkami podobne ako sú v nemocnici vybavení lekári. Máme uzavretý areál mimo mesta, kde budeme preberať vozidlá od našich zákazníkov po 2 vozidlách dovnútra aby neprišlo k zhromažďovaniu ľudí .
+5. Zabezpečili sme čistenie všetkých vozidiel parným prístrojom pred vstupom na STK .
+6. Sme vybavený platobnými terminálmi. Taktiež si klient môže zaplatiť za službu cez internet banking.
+7. Ponúkame nadštandardné služby ako vyzdvihnutie vozidla u zákazníka doma , dovoz a odvoz na STK. Prakticky bez fyzického kontaktu so zákazníkom.
+8. Občania nám neustále vyvolávajú, kedy konečne otvoríme. **Prečítali si totiž vyjadrenie ministerstva dopravy bývalej vlády , ktorá len odporučila okresným úradom nesankcionovať ľudí a firmy v tomto období .** V prípade sankcie sa majú odvolať. Obyčajný človek sa nevie odvolať sám proti rozhodnutiu okresného úradu a právnici sú v dnešnej dobe veľmi drahý a zaneprázdnený. Chcú si splniť túto povinnosť riadne a včas nakoľko sú si vedomí , že ich to počká a boja sa dlhých čakacích dôb aké zažili už v minulosti.
+9. **Dopravcovia nám neustále volajú , že im odmietajú jazdiť vodiči na neskontrolovaných vozidlách.** Ďalším problémom je pre dopravcu , **že v prípade nehody a neplatnej STK nedostane od poisťovne ani 1 EURO** a dokonca si všetku spôsobenú škodu aj na iných predmetoch budú regresovať u nich. Kamióny nám predsa zabezpečujú potravinové zásoby a vodiči sa chcú cítiť bezpečne a takisto aj majitelia firiem. Nechcú zbytočne riskovať a hazardovať so zdravím svojich vodičov ako aj ostatných účastníkov cestnej premávky . Kamión má predsa celkovú hmotnosť 40 ton. V zlom technickom stave je horší ako nabitá zbraň. Mohli sme sa v minulosti presvedčiť pri rôznych autonehodách alebo teroristických útokoch.
+10. V minulosti keď prišlo k zmene zákona boli čakacie doby na STK niekoľko týždňov a ľudia sedávali pred stanicami od 3 hod rána aby sa dostali vôbec na radu.
+11. Sme mladá STK stanica , ktorá je otvorená veľmi krátku dobu oproti iným, ktoré fungujú na trhu niekoľko desaťročí. Úplné zatvorenie je pre nás likvidačné. Máme úvery a leasingy , ktoré nebudeme schopní naďalej splácať. Taktiež sa bojíme o mzdy pre zamestnancov , ktoré musíme zabezpečiť v opačnom prípade by sme sa dopustili trestného činu nevyplatenia mzdy. V dnešnej dobe bolo veľmi ťažké a finančne náročné týchto zamestnancov nájsť a vyškoliť. Na školenia sme čakali celé týždne až mesiace. Nároky na technika sú vysoké čo sa týka vzdelania ale aj odbornosti a skúseností s automobilmi. Vyškoliť a zapracovať jedného zamestnanca do prevádzky nám trvalo celý kalendárny rok a finančný náklad na neho bol cca 35 000,- EUR. Zaplatili sme mu ako spoločnosť všetky predškolenia ,školenia , skúšky, a vodičské oprávnenia . Ak nám odíde budeme nútení zavrieť stanicu na niekoľko mesiacov , čo bude pre našu spoločnosť momentálne likvidačné. Doposiaľ spokojným zákazníkom skomplikujeme život a bude sa nám veľmi ťažko vysvetľovať situácia, pre ktorú sa tak stalo. **Opatrenie minulej vlády č. 113/2020 , ktoré z nášho pohľadu bolo unáhlené a nepreverili si situáciu v ostatných členských krajinách ohľadne STK.**  Je nám jasné , že im neišlo o obyčajných ľudí , malých a stredných podnikateľov.
+12. Medzinárodná organizácia CITA, ktorej sme členmi, zorganizovala minulý týždeň prieskum s cieľom zistiť, v ktorých štátoch sú kvôli epidémii ochorenia COVID-19 zatvorené STK. Aktuálna situácia je taká, že v časti európskych štátov kontroly vozidiel **stále prebiehajú**, patria medzi ne napr. **Dánsko, Fínsko, Holandsko, Maďarsko, Lotyšsko alebo Srbsko.** Mnohé z nich zaviedli opatrenia **znižujúce riziko nákazy**, ako je minimalizácia kontaktov personálu STK so zákazníkmi (objednávanie cez internet), individuálne ochranné prostriedky pre personál STK alebo dezinfekcia priestorov STK. Takto v súčasnosti prebiehajú kontroly vo **Švédsku, Írsku, Švajčiarsku, Poľsku alebo v Litve.** Sú štáty, kde úrady zatvorenie STK nenariadili, ale prevádzkovatelia môžu STK zatvoriť a túto možnosť aj využívajú **(Francúzsko, Rakúsko alebo Nemecko)**, často skôr kvôli menšiemu dopytu po kontrolách vyplývajúcemu z iných obmedzení dnešných dní (prekážky brániace voľnému pohybu osôb a vozidiel, preventívna domáca karanténa zamestnancov a ich rodín a pod.).K úplnému zatvoreniu STK, podobne ako na Slovensku, zatiaľ prišlo v pomerne malom počte štátov, napr. v **Španielsku alebo Slovinsku.**
+
+Pre zaujímavosť Južná Kórea, ktorá epidémiu úspešne prekonáva, má pravidlo, že zatvorená musí byť STK, ktorú navštívila infikovaná osoba. Dosiaľ sa tak podľa ich údajov stalo len v jedinom prípade, STK bola následne zatvorená na 3 dni.
+
+1. Aktuálne naša firma poskytuje pomoc pri rozvoze potravín pre seniorov nad 60 rokov v rámci Trnavy na firemných vozidlách.
+2. Ako konateľ spoločnosti si plne uvedomujem zodpovednosť za chod firmy ako aj zamestnancov a ich rodiny , ktorí mi veria a dúfajú , že situáciu zvládnem a vyriešim.
+3. V časoch keď prišlo k novele zákona a čakacie doby na termíny boli nekonečné, všetky ostatné STK štandardne zatvárali. Jedine naša STK bola otvorená pre občanov a firmy do neskorej noci či rána. Nikdy sme neodmietli pomoc firmám alebo občanom, ktorí nás o ňu žiadali. Túto skutočnosť si môžete overiť na poverenej technickej organizácii TESTEK alebo priamo na Ministerstve dopravy. Na výjazdových stretnutiach Ministerstva dopravy nás prosili pracovníci Ministerstva dopravy aby sme predĺžili otváracie hodiny. My sme im vždy plne vyhoveli. Teraz potrebujeme my pomoc od Vás.
+
+Veríme , že sme uviedli dostatok dôvodov na prehodnotenie aktuálnej situácie. Volili sme Vás všetkých z dôvodu , že nám svitá na lepšiu budúcnosť. Ako občanom tak aj nám podnikateľom. Stále veríme vo Vaše predvolebné sľuby , že budete pomáhať ľuďom a podnikateľom a nie oligarchom. Z tohoto dôvodu Vás ešte raz veľmi pekne prosíme o prehodnotenie celej situácie a Veríme, že pomôžete nám obyčajným ľuďom.
+
+**S pozdravom Ing. Jozef Moravčík konateľ – Easy Check**

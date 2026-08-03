@@ -1,0 +1,91 @@
+---
+import { getCollection, render } from "astro:content";
+import Web from "../../layouts/Web.astro";
+import { KATEGORIE, KONTAKT, REZERVACIA } from "../../data/firma";
+
+export async function getStaticPaths() {
+  const clanky = await getCollection("blog");
+  return clanky.map((c) => ({ params: { slug: c.id }, props: { clanok: c } }));
+}
+
+const { clanok } = Astro.props;
+const { Content } = await render(clanok);
+const d = clanok.data;
+
+const datum = d.datum.toLocaleDateString("sk-SK", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+const nazovKat = (s: string) => KATEGORIE.find((k) => k.slug === s)?.nazov ?? s;
+
+const vsetky = await getCollection("blog");
+const dalsie = vsetky
+  .filter((c) => c.id !== clanok.id && c.data.kategorie.some((k) => d.kategorie.includes(k)))
+  .sort((a, b) => +b.data.datum - +a.data.datum)
+  .slice(0, 3);
+---
+
+<Web titul={d.titulSeo} popis={d.popis}>
+  <article>
+    <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+      <div class="max-w-[820px] mx-auto px-4 py-12 md:py-16">
+        <nav class="text-xs t-sub mb-5 flex flex-wrap items-center gap-2" aria-label="Omrvinky">
+          <a href="/clanky/" class="hover:underline">Blog</a>
+          <span aria-hidden="true">/</span>
+          {d.kategorie.map((k) => <span class="opacity-60">{nazovKat(k)}</span>)}
+        </nav>
+        <h1 class="t-display text-3xl md:text-5xl">{d.title}</h1>
+        <div class="mt-5 flex flex-wrap items-center gap-3 text-xs t-sub">
+          <time datetime={d.datum.toISOString().slice(0, 10)}>{datum}</time>
+          {d.kategorie.map((k) => <span class="nb-tag bg-ec-paper">{nazovKat(k)}</span>)}
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-[820px] mx-auto px-4 py-10 md:py-14">
+      {
+        d.prazdny ? (
+          <div class="nb-card p-6 md:p-8 bg-ec-paper">
+            <div class="t-sub text-xs opacity-60">Obsah sa pripravuje</div>
+            <p class="ec-proza mt-3">
+              Tento článok bol na starom webe prázdny. Adresa ostáva zachovaná, obsah
+              dopĺňame. Kompletný zoznam povinnej výbavy nájdete na stránke{" "}
+              <a href="/povinna-vybava/">Povinná výbava</a>.
+            </p>
+          </div>
+        ) : (
+          <div class="ec-proza">
+            <Content />
+          </div>
+        )
+      }
+
+      <div class="mt-12 nb-card bg-ec-red text-white p-6 md:p-8">
+        <div class="t-display text-2xl md:text-3xl">Potrebujete termín na STK?</div>
+        <p class="mt-2 text-white/90">Garantujeme do 24 hodín. Otvorené aj v sobotu a cez sviatky.</p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href={REZERVACIA} class="nb-btn text-sm">Rezervovať termín</a>
+          <a href={KONTAKT.telHref} class="nb-btn text-sm !bg-ec-paper">{KONTAKT.tel}</a>
+        </div>
+      </div>
+
+      {
+        dalsie.length > 0 && (
+          <nav class="mt-14" aria-label="Ďalšie články">
+            <h2 class="t-display text-2xl mb-4">Ďalej si prečítajte</h2>
+            <ul class="grid gap-3 sm:grid-cols-3">
+              {dalsie.map((c) => (
+                <li>
+                  <a href={`/blog/${c.id}/`} class="nb nb-shadow-sm nb-lift block p-4 h-full">
+                    <span class="t-sub text-sm block leading-tight">{c.data.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </div>
+  </article>
+</Web>
