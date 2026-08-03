@@ -1,0 +1,227 @@
+---
+/**
+ * /rezervacia-vip/ — VIP rezervačný rozcestník pre stálych a firemných zákazníkov.
+ * Zdroj: plan/wp-texty/rezervacia-vip.md (stará https://easycheck.sk/rezervacia-vip/).
+ * Acuity odkazy sú prenesené znak po znaku — sú kľúčované na kombináciu vozidlo × úkon.
+ *
+ * ⚠️ Stará stránka mala aj záložku „KONTROLA STK" — v dumpe je len jej prázdny nadpis,
+ * odkazy (analogické ku KLASIK-* na /rezervacia/) sa nezachovali. Táto sekcia tu preto
+ * chýba, viď report agenta.
+ * Ceny zo starého webu sa nepreberajú (2024, nesedia s cenníkom 2026) — odkaz na /cennik/.
+ */
+import Web from "../layouts/Web.astro";
+import { KONTAKT } from "../data/firma";
+
+// Kontrola originality — vozidlo × kategória
+const KO_OSOBNE = [
+  { t: "Automobil (M1, M1G, M2)", h: "https://klasik.as.me/VIP-OSOBNY-AUTOMOBIL-Kontrola-originality" },
+  { t: "Malý motocykel (L1E, L2E)", h: "https://klasik.as.me/VIP-MALY-MOTOCYKEL-Kontrola-originality" },
+  { t: "Veľký motocykel (L3E, L4, L6, L5, L7)", h: "https://klasik.as.me/VIP-VELKY-MOTOCYKEL-Kontrola-originality" },
+];
+const KO_AUTOBUSY = [
+  { t: "Do 5 ton (M1)", h: "https://klasik.as.me/VIP-AUTOBUS-do-5t-Kontrola-originality" },
+  { t: "Nad 5 ton (M2)", h: "https://klasik.as.me/VIP-AUTOBUS-nad-5t-Kontrola-originality" },
+  { t: "Nad 12 ton (M3)", h: "https://klasik.as.me/VIP-AUTOBUS-nad-12t-Kontrola-originality" },
+];
+const KO_NAKLADNE = [
+  { t: "Nákladné do 3,5 tony (N1, N1G)", h: "https://klasik.as.me/VIP-NAKLADNE-VOZIDLO-do-3-5t-Kontrola-originality" },
+  { t: "Nákladné do 12 ton (N2, N2G)", h: "https://klasik.as.me/VIP-NAKLADNE-VOZIDLO-do-12t" },
+  { t: "Nákladné nad 12 ton (N3, N3G)", h: "https://klasik.as.me/VIP-NAKLADNE-VOZIDLO-nad-12t-Kontrola-originality" },
+  { t: "Traktor", h: "https://klasik.as.me/VIP-TRAKTOR-Kontrola-originality" },
+  { t: "Pracovný stroj", h: "https://klasik.as.me/VIP-PRACOVNY-STROJ-Kontrola-originality" },
+];
+const KO_PRIPOJNE = [
+  { t: "Do 3,5 tony (O1, O2)", h: "https://klasik.as.me/VIP-PRIVES-NAVES-do-3-5t-Kontrola-originality" },
+  { t: "Nad 3,5 tony (O3)", h: "https://klasik.as.me/VIP-PRIVES-NAVES-nad-3-5t-Kontrola-originality" },
+  { t: "Nad 10 ton (O4)", h: "https://klasik.as.me/VIP-PRIVES-NAVES-nad-10t-Kontrola-originality" },
+  { t: "Traktorové (R1, R2, R3, R4)", h: "https://klasik.as.me/VIP-PRIVES-NAVES-TRAKTOROVE-Kontrola-originality" },
+];
+
+// Overenie tachografov
+const TACHOGRAFY = [
+  { t: "Overenie I. generácia", h: "https://klasik.as.me/tachograf-1-gen" },
+  { t: "Overenie II. generácia", h: "https://klasik.as.me/tachograf-2-gen" },
+];
+
+// Administratívna kontrola — vozidlo × stanica
+const ADMIN_OSOBNE = [
+  { t: "Po našej stanici", h: "https://klasik.as.me/VIP-OSOBNE-VOZIDLA-Administrativna-kontrola-po-nasej-stanici" },
+  { t: "Po inej stanici", h: "https://klasik.as.me/VIP-OSOBNE-VOZIDLA-Administrativna-kontrola-po-inej-stanici" },
+];
+const ADMIN_MOTORKY = [
+  { t: "Po našej stanici", h: "https://klasik.as.me/VIP-MOTOCYKEL-Administrativna-kontrola-po-NASEJ-stanici" },
+  { t: "Po inej stanici", h: "https://klasik.as.me/VIP-MOTOCYKEL-Administrativna-kontrola-po-INEJ-stanici" },
+];
+const ADMIN_NAKLADNE = [
+  { t: "Po našej stanici", h: "https://klasik.as.me/VIP-NAKLADNE-VOZIDLA-Administrativna-kontrola-po-NASEJ-stanici" },
+  { t: "Po inej stanici", h: "https://klasik.as.me/VIP-NAKLADNE-VOZIDLA-Administrativna-kontrola-po-INEJ-stanici" },
+];
+
+// Kontrola ADR/CEMT — súprava × rozsah
+const ADR = [
+  { t: "Celá súprava", h: "https://klasik.as.me/VIP-SUPRAVA-ADR-TK-A-EK" },
+  { t: "Ťahač (TK + EK)", h: "https://klasik.as.me/VIP-TAHAC-ADR-TK-A-EK" },
+  { t: "Ťahač (TK)", h: "https://klasik.as.me/VIP-TAHAC-ADR-TK" },
+  { t: "Ťahač (opakovaná TK)", h: "https://klasik.as.me/VIP-TAHAC-ADR-OP-TK" },
+  { t: "Náves (TK)", h: "https://klasik.as.me/VIP-NAVES-ADR-TK" },
+  { t: "Náves (opakovaná TK)", h: "https://klasik.as.me/VIP-NAVES-ADR-OP-TK" },
+];
+const CEMT = [
+  { t: "Celá súprava", h: "https://klasik.as.me/VIP-SUPRAVA-CEMT-TK-A-EK" },
+  { t: "Ťahač (TK + EK)", h: "https://klasik.as.me/VIP-TAHAC-CEMT-TK-A-EK" },
+  { t: "Ťahač (TK)", h: "https://klasik.as.me/VIP-TAHAC-CEMT-TK" },
+  { t: "Ťahač (opakovaná TK)", h: "https://klasik.as.me/VIP-TAHAC-CEMT-OP-TK" },
+  { t: "Náves (TK)", h: "https://klasik.as.me/VIP-NAVES-CEMT-TK" },
+  { t: "Náves (opakovaná TK)", h: "https://klasik.as.me/VIP-NAVES-CEMT-OP-TK" },
+];
+---
+
+<Web
+  titul="VIP rezervácia — Easy Check Trnava"
+  popis="VIP rezervačné odkazy Easy Check Trnava pre stálych a firemných zákazníkov: kontrola originality, tachografy, administratívna kontrola a ADR/CEMT."
+>
+  <!-- 1 · hlavička na žltej ploche -->
+  <header class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+    <div class="max-w-[1100px] mx-auto px-4 py-12 md:py-16">
+      <h1 class="t-display text-4xl md:text-6xl">VIP rezervácia</h1>
+      <p class="mt-5 text-xl md:text-2xl font-medium max-w-2xl">
+        Vyhradené rezervačné odkazy pre stálych a firemných zákazníkov Easy Check —
+        vyberte kategóriu vozidla a typ kontroly nižšie.
+      </p>
+    </div>
+  </header>
+
+  <div class="max-w-[1100px] mx-auto px-4 py-10 md:py-14">
+    <!-- 2 · upozornenie: bežná rezervácia je inde -->
+    <div class="nb bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base">
+      Hľadáte bežnú rezerváciu technickej a emisnej kontroly? Choďte na
+      <a href="/rezervacia/" class="underline underline-offset-2">rezerváciu termínu</a>.
+    </div>
+
+    <!-- 3a · Kontrola originality — červená = úkon kontroly -->
+    <section class="mt-14 md:mt-20">
+      <span class="nb-tag bg-ec-red text-white">Úkon kontroly</span>
+      <h2 class="t-display text-3xl md:text-4xl mt-4">Kontrola originality</h2>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">Osobné vozidlá</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {KO_OSOBNE.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">Autobusy</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {KO_AUTOBUSY.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">Nákladné vozidlá</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {KO_NAKLADNE.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">Prípojné vozidlá</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {KO_PRIPOJNE.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- 3b · Overenie tachografov — červená = úkon kontroly -->
+    <section class="mt-14 md:mt-20">
+      <span class="nb-tag bg-ec-red text-white">Úkon kontroly</span>
+      <h2 class="t-display text-3xl md:text-4xl mt-4">Overenie tachografov</h2>
+      <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {TACHOGRAFY.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- 3c · Administratívna kontrola — červená = úkon kontroly -->
+    <section class="mt-14 md:mt-20">
+      <span class="nb-tag bg-ec-red text-white">Úkon kontroly</span>
+      <h2 class="t-display text-3xl md:text-4xl mt-4">Administratívna kontrola</h2>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">Osobné vozidlá</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {ADMIN_OSOBNE.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">Motorky</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {ADMIN_MOTORKY.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">Nákladné vozidlá</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {ADMIN_NAKLADNE.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- 3d · Kontrola ADR/CEMT — červená = úkon kontroly -->
+    <section class="mt-14 md:mt-20">
+      <span class="nb-tag bg-ec-red text-white">Úkon kontroly</span>
+      <h2 class="t-display text-3xl md:text-4xl mt-4">Kontrola ADR/CEMT</h2>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">ADR</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {ADR.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+
+      <h3 class="t-sub text-sm opacity-70 mt-8">CEMT</h3>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {CEMT.map((v) => (
+          <a href={v.h} class="nb nb-lift bg-ec-paper px-4 py-3 nb-shadow-sm text-sm md:text-base font-medium block">
+            {v.t}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- 4 · odkazy na bežnú rezerváciu, cenník a telefón -->
+    <div class="mt-14 md:mt-20 nb-card bg-ec-paper p-6 md:p-8">
+      <div class="t-display text-2xl md:text-3xl">Presná cena alebo telefonická rezervácia?</div>
+      <p class="mt-2 max-w-xl opacity-80">
+        Ceny nájdete v cenníku. Bežnú rezerváciu vybavíte na samostatnej stránke,
+        prípadne zavolajte priamo.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/rezervacia/" class="nb-btn !bg-ec-red text-white">Bežná rezervácia</a>
+        <a href="/cennik/" class="nb-btn !bg-ec-paper">Cenník</a>
+        <a href={KONTAKT.telHref} class="nb-btn !bg-ec-paper">{KONTAKT.tel}</a>
+      </div>
+    </div>
+  </div>
+</Web>

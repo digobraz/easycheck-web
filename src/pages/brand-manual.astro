@@ -1,0 +1,125 @@
+---
+/**
+ * /brand-manual/ — logotypy a firemné farby pre partnerov, zdroj
+ * plan/wp-texty/brand-manual.md.
+ *
+ * ⚠️ ZIP odkazy na logotypy v dumpe smerovali na dev.easycheck.sk (vývojová
+ * doména WordPressu) — nefungujú a nesmú ísť na web. Presné URL (na nahranie
+ * poriadneho súboru) sú v reporte agenta. Namiesto nich odkaz na mail/telefón.
+ *
+ * Hex kódy farieb SÚ v dumpe čitateľné, preberáme ich 1:1 (Žltá #FEFF00,
+ * Modrá #12B6E3, Červená #E12228, Zelená #5BBA47). Pozor: mierne sa líšia od
+ * kánonických --color-ec-* v src/styles/global.css (napr. žltá tam #FFE600) —
+ * rozdiel je v reporte, nerozhodujem ktorá verzia je "správna".
+ *
+ * robots: posielame explicitne "noindex, nofollow", aby stránka ostala mimo
+ * indexu AJ po prepnutí layoutu na ostrú doménu (viď komentár vo Web.astro) —
+ * interná stránka pre partnerov nemá čo hľadať vo výsledkoch vyhľadávania.
+ */
+import Web from "../layouts/Web.astro";
+import { KONTAKT } from "../data/firma";
+
+const FARBY = [
+  { nazov: "Žltá", hex: "#FEFF00" },
+  { nazov: "Modrá", hex: "#12B6E3" },
+  { nazov: "Červená", hex: "#E12228" },
+  { nazov: "Zelená", hex: "#5BBA47" },
+];
+---
+
+<Web
+  titul="Brand manuál — Easy Check STK Trnava"
+  popis="Firemné farby, logotypy a písma Easy Check pre partnerov a médiá. Presné hex kódy a informácie, ako získať logotypy na stiahnutie."
+  robots="noindex, nofollow"
+>
+  <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+    <div class="max-w-[860px] mx-auto px-4 py-12 md:py-16">
+      <h1 class="t-display text-4xl md:text-6xl">Brand manuál</h1>
+      <p class="mt-5 text-xl max-w-2xl">
+        Logotypy a firemné farby Easy Check pre partnerov a médiá.
+      </p>
+    </div>
+  </header>
+
+  <div class="max-w-[860px] mx-auto px-4 py-10 md:py-14 space-y-10">
+    <!-- Manuál je prevzatý 1:1 zo starého webu (2024). Web od 2026 beží na inej
+         typografii aj inom odtieni žltej — bez tejto poznámky by si partner stiahol
+         font a farbu, ktoré web reálne nepoužíva. Rozpor rieši Matej. -->
+    <div class="nb-card bg-ec-cyan text-white p-5 md:p-6">
+      <div class="t-sub text-xs text-white/80">Pozor</div>
+      <p class="mt-2 text-sm md:text-base text-white/95">
+        Tento manuál je z roku 2024. Web od roku 2026 používa písma
+        <strong>Saira Condensed</strong> a <strong>DM Sans</strong> a žltú
+        <strong>#FFE600</strong>. Pred použitím si prosím u nás potvrďte, ktorá verzia
+        pre váš materiál platí.
+      </p>
+    </div>
+
+    <!-- 1 · logotypy -->
+    <section class="nb-card bg-ec-paper p-6 md:p-8">
+      <div class="t-sub text-xs opacity-60 mb-3">Logotypy</div>
+      <p class="ec-proza">
+        Dizajn vo formáte PNG je transparentný a vhodný na digitálne
+        použitie. Dizajn vo formáte PDF je v najlepšej kvalite, v krivkách,
+        a je vhodný na tlač.
+      </p>
+      <p class="ec-proza mt-4">
+        Logotypy pošleme na vyžiadanie — napíšte na
+        <a href={`mailto:${KONTAKT.mail}`}>{KONTAKT.mail}</a> alebo zavolajte na
+        <a href={KONTAKT.telHref}>{KONTAKT.tel}</a>.
+      </p>
+    </section>
+
+    <!-- 2 · farby (cyan = info) -->
+    <section class="nb-card bg-ec-paper p-6 md:p-8">
+      <div class="t-sub text-xs opacity-60 mb-3">Firemné farby</div>
+      <div class="ec-scroll-x">
+        <table class="w-full text-sm md:text-base">
+          <thead>
+            <tr class="border-b-[var(--stroke)] border-ec-ink text-left">
+              <th class="py-2 pr-4 t-sub text-xs">Farba</th>
+              <th class="py-2 t-sub text-xs">Hex</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              FARBY.map((f) => (
+                <tr class="border-b border-ec-ink/15 last:border-0">
+                  <td class="py-3 pr-4">
+                    <span class="inline-flex items-center gap-2">
+                      <span
+                        class="inline-block w-5 h-5 border-[1.5px] border-ec-ink"
+                        style={`background:${f.hex}`}
+                      />
+                      {f.nazov}
+                    </span>
+                  </td>
+                  <td class="py-3 t-num">{f.hex}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="ec-proza mt-5">
+        Žltá farba definuje pozadie, hlavnú a podkladovú farbu pod hlavné
+        logo. Modrá, červená a zelená farba definuje farbu loga. Tieto farby
+        vyjadrujú farby technickej kontroly (červená), emisnej kontroly
+        (zelená) a kontroly originality (modrá).
+      </p>
+    </section>
+
+    <!-- 3 · písma -->
+    <section class="nb-card bg-ec-paper p-6 md:p-8">
+      <div class="t-sub text-xs opacity-60 mb-3">Písma</div>
+      <p class="ec-proza">
+        <strong>Anton</strong> — hlavné nadpisy a tlačidlá, iba veľké
+        písmená (<a href="https://fonts.google.com/specimen/Anton" target="_blank" rel="noopener">stiahnuť na Google Fonts</a>).
+      </p>
+      <p class="ec-proza mt-3">
+        <strong>Exo</strong> — všetky ostatné texty, v rôznych váhach
+        (<a href="https://fonts.google.com/specimen/Exo" target="_blank" rel="noopener">stiahnuť na Google Fonts</a>).
+      </p>
+    </section>
+  </div>
+</Web>

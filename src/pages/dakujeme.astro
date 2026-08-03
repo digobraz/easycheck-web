@@ -1,0 +1,38 @@
+---
+/**
+ * /dakujeme/ — potvrdzovacia stránka po odoslaní formulára (kontakt/dopyt).
+ * Text prevzatý z plan/wp-texty/dakujeme.md, skrátený na vetu o priazni
+ * a tešíme sa na návštevu — vetu "Ste v tých najlepších rukách" sme
+ * vynechali, do reportu.
+ *
+ * ⚠️ Starý dump viedol tlačidlo na https://dev.easycheck.sk/ — to je vývojová
+ * doména WordPressu, nie ostrý web. Tu ide výhradne na "/".
+ *
+ * robots: posielame explicitne "noindex, nofollow", aby stránka ostala mimo
+ * indexu AJ po prepnutí layoutu na ostrú doménu (viď komentár vo Web.astro) —
+ * potvrdzovacia stránka nemá čo hľadať vo výsledkoch vyhľadávania nikdy.
+ */
+import Web from "../layouts/Web.astro";
+---
+
+<Web
+  titul="Ďakujeme — Easy Check STK Trnava"
+  popis="Vašu správu sme prijali. Ďakujeme za dôveru, tešíme sa na vašu návštevu v Easy Check, stanici technickej kontroly Trnava."
+  robots="noindex, nofollow"
+>
+  <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+    <div class="max-w-[860px] mx-auto px-4 py-12 md:py-16">
+      <h1 class="t-display text-4xl md:text-6xl">Ďakujeme!</h1>
+      <p class="mt-5 text-xl max-w-2xl">
+        Ďakujeme za vašu priazeň. Tešíme sa na vašu návštevu.
+      </p>
+    </div>
+  </header>
+
+  <div class="max-w-[860px] mx-auto px-4 py-10 md:py-14">
+    <div class="flex flex-wrap gap-3">
+      <a href="/" class="nb-btn">Späť na hlavnú stránku</a>
+      <a href="/rezervacia/" class="nb-btn !bg-ec-paper">Rezervovať termín</a>
+    </div>
+  </div>
+</Web>
