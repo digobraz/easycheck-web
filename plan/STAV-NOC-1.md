@@ -37,8 +37,15 @@ Nie je to len 6 spam kategórií v blogu — **cudzí text je priamo v tele str�
 Do nového webu sa nepreniesol ani jeden — pri konverzii sa odfiltroval.
 **Pre teba:** niekto má prístup do WP a píše ti do stránok. Prezrieť používateľov, nielen zmazať kategórie.
 
-### 2. Hero mal zlú ulicu a nefunkčné telefónne číslo
-- Adresa v hero scéne bola „Technická ul." — stanica je na **Farárskej 27**. Opravené.
+### 2. Hero mal nefunkčné telefónne číslo a mŕtvu navigáciu
+- **Adresa: platí TECHNICKÁ ULICA** (Matej, 4. 8. 2026). V noci som ju omylom prepísal na
+  „Farárske 27" podľa MASTERPROMPT §4 — vrátené späť a opravené aj v MASTERPROMPTe.
+  ⚠️ Starý web si protirečí: homepage a cenník píšu Technickú, kontakt a zákonné stránky Farárske 27.
+  **10 starých článkov má v texte „Farárske 27, smer Dolná Krupá"** — články sa neprepisujú (sú 1:1),
+  rozhodni, či ich hromadne opraviť.
+- **Navigácia z homepage bola mŕtva.** Tlačidlá Služby/Cenník/Info/Kontakt/Blog v hero scéne
+  (desktop aj mobilné menu) boli `<button>` bez jediného handlera — z domovskej stránky sa
+  nedalo prekliknúť nikam. Preto si tie stránky nevidel. Teraz sú to `<a href>`, overené klikom.
 - Odkaz na telefón bol `tel:033202021` — **o číslicu menej**, z mobilu sa nikto nedovolal. Opravené na `tel:+421332020211`.
 - Homepage nemala **žiadny `<title>`** okrem slova „EASYCHECK", **žiadnu meta description** a **žiadny H1**. Doplnené (H1 je vizuálne skrytý, scéna ho nesie obrazom). Keď sa titulok v prototype zmení, treba prepísať kotvu v `scripts/sync-hero.mjs` — inak sync spadne (zámerne).
 
