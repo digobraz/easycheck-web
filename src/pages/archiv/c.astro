@@ -10,28 +10,28 @@ import { FIRMA, REZERVACIA, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY
   bg="bg-[#F4F1E8]"
 >
   <!-- HERO: mozaika blokov -->
-  <section class="border-b-[var(--stroke-thick)] border-ec-ink bg-[#F4F1E8] nb-dots">
+  <section class="border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-[#F4F1E8] nb-dots">
     <div class="max-w-[1200px] mx-auto px-4 py-12 md:py-16">
       <div class="grid gap-5 lg:grid-cols-3 lg:auto-rows-[minmax(0,auto)]">
         <!-- veľký žltý blok -->
-        <div class="lg:col-span-2 nb-card bg-ec-yellow p-7 md:p-10 nb-in">
+        <div class="lg:col-span-2 nb-card bg-ec-hud p-7 md:p-10 nb-in">
           <span class="nb-tag bg-ec-red text-white">Trnava · Technická ul.</span>
           <h1 class="t-display text-[clamp(2.25rem,5.5vw,4.5rem)] mt-5 max-w-[15ch]">
             Transformujeme nepríjemnú <span class="whitespace-nowrap">STK-čku</span> na bezstarostný zážitok
           </h1>
-          <a href={REZERVACIA} class="nb-btn !bg-ec-ink !text-ec-yellow mt-7 text-base !px-7 !py-4">
+          <a href={REZERVACIA} class="nb-btn !bg-ec-void !text-ec-yellow mt-7 text-base !px-7 !py-4">
             Rezervovať termín STK
           </a>
         </div>
 
         <!-- stĺpec malých blokov -->
         <div class="grid gap-5 content-start">
-          <div class="nb-card bg-ec-green text-white p-6 nb-in nb-in-1">
+          <div class="nb-card border-ec-green/60 p-6 nb-in nb-in-1">
             <div class="t-display text-5xl t-num">{FIRMA.hodnotenie} ★</div>
             <div class="t-sub text-xs mt-2 t-num">{FIRMA.recenzie.toLocaleString("sk-SK")} recenzií na Google</div>
             <p class="text-sm mt-2 opacity-90">Najviac hodnotená STK na Slovensku.</p>
           </div>
-          <div class="nb-card bg-ec-cyan text-white p-6 nb-in nb-in-2">
+          <div class="nb-card border-ec-cyan/60 p-6 nb-in nb-in-2">
             <div class="t-sub text-xs">Unikátna rezervácia</div>
             <div class="t-display text-4xl mt-1">30 sekúnd</div>
             <p class="text-sm mt-2 opacity-90">Toľko vám zaberie celá objednávka.</p>
@@ -58,14 +58,14 @@ import { FIRMA, REZERVACIA, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY
   </section>
 
   <!-- PONUKA — každý blok iná farba -->
-  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <h2 class="t-display text-4xl md:text-6xl mb-10">Naša ponuka</h2>
       <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {
           [
-            "bg-ec-yellow", "bg-ec-green text-white", "bg-ec-cyan text-white",
-            "bg-ec-red text-white", "bg-ec-paper", "bg-ec-ink text-ec-paper",
+            "bg-ec-hud", "bg-ec-green text-white", "bg-ec-cyan text-white",
+            "bg-ec-red text-white", "bg-ec-paper", "bg-ec-void text-ec-ink",
           ].map((farba, i) => {
             const p = PONUKA[i];
             return (
@@ -84,9 +84,9 @@ import { FIRMA, REZERVACIA, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY
   </section>
 
   <!-- DOSTUPNOSŤ + foto -->
-  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-hud">
     <div class="max-w-[1200px] mx-auto px-4">
-      <span class="nb-tag bg-ec-ink text-ec-yellow">Kedykoľvek, bez čakania a stresu</span>
+      <span class="nb-tag bg-ec-void text-ec-yellow">Kedykoľvek, bez čakania a stresu</span>
       <h2 class="t-display text-4xl md:text-6xl mt-5 mb-10 max-w-[18ch]">STK už nemusí byť nočná mora!</h2>
       <div class="grid gap-5 lg:grid-cols-[1fr_1fr_1fr]">
         {
@@ -105,7 +105,7 @@ import { FIRMA, REZERVACIA, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY
         <div class="nb-card p-0 overflow-hidden md:col-span-2">
           <img src="/foto/img_4128.jpg" alt="Kontrolná linka Easy Check" class="w-full h-[260px] object-cover object-[center_30%] block" />
         </div>
-        <div class="nb-card bg-ec-ink text-ec-paper p-6 flex flex-col justify-center">
+        <div class="nb-card bg-ec-void text-ec-ink p-6 flex flex-col justify-center">
           <div class="t-sub text-xs text-ec-yellow">Ľudskosť nadovšetko</div>
           <p class="text-sm mt-2 opacity-90 leading-relaxed">
             Za drobnosť vás nevyhodíme. Sme STK pre ľudí.
@@ -116,7 +116,7 @@ import { FIRMA, REZERVACIA, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY
   </section>
 
   <!-- VÝHODY -->
-  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <h2 class="t-display text-4xl md:text-6xl mb-10">STK s výhodami</h2>
       <div class="grid gap-5 lg:grid-cols-2">
@@ -137,17 +137,17 @@ import { FIRMA, REZERVACIA, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY
               <p class="mt-1.5 text-sm leading-relaxed opacity-95">{v.text}</p>
             </div>
           ))}
-          <div class="nb-card p-5 bg-ec-yellow">
+          <div class="nb-card p-5 bg-ec-hud">
             <h3 class="t-sub text-base">Cenník bez prekvapení</h3>
             <ul class="mt-3 space-y-1.5">
               {CENY.slice(0, 4).map((c) => (
-                <li class="flex justify-between gap-4 text-sm border-b border-ec-ink/20 pb-1.5">
+                <li class="flex justify-between gap-4 text-sm border-b border-ec-cyan/15 pb-1.5">
                   <span>{c.co}</span>
                   <span class="t-sub t-num">{c.cena}</span>
                 </li>
               ))}
             </ul>
-            <a href="/cennik" class="mt-4 t-sub text-xs inline-block border-b-[var(--stroke)] border-ec-ink pb-0.5">Celý cenník →</a>
+            <a href="/cennik" class="mt-4 t-sub text-xs inline-block border-b-[var(--stroke)] border-ec-cyan/30 pb-0.5">Celý cenník →</a>
           </div>
         </div>
       </div>
@@ -160,7 +160,7 @@ import { FIRMA, REZERVACIA, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY, CENY
       <h2 class="t-display text-4xl md:text-7xl text-white">Termín ihneď</h2>
       <p class="mt-4 text-white text-lg">Objednajte sa alebo zavolajte — už dnes môžete byť na linke.</p>
       <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href={REZERVACIA} class="nb-btn !bg-ec-yellow text-base !px-8 !py-4">Rezervovať termín</a>
+        <a href={REZERVACIA} class="nb-btn !bg-ec-hud text-base !px-8 !py-4">Rezervovať termín</a>
         <a href={FIRMA.telHref} class="nb-btn !bg-ec-paper text-base !px-8 !py-4 t-num">{FIRMA.tel}</a>
       </div>
     </div>

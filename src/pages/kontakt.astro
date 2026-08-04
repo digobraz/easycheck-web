@@ -46,7 +46,7 @@ const jsonLd = {
 <Web titul="Kontakt — Easy Check STK Trnava, Technická ulica" popis="Easy Check, stanica technickej kontroly Trnava, Technická ulica, smer Dolná Krupá. Telefón, e-mail, otváracie hodiny, mapa a rezervácia.">
   <article>
     <!-- 1 · hlavička -->
-    <header class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+    <header class="bg-ec-hud border-b-[var(--stroke-thick)] border-ec-cyan/30">
       <div class="max-w-[1100px] mx-auto px-4 py-12 md:py-16">
         <h1 class="t-display text-5xl md:text-7xl">Kontakt</h1>
         <p class="mt-5 text-xl md:text-2xl font-medium max-w-2xl">
@@ -73,7 +73,7 @@ const jsonLd = {
               Otvoriť v Google Mapách
             </a>
           </div>
-          <div class="border-t-[var(--stroke)] lg:border-t-0 lg:border-l-[var(--stroke)] border-ec-ink">
+          <div class="border-t-[var(--stroke)] lg:border-t-0 lg:border-l-[var(--stroke)] border-ec-cyan/30">
             <iframe
               src={KONTAKT.mapaEmbed}
               title="Mapa — Easy Check STK Trnava, Technická ulica"
@@ -85,7 +85,7 @@ const jsonLd = {
       </section>
 
       <!-- 3 · otváracie hodiny (cyan = info) -->
-      <section class="mt-8 nb-card bg-ec-cyan text-white p-6 md:p-8">
+      <section class="mt-8 nb-card border-ec-cyan/60 p-6 md:p-8">
         <div class="t-sub text-xs opacity-80 mb-4">Otváracie hodiny</div>
         <div class="ec-scroll-x">
           <table class="w-full text-sm md:text-base">
@@ -138,7 +138,7 @@ const jsonLd = {
       </section>
 
       <!-- 6 · CTA rezervácia -->
-      <section class="mt-10 nb-card bg-ec-green text-white p-6 md:p-8">
+      <section class="mt-10 nb-card border-ec-green/60 p-6 md:p-8">
         <div class="t-display text-2xl md:text-3xl">Radšej si dohodnite termín</div>
         <p class="mt-2 text-white/90 max-w-xl">
           Rezerváciu si vybavíte online za pár sekúnd. Bez rezervácie vás obslúžime tiež,

@@ -10,11 +10,11 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
   bg="bg-ec-paper"
 >
   <!-- HERO: text vľavo, foto vpravo -->
-  <section class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-paper">
+  <section class="border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-paper">
     <div class="max-w-[1200px] mx-auto px-4 py-14 md:py-20 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
       <div>
         <div class="nb-in flex flex-wrap gap-2">
-          <span class="nb-tag bg-ec-yellow">Trnava</span>
+          <span class="nb-tag bg-ec-hud">Trnava</span>
           <span class="nb-tag bg-ec-paper t-num">{FIRMA.hodnotenie} ★ · {FIRMA.recenzie.toLocaleString("sk-SK")} recenzií</span>
         </div>
         <h1 class="t-display text-[clamp(2.5rem,6.5vw,5rem)] mt-6 max-w-[14ch] nb-in nb-in-1">
@@ -42,7 +42,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
   </section>
 
   <!-- PÁSIK dostupnosti -->
-  <section class="bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="bg-ec-hud border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-1 t-sub text-sm">
       <span>Po–Pia 07:00–22:00</span>
       <span class="opacity-40">·</span>
@@ -53,7 +53,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
   </section>
 
   <!-- PONUKA -->
-  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <div class="flex items-end justify-between gap-6 mb-10 flex-wrap">
         <h2 class="t-display text-4xl md:text-6xl">Naša ponuka</h2>
@@ -65,7 +65,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
             <div class={`nb-card nb-lift p-6 flex flex-col nb-in nb-in-${(i % 6) + 1}`}>
               <h3 class="t-display text-2xl">{p.nadpis}</h3>
               <p class="mt-2.5 text-sm leading-relaxed flex-1 opacity-90">{p.text}</p>
-              <a href={p.href} class="mt-5 t-sub text-xs inline-flex items-center gap-1.5 self-start border-b-[var(--stroke)] border-ec-ink pb-0.5">
+              <a href={p.href} class="mt-5 t-sub text-xs inline-flex items-center gap-1.5 self-start border-b-[var(--stroke)] border-ec-cyan/30 pb-0.5">
                 {p.cta} →
               </a>
             </div>
@@ -76,7 +76,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
   </section>
 
   <!-- CENNÍK náhľad -->
-  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-hud">
     <div class="max-w-[1200px] mx-auto px-4 grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:items-center">
       <div>
         <h2 class="t-display text-4xl md:text-5xl">Cenník bez prekvapení</h2>
@@ -92,11 +92,11 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
             {
               CENY.map((c, i) => (
                 <tr class={i % 2 ? "bg-black/[0.03]" : ""}>
-                  <td class="px-5 py-3.5 border-b border-ec-ink/15">
+                  <td class="px-5 py-3.5 border-b border-ec-cyan/15">
                     <div class="t-sub text-xs">{c.co}</div>
                     <div class="text-xs opacity-60 mt-0.5">{c.pozn}</div>
                   </td>
-                  <td class="px-5 py-3.5 border-b border-ec-ink/15 text-right t-display text-xl t-num whitespace-nowrap">
+                  <td class="px-5 py-3.5 border-b border-ec-cyan/15 text-right t-display text-xl t-num whitespace-nowrap">
                     {c.cena}
                   </td>
                 </tr>
@@ -109,7 +109,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
   </section>
 
   <!-- DOSTUPNOSŤ -->
-  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <span class="nb-tag bg-ec-cyan text-white">Kedykoľvek, bez čakania a stresu</span>
       <h2 class="t-display text-4xl md:text-6xl mt-5 mb-10 max-w-[18ch]">STK už nemusí byť nočná mora!</h2>
@@ -117,7 +117,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
         {
           DOSTUPNOST.map((d, i) => (
             <div class={`nb-card p-6 nb-in nb-in-${i + 1}`}>
-              <span class="nb-tag bg-ec-yellow">{d.stitok}</span>
+              <span class="nb-tag bg-ec-hud">{d.stitok}</span>
               <h3 class="t-display text-2xl mt-4">{d.nadpis}</h3>
               <p class="mt-2 text-sm leading-relaxed opacity-90">{d.text}</p>
             </div>
@@ -128,7 +128,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
   </section>
 
   <!-- VÝHODY -->
-  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-ink bg-ec-paper">
+  <section class="py-16 md:py-20 border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-paper">
     <div class="max-w-[1200px] mx-auto px-4">
       <h2 class="t-display text-4xl md:text-6xl mb-10">STK s výhodami</h2>
       <div class="grid gap-8 lg:grid-cols-2">
@@ -162,11 +162,11 @@ import { FIRMA, REZERVACIA, USP, PONUKA, DOSTUPNOST, VYHODY_LUDIA, VYHODY_FIRMY,
   </section>
 
   <!-- CTA -->
-  <section class="py-16 md:py-24 bg-ec-ink">
+  <section class="py-16 md:py-24 bg-ec-void">
     <div class="max-w-[1200px] mx-auto px-4 text-center">
-      <span class="nb-tag bg-ec-yellow">Garancia do 24 hodín</span>
-      <h2 class="t-display text-4xl md:text-6xl text-ec-paper mt-5">Nepovieme vám nie</h2>
-      <p class="mt-4 text-ec-paper/80 text-lg max-w-[50ch] mx-auto">
+      <span class="nb-tag bg-ec-hud">Garancia do 24 hodín</span>
+      <h2 class="t-display text-4xl md:text-6xl text-ec-ink mt-5">Nepovieme vám nie</h2>
+      <p class="mt-4 text-ec-ink/80 text-lg max-w-[50ch] mx-auto">
         Stačí sa objednať alebo zavolať a už dnes môžete byť na linke.
       </p>
       <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">

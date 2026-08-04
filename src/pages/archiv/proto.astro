@@ -12,10 +12,10 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   titul="Easy Check — STK Trnava"
   variant="PROTOTYP — Žltá stena v2"
   popis="Nadpis skrátený, farebná logika podľa loga, pridaný pohyb"
-  bg="bg-ec-yellow"
+  bg="bg-ec-hud"
 >
   <!-- ================= HERO ================= -->
-  <section class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow nb-dots overflow-hidden">
+  <section class="border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-hud nb-dots overflow-hidden">
     <div class="max-w-[1200px] mx-auto px-4 py-14 md:py-20">
       <div class="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
         <div>
@@ -35,7 +35,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
           <p class="mt-2 text-base opacity-70 nb-in nb-in-2">{HERO.pod}</p>
 
           <div class="mt-9 flex flex-col sm:flex-row gap-4 nb-in nb-in-3">
-            <a href={REZERVACIA} class="nb-btn !bg-ec-ink !text-ec-yellow text-base md:text-lg !px-8 !py-4">
+            <a href={REZERVACIA} class="nb-btn !bg-ec-void !text-ec-yellow text-base md:text-lg !px-8 !py-4">
               Rezervovať termín
             </a>
             <a href={FIRMA.telHref} class="nb-btn !bg-ec-paper text-base md:text-lg !px-8 !py-4 t-num">
@@ -49,7 +49,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
           <div class="nb-card bg-ec-paper p-8 nb-tilt-r max-w-[320px] w-full text-center">
             <div class="t-display text-[5.5rem] leading-none t-num" data-count={FIRMA.recenzie}>0</div>
             <div class="t-sub text-xs mt-1">recenzií na Google</div>
-            <div class="border-t-[var(--stroke)] border-ec-ink my-4"></div>
+            <div class="border-t-[var(--stroke)] border-ec-cyan/30 my-4"></div>
             <div class="t-display text-4xl text-ec-green t-num">{FIRMA.hodnotenie} ★</div>
             <p class="text-sm mt-2 leading-snug">Najviac hodnotená STK na Slovensku.</p>
           </div>
@@ -59,7 +59,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   </section>
 
   <!-- ================= MARQUEE ================= -->
-  <section class="bg-ec-ink border-b-[var(--stroke-thick)] border-ec-ink py-3 overflow-hidden">
+  <section class="bg-ec-void border-b-[var(--stroke-thick)] border-ec-cyan/30 py-3 overflow-hidden">
     <div class="nb-marquee">
       {
         [0, 1].map(() => (
@@ -77,7 +77,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   </section>
 
   <!-- ================= PONUKA ================= -->
-  <section class="py-16 md:py-24 bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-24 bg-ec-hud border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <div class="flex items-end justify-between gap-6 flex-wrap mb-10">
         <h2 class="t-display text-4xl md:text-6xl reveal">Naša ponuka</h2>
@@ -105,7 +105,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   </section>
 
   <!-- ================= DOSTUPNOSŤ (cyan = vysvetlenie) ================= -->
-  <section class="py-16 md:py-24 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-24 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <div class="reveal">
         <span class="nb-tag bg-ec-cyan text-white">Kedykoľvek, bez čakania a stresu</span>
@@ -126,7 +126,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   </section>
 
   <!-- ================= VÝHODY (green = easy) ================= -->
-  <section class="py-16 md:py-24 bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-24 bg-ec-hud border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <h2 class="t-display text-4xl md:text-6xl mb-10 reveal">STK s výhodami</h2>
       <div class="grid gap-8 lg:grid-cols-2">
@@ -160,7 +160,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   </section>
 
   <!-- ================= CENNÍK ================= -->
-  <section class="py-16 md:py-24 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-24 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4 grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:items-center">
       <div class="reveal">
         <h2 class="t-display text-4xl md:text-5xl">Cenník bez prekvapení</h2>
@@ -175,11 +175,11 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
             {
               CENY.map((c, i) => (
                 <tr class={i % 2 ? "bg-black/[0.03]" : ""}>
-                  <td class="px-5 py-3.5 border-b border-ec-ink/15">
+                  <td class="px-5 py-3.5 border-b border-ec-cyan/15">
                     <div class="t-sub text-xs">{c.co}</div>
                     <div class="text-xs opacity-60 mt-0.5">{c.pozn}</div>
                   </td>
-                  <td class="px-5 py-3.5 border-b border-ec-ink/15 text-right t-display text-xl t-num whitespace-nowrap">
+                  <td class="px-5 py-3.5 border-b border-ec-cyan/15 text-right t-display text-xl t-num whitespace-nowrap">
                     {c.cena}
                   </td>
                 </tr>
@@ -192,7 +192,7 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   </section>
 
   <!-- ================= MARQUEE 2 (opačný smer) ================= -->
-  <section class="bg-ec-red border-b-[var(--stroke-thick)] border-ec-ink py-3 overflow-hidden">
+  <section class="bg-ec-red border-b-[var(--stroke-thick)] border-ec-cyan/30 py-3 overflow-hidden">
     <div class="nb-marquee nb-marquee-rev nb-marquee-fast">
       {
         [0, 1].map(() => (
@@ -210,12 +210,12 @@ const marquee = ["Termín ihneď", "Non-stop", "Bez stresu", "Všetko na jednom 
   </section>
 
   <!-- ================= CTA ================= -->
-  <section class="py-20 md:py-28 bg-ec-yellow nb-dots">
+  <section class="py-20 md:py-28 bg-ec-hud nb-dots">
     <div class="max-w-[1200px] mx-auto px-4">
-      <div class="nb-card bg-ec-ink p-10 md:p-16 text-center reveal">
+      <div class="nb-card bg-ec-void p-10 md:p-16 text-center reveal">
         <span class="nb-tag bg-ec-red text-white nb-pulse">Garancia do 24 hodín</span>
         <h2 class="t-display text-4xl md:text-7xl text-ec-yellow mt-6">Nepovieme vám nie</h2>
-        <p class="mt-4 text-ec-paper/85 text-lg max-w-[46ch] mx-auto">
+        <p class="mt-4 text-ec-ink/85 text-lg max-w-[46ch] mx-auto">
           Stačí sa objednať alebo zavolať a už dnes môžete byť na linke.
         </p>
         <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center">

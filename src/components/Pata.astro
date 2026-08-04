@@ -1,53 +1,118 @@
 ---
-import { KONTAKT, HODINY, MENU, REZERVACIA } from "../data/firma";
+/**
+ * Pätička = VIZITKA + rozcestník.
+ *
+ * Menu hore má len 4 piliere. Sem preto patrí vstup do všetkého ostatného,
+ * čo na webe žije mimo navigácie (cenník, služby, kontakt, zákonné stránky).
+ * Pre návštevníka je to pätička, pre Google je to jediné miesto, odkiaľ
+ * sa na tie adresy interne odkazuje — preto sa odtiaľto nič nemaže.
+ */
+import { KONTAKT, HODINY, MENU, MIMO_MENU, REZERVACIA } from "../data/firma";
+
+const OSTATNE = [
+  { h: "/cennik/", t: "Cenník" },
+  { h: "/sluzby/", t: "Služby" },
+  { h: "/kontakt/", t: "Kontakt" },
+  { h: "/uzitocne-informacie/", t: "Užitočné informácie" },
+  { h: "/rezervacia-vip/", t: "VIP rezervácia" },
+  { h: "/koleso-stastia/", t: "Koleso šťastia" },
+  ...MIMO_MENU.map((m) => ({ h: m.h, t: m.t })),
+];
 ---
 
-<footer class="bg-ec-ink text-ec-paper mt-24">
-  <div class="max-w-[1200px] mx-auto px-4 py-14 grid gap-10 md:grid-cols-4">
-    <div class="md:col-span-2">
-      <div class="t-display text-3xl text-ec-yellow">Easy Check</div>
-      <p class="mt-2 text-sm text-ec-paper/80 max-w-sm">
-        Stanica technickej kontroly Trnava. Technická, emisná, kontrola originality
-        aj tachografy — všetko na jednom mieste.
-      </p>
-      <a href={REZERVACIA} class="nb-btn mt-6 text-sm">Rezervovať termín</a>
-    </div>
+<footer class="mt-24 border-t border-ec-cyan/25 bg-[rgb(5_8_10/0.9)]">
+  <div class="max-w-[1200px] mx-auto px-4 py-14 grid gap-10 lg:grid-cols-12">
+    <!-- VIZITKA -->
+    <div class="lg:col-span-5">
+      <div class="nb relative p-6 md:p-7">
+        <span class="nb-corner top-2 left-2 border-r-0 border-b-0"></span>
+        <span class="nb-corner bottom-2 right-2 border-l-0 border-t-0"></span>
 
-    <div>
-      <div class="t-sub text-xs text-ec-yellow mb-3">Kontakt</div>
-      <address class="not-italic text-sm space-y-1 text-ec-paper/85">
-        <div>{KONTAKT.ulica}</div>
-        <div>{KONTAKT.mesto} · {KONTAKT.orientacia}</div>
-        <div><a href={KONTAKT.telHref} class="hover:text-ec-yellow">{KONTAKT.tel}</a></div>
-        <div><a href={`mailto:${KONTAKT.mail}`} class="hover:text-ec-yellow">{KONTAKT.mail}</a></div>
-        <div>
-          <a href={KONTAKT.mapa} class="underline underline-offset-2 hover:text-ec-yellow"
-            >Zobraziť na mape →</a
-          >
+        <img
+          src="/brand/easycheck-logo.svg"
+          alt="Easy Check"
+          class="h-11 w-auto"
+          width="180"
+          height="44"
+        />
+        <div class="t-sub text-[0.7rem] text-ec-cyan mt-3">
+          {KONTAKT.popis}
         </div>
-      </address>
+
+        <address class="not-italic mt-5 space-y-2.5 text-sm text-ec-ink/85">
+          <div class="flex gap-3">
+            <span class="t-sub text-[0.65rem] text-ec-muted w-14 shrink-0 pt-0.5">Adresa</span>
+            <span>
+              {KONTAKT.ulica}, {KONTAKT.mesto}<br />
+              <span class="text-ec-muted">{KONTAKT.orientacia}</span>
+            </span>
+          </div>
+          <div class="flex gap-3">
+            <span class="t-sub text-[0.65rem] text-ec-muted w-14 shrink-0 pt-0.5">Telefón</span>
+            <a href={KONTAKT.telHref} class="t-num text-ec-yellow hover:underline"
+              >{KONTAKT.tel}</a
+            >
+          </div>
+          <div class="flex gap-3">
+            <span class="t-sub text-[0.65rem] text-ec-muted w-14 shrink-0 pt-0.5">E-mail</span>
+            <a href={`mailto:${KONTAKT.mail}`} class="text-ec-cyan hover:text-ec-yellow"
+              >{KONTAKT.mail}</a
+            >
+          </div>
+        </address>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href={REZERVACIA} class="nb-btn text-xs !px-4 !py-2.5">Rezervovať termín</a>
+          <a href={KONTAKT.mapa} class="nb-btn-ghost text-xs !px-4 !py-2.5">Na mape →</a>
+        </div>
+
+        <div class="mt-6 pt-5 border-t border-ec-cyan/15 flex gap-4 text-xs">
+          <a href={KONTAKT.facebook} class="text-ec-muted hover:text-ec-cyan">Facebook</a>
+          <a href={KONTAKT.instagram} class="text-ec-muted hover:text-ec-cyan">Instagram</a>
+          <a href={KONTAKT.youtube} class="text-ec-muted hover:text-ec-cyan">YouTube</a>
+        </div>
+      </div>
     </div>
 
-    <div>
-      <div class="t-sub text-xs text-ec-yellow mb-3">Otvorené</div>
-      <dl class="text-sm space-y-1 text-ec-paper/85">
+    <!-- HODINY -->
+    <div class="lg:col-span-3">
+      <div class="t-sub text-[0.7rem] text-ec-yellow mb-4">Otvorené</div>
+      <dl class="text-sm space-y-2 text-ec-ink/85">
         {
           HODINY.map((h) => (
-            <div class="flex justify-between gap-3">
-              <dt>{h.den}</dt>
+            <div class="flex justify-between gap-3 border-b border-ec-cyan/10 pb-2">
+              <dt class="text-ec-muted">{h.den}</dt>
               <dd class="t-num whitespace-nowrap">{h.cas}</dd>
             </div>
           ))
         }
       </dl>
     </div>
+
+    <!-- ROZCESTNÍK -->
+    <div class="lg:col-span-4">
+      <div class="t-sub text-[0.7rem] text-ec-yellow mb-4">Ďalej na webe</div>
+      <nav class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm" aria-label="Rozcestník">
+        {
+          OSTATNE.map((o) => (
+            <a href={o.h} class="text-ec-ink/70 hover:text-ec-cyan">
+              {o.t}
+            </a>
+          ))
+        }
+      </nav>
+      <p class="mt-5 text-xs text-ec-muted leading-relaxed">
+        Neviete, čo hľadáte? Spýtajte sa v
+        <a href="/chat/" class="text-ec-cyan hover:text-ec-yellow">chate</a> — nájde to za vás.
+      </p>
+    </div>
   </div>
 
-  <div class="border-t border-ec-paper/20">
+  <div class="border-t border-ec-cyan/15">
     <div
-      class="max-w-[1200px] mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-4 text-xs text-ec-paper/70"
+      class="max-w-[1200px] mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-4 text-xs text-ec-muted"
     >
-      <nav class="flex flex-wrap gap-4" aria-label="Pätička">
+      <nav class="flex flex-wrap gap-5" aria-label="Pätička">
         {MENU.map((n) => <a href={n.h} class="hover:text-ec-yellow">{n.t}</a>)}
         <a href="/ochrana-osobnych-udajov/" class="hover:text-ec-yellow">Ochrana údajov</a>
       </nav>

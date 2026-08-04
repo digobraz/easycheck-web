@@ -18,7 +18,7 @@ import { FIRMA, VOZIDLA, DOSTUPNOST, PONUKA } from "../../data/obsah";
     />
   </head>
   <body class="bg-sf-void text-white/90">
-    <div class="bg-ec-ink text-white text-xs t-sub flex items-center justify-between px-4 py-2 gap-4 border-b border-sf-line">
+    <div class="bg-ec-void text-white text-xs t-sub flex items-center justify-between px-4 py-2 gap-4 border-b border-sf-line">
       <span>Prototyp 2 — Sci-fi punk / Cybertron</span>
       <a href="/" class="underline underline-offset-2 hover:text-ec-yellow">Späť na výber</a>
     </div>
@@ -36,7 +36,7 @@ import { FIRMA, VOZIDLA, DOSTUPNOST, PONUKA } from "../../data/obsah";
         </nav>
         <a
           href="#piedestal"
-          class="sf-panel sf-panel-y px-5 py-2.5 t-sub text-xs text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors"
+          class="sf-panel sf-panel-y px-5 py-2.5 t-sub text-xs text-ec-yellow hover:bg-ec-hud hover:text-sf-void transition-colors"
         >
           Rezervovať
         </a>
@@ -72,7 +72,7 @@ import { FIRMA, VOZIDLA, DOSTUPNOST, PONUKA } from "../../data/obsah";
           <div class="mt-9 flex flex-wrap gap-4">
             <a
               href="#piedestal"
-              class="sf-panel sf-panel-y px-7 py-4 t-sub text-sm text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors"
+              class="sf-panel sf-panel-y px-7 py-4 t-sub text-sm text-ec-yellow hover:bg-ec-hud hover:text-sf-void transition-colors"
             >
               Vybrať vozidlo →
             </a>
@@ -209,7 +209,7 @@ import { FIRMA, VOZIDLA, DOSTUPNOST, PONUKA } from "../../data/obsah";
                     </div>
                     <a
                       href={v.href}
-                      class="sf-panel sf-panel-y px-5 py-3 t-sub text-xs text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors"
+                      class="sf-panel sf-panel-y px-5 py-3 t-sub text-xs text-ec-yellow hover:bg-ec-hud hover:text-sf-void transition-colors"
                     >
                       Rezervovať →
                     </a>
@@ -288,7 +288,7 @@ import { FIRMA, VOZIDLA, DOSTUPNOST, PONUKA } from "../../data/obsah";
           Stačí sa objednať alebo zavolať a už dnes môžete byť na linke.
         </p>
         <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#piedestal" class="sf-panel sf-panel-y px-8 py-4 t-sub text-sm text-ec-yellow hover:bg-ec-yellow hover:text-sf-void transition-colors">
+          <a href="#piedestal" class="sf-panel sf-panel-y px-8 py-4 t-sub text-sm text-ec-yellow hover:bg-ec-hud hover:text-sf-void transition-colors">
             Vybrať vozidlo
           </a>
           <a href={FIRMA.telHref} class="sf-panel px-8 py-4 t-sub text-sm text-ec-cyan t-num hover:bg-ec-cyan hover:text-sf-void transition-colors">

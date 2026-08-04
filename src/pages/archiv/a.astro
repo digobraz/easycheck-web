@@ -7,10 +7,10 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
   titul="Easy Check — STK Trnava"
   variant="A — Žltá stena"
   popis="Žltá nesie celú stránku, obrysové bloky na nej ležia"
-  bg="bg-ec-yellow"
+  bg="bg-ec-hud"
 >
   <!-- HERO -->
-  <section class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow nb-dots">
+  <section class="border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-hud nb-dots">
     <div class="max-w-[1200px] mx-auto px-4 py-16 md:py-24">
       <div class="nb-in">
         <span class="nb-tag bg-ec-red text-white">Trnava · Technická ul.</span>
@@ -24,7 +24,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
       </div>
 
       <div class="mt-10 flex flex-col sm:flex-row gap-4 items-start sm:items-center nb-in nb-in-3">
-        <a href={REZERVACIA} class="nb-btn !bg-ec-ink !text-ec-yellow text-base md:text-lg !px-8 !py-4">
+        <a href={REZERVACIA} class="nb-btn !bg-ec-void !text-ec-yellow text-base md:text-lg !px-8 !py-4">
           Rezervovať termín STK
         </a>
         <div class="nb bg-ec-paper px-4 py-3 nb-shadow-sm">
@@ -36,7 +36,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
   </section>
 
   <!-- SOCIAL PROOF pásik -->
-  <section class="bg-ec-ink text-ec-paper border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="bg-ec-void text-ec-ink border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div
       class="max-w-[1200px] mx-auto px-4 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-center"
     >
@@ -49,7 +49,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
   </section>
 
   <!-- PONUKA -->
-  <section class="py-16 md:py-20 bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-20 bg-ec-hud border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <h2 class="t-display text-4xl md:text-6xl mb-10">Naša ponuka</h2>
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -72,7 +72,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
   </section>
 
   <!-- DOSTUPNOSŤ -->
-  <section class="py-16 md:py-20 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-20 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <span class="nb-tag bg-ec-cyan text-white">Kedykoľvek, bez čakania a stresu</span>
       <h2 class="t-display text-4xl md:text-6xl mt-5 mb-10 max-w-[18ch]">
@@ -82,7 +82,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
         {
           DOSTUPNOST.map((d, i) => (
             <div class={`nb-card p-6 nb-in nb-in-${i + 1}`}>
-              <span class="nb-tag bg-ec-yellow">{d.stitok}</span>
+              <span class="nb-tag bg-ec-hud">{d.stitok}</span>
               <h3 class="t-display text-2xl mt-4">{d.nadpis}</h3>
               <p class="mt-2 text-sm leading-relaxed">{d.text}</p>
             </div>
@@ -93,12 +93,12 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
   </section>
 
   <!-- VÝHODY -->
-  <section class="py-16 md:py-20 bg-ec-yellow border-b-[var(--stroke-thick)] border-ec-ink">
+  <section class="py-16 md:py-20 bg-ec-hud border-b-[var(--stroke-thick)] border-ec-cyan/30">
     <div class="max-w-[1200px] mx-auto px-4">
       <h2 class="t-display text-4xl md:text-6xl mb-10">STK s výhodami</h2>
       <div class="grid gap-8 lg:grid-cols-2">
         <div>
-          <div class="t-sub text-sm mb-4 inline-block border-b-[var(--stroke-thick)] border-ec-ink pb-1">
+          <div class="t-sub text-sm mb-4 inline-block border-b-[var(--stroke-thick)] border-ec-cyan/30 pb-1">
             Pre ľudí
           </div>
           <div class="space-y-4">
@@ -113,7 +113,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
           </div>
         </div>
         <div>
-          <div class="t-sub text-sm mb-4 inline-block border-b-[var(--stroke-thick)] border-ec-ink pb-1">
+          <div class="t-sub text-sm mb-4 inline-block border-b-[var(--stroke-thick)] border-ec-cyan/30 pb-1">
             Pre firmy
           </div>
           <div class="space-y-4">
@@ -125,7 +125,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
                 </div>
               ))
             }
-            <div class="nb-card p-5 bg-ec-ink text-ec-paper">
+            <div class="nb-card p-5 bg-ec-void text-ec-ink">
               <h3 class="t-sub text-base text-ec-yellow">Ľudskosť nadovšetko</h3>
               <p class="mt-1.5 text-sm leading-relaxed opacity-90">
                 Sme stanica, ktorá má najväčší počet zákazníckych recenzií na Slovensku a zároveň aj
@@ -144,7 +144,7 @@ import { FIRMA, REZERVACIA, USP, PONUKA, KAT_FARBA, DOSTUPNOST, VYHODY_LUDIA, VY
       <h2 class="t-display text-4xl md:text-7xl text-white">Termín ihneď</h2>
       <p class="mt-4 text-white text-lg">Objednajte sa alebo zavolajte — už dnes môžete byť na linke.</p>
       <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href={REZERVACIA} class="nb-btn !bg-ec-yellow text-base !px-8 !py-4">Rezervovať termín</a>
+        <a href={REZERVACIA} class="nb-btn !bg-ec-hud text-base !px-8 !py-4">Rezervovať termín</a>
         <a href={FIRMA.telHref} class="nb-btn !bg-ec-paper text-base !px-8 !py-4 t-num">{FIRMA.tel}</a>
       </div>
     </div>

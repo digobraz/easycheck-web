@@ -29,7 +29,7 @@ const { titul, variant, popis, bg = "bg-ec-paper" } = Astro.props;
   <body class={bg}>
     <!-- lišta variantu (len pre výber, na ostrom webe nebude) -->
     <div
-      class="bg-ec-ink text-white text-xs t-sub flex items-center justify-between px-4 py-2 gap-4"
+      class="bg-ec-void text-white text-xs t-sub flex items-center justify-between px-4 py-2 gap-4"
     >
       <span>Variant {variant} — {popis}</span>
       <span class="flex gap-3">
@@ -39,7 +39,7 @@ const { titul, variant, popis, bg = "bg-ec-paper" } = Astro.props;
 
     <!-- hlavička -->
     <header
-      class="sticky top-0 z-50 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-ink"
+      class="sticky top-0 z-50 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-cyan/30"
     >
       <div class="max-w-[1200px] mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
         <a href="/" class="flex items-center shrink-0">
@@ -50,7 +50,7 @@ const { titul, variant, popis, bg = "bg-ec-paper" } = Astro.props;
             NAV.map((n) => (
               <a
                 href={n.h}
-                class="t-sub text-xs px-3 py-2 border-[var(--stroke)] border-transparent hover:border-ec-ink hover:bg-ec-yellow transition-colors"
+                class="t-sub text-xs px-3 py-2 border-[var(--stroke)] border-transparent hover:border-ec-cyan/30 hover:bg-ec-hud transition-colors"
               >
                 {n.t}
               </a>
@@ -73,7 +73,7 @@ const { titul, variant, popis, bg = "bg-ec-paper" } = Astro.props;
     </main>
 
     <!-- pätička -->
-    <footer class="border-t-[var(--stroke-thick)] border-ec-ink bg-ec-ink text-ec-paper">
+    <footer class="border-t-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-void text-ec-ink">
       <div class="max-w-[1200px] mx-auto px-4 py-12 grid gap-8 md:grid-cols-4">
         <div class="md:col-span-2">
           <div class="t-display text-3xl mb-3">

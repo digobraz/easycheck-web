@@ -1,11 +1,17 @@
 ---
+/**
+ * Hlavička — 4 piliere + jedno žlté tlačidlo.
+ * Tmavý HUD: priehľadný panel s blur, spodná svetelná linka.
+ */
 import { MENU, KONTAKT, REZERVACIA } from "../data/firma";
 
 const { cesta = "" } = Astro.props;
 const je = (h: string) => h !== "/" && cesta.startsWith(h.replace(/\/$/, ""));
 ---
 
-<header class="sticky top-0 z-50 bg-ec-paper border-b-[var(--stroke-thick)] border-ec-ink">
+<header
+  class="sticky top-0 z-50 border-b border-ec-cyan/25 bg-[rgb(5_8_10/0.88)] backdrop-blur-md"
+>
   <div class="max-w-[1200px] mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
     <a href="/" class="flex items-center shrink-0" aria-label="Easy Check — domov">
       <img src="/brand/easycheck-logo.svg" alt="Easy Check" class="h-9 md:h-11 w-auto" />
@@ -18,10 +24,10 @@ const je = (h: string) => h !== "/" && cesta.startsWith(h.replace(/\/$/, ""));
             href={n.h}
             aria-current={je(n.h) ? "page" : undefined}
             class:list={[
-              "t-sub text-xs px-3 py-2 border-[var(--stroke)] transition-colors",
+              "t-sub text-xs px-4 py-2.5 border transition-colors",
               je(n.h)
-                ? "border-ec-ink bg-ec-yellow"
-                : "border-transparent hover:border-ec-ink hover:bg-ec-yellow",
+                ? "border-ec-yellow/60 text-ec-yellow bg-[rgb(255_230_0/0.07)]"
+                : "border-transparent text-ec-ink/80 hover:border-ec-cyan/40 hover:text-ec-cyan",
             ]}
           >
             {n.t}
@@ -31,10 +37,15 @@ const je = (h: string) => h !== "/" && cesta.startsWith(h.replace(/\/$/, ""));
     </nav>
 
     <div class="flex items-center gap-2 shrink-0">
-      <a href={KONTAKT.telHref} class="hidden md:inline t-sub text-xs px-2 py-2 hover:underline">
+      <a
+        href={KONTAKT.telHref}
+        class="hidden md:inline t-sub text-xs px-2 py-2 text-ec-ink/80 hover:text-ec-yellow"
+      >
         {KONTAKT.tel}
       </a>
-      <a href={REZERVACIA} class="nb-btn text-xs md:text-sm !px-4 md:!px-5 !py-2.5">Rezervovať</a>
+      <a href={REZERVACIA} class="nb-btn text-xs md:text-sm !px-4 md:!px-5 !py-2.5"
+        >Rezervovať</a
+      >
       <button
         id="ec-burger"
         class="lg:hidden nb w-11 h-11 flex items-center justify-center"
@@ -42,7 +53,8 @@ const je = (h: string) => h !== "/" && cesta.startsWith(h.replace(/\/$/, ""));
         aria-expanded="false"
         aria-controls="ec-menu"
       >
-        <span class="block w-5 h-[3px] bg-ec-ink relative before:absolute before:content-[''] before:w-5 before:h-[3px] before:bg-ec-ink before:-top-1.5 after:absolute after:content-[''] after:w-5 after:h-[3px] after:bg-ec-ink after:top-1.5"
+        <span
+          class="block w-5 h-[2px] bg-ec-ink relative before:absolute before:content-[''] before:w-5 before:h-[2px] before:bg-ec-ink before:-top-1.5 after:absolute after:content-[''] after:w-5 after:h-[2px] after:bg-ec-ink after:top-1.5"
         ></span>
       </button>
     </div>
@@ -50,17 +62,26 @@ const je = (h: string) => h !== "/" && cesta.startsWith(h.replace(/\/$/, ""));
 
   <nav
     id="ec-menu"
-    class="hidden lg:hidden border-t-[var(--stroke)] border-ec-ink bg-ec-paper"
+    class="hidden lg:hidden border-t border-ec-cyan/25 bg-[rgb(5_8_10/0.97)]"
     aria-label="Mobilné menu"
   >
     {
       MENU.map((n) => (
-        <a href={n.h} class="block t-sub text-sm px-4 py-3 border-b border-ec-ink/15">
+        <a
+          href={n.h}
+          class:list={[
+            "block t-sub text-sm px-4 py-3.5 border-b border-ec-cyan/15",
+            je(n.h) ? "text-ec-yellow" : "text-ec-ink/85",
+          ]}
+        >
           {n.t}
         </a>
       ))
     }
-    <a href={KONTAKT.telHref} class="block t-sub text-sm px-4 py-3 bg-ec-cyan text-white">
+    <a
+      href={KONTAKT.telHref}
+      class="block t-sub text-sm px-4 py-3.5 text-ec-cyan border-b border-ec-cyan/15"
+    >
       Zavolať {KONTAKT.tel}
     </a>
   </nav>

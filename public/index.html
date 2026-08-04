@@ -378,6 +378,16 @@
            /* pointer-events:auto NAMIESTO zdedeného .frm none — chceme hover na
               CELOM bloku, nielen na .frm-in obsahu (border/žiara musí tiež reagovať). */
            pointer-events:auto; transition:transform .3s ease; }
+  /* ĽAVÝ rám má VLASTNÉ odsadenie zdola (Matej 4.8.2026: „moc malý priestor pod číslom").
+     Obsah tu je najvyšší zo všetkých troch rámov — súčet logo+motto+kontroly+hodiny+telefón
+     PREROSTIE výšku rámu a vytlačí sa do spodného paddingu, takže telefónny box skončil
+     6 px nad žltou linkou. Základné `.frm-in` sa nemení (drží aj oba pravé rámy, tam je
+     obsahu menej a odsadenie sedí) — prepis je zámerne scopnutý na .frm-l:
+       padding-bottom 10 → 13 %  · gap 3.2 → 2.4 %  · logo 86 → 78 %
+     dokopy uvoľní ~30 px, telefón dýcha ~36 px nad okrajom. Ak sem raz pribudne ďalší
+     riadok, uber najprv z loga — je to najväčšia položka stĺpca. */
+  .frm-l .frm-in { padding:5% 7% 13%; gap:2.4%; }
+  .frm-l .logo-in { width:78%; }
   /* pravý blok ROZDELENÝ na dva samostatné rámy (Matej 2026-07-17): horný zelený
      (rotujúce akcie/oznamy), dolný modrý (statické Google recenzie). Rovnaký
      skos-vzor ako .frm-l/.frm-r, ale PRESEKANÝ na inú výšku → y-offset osemuholníka
@@ -755,6 +765,15 @@
     margin-top:4px; font-size:12.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
     color:rgba(200,225,255,.8);
   }
+  /* hodnotenie aj počet sú od 4.8.2026 ODKAZY na živý Google profil — číslo v hero
+     má byť overiteľné jedným klikom, nie tvrdenie. Bez podčiarknutia, hover len
+     zosilní (rovnaký vzorec ako a.addr vyššie). */
+  a.g-pill, a.g-count-wrap {
+    text-decoration:none; cursor:pointer;
+    transition:transform .18s ease, filter .18s ease;
+  }
+  a.g-pill:hover, a.g-count-wrap:hover { transform:scale(1.05); filter:brightness(1.12); }
+  a.g-pill:focus-visible, a.g-count-wrap:focus-visible { outline:2px solid #9fd0ff; outline-offset:3px; }
 
 
   .spacer { flex:1; }
@@ -1118,10 +1137,8 @@
   <button class="m-burger" id="mBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
 <nav class="m-menu" id="mMenu" aria-label="Hlavne menu">
-  <a href="/sluzby/">Služby</a>
-  <a href="/cennik/">Cenník</a>
-  <a href="/uzitocne-informacie/">Info</a>
-  <a href="/kontakt/">Kontakt</a>
+  <a href="/rezervacia/">Objednávka</a>
+  <a href="/chat/">Chat</a>
   <a href="/clanky/">Blog</a>
 </nav>
 
@@ -1236,8 +1253,11 @@
             </div>
             <!-- adresa je odkaz na Google Mapy (Matej 3.8.2026: hero má niesť adresu, nielen mesto).
      Ulica = TECHNICKÁ (Matej 4.8.2026: „to druhé je stará a zlá adresa"). Starý WP si protirečí sám
-     so sebou — homepage a cenník píšu Technickú, kontakt a zákonné stránky starú ulicu. Platí Technická. -->
-            <a class="addr" href="https://maps.app.goo.gl/5rPigU95M78qd6Ju9"
+     so sebou — homepage a cenník píšu Technickú, kontakt a zákonné stránky starú ulicu. Platí Technická.
+     ⚠️ Odkaz je `?cid=161974492916168468` = STABILNÉ ID prevádzky „EASY CHECK STK - KO -TACHOGRAFY
+     TRNAVA". Predtým tu bol skrátený `maps.app.goo.gl/5rPigU95M78qd6Ju9`, ktorý otváral ÚPLNE INÝ
+     podnik (Optimus Prime, 300 m vedľa) — skrátené odkazy sem nedávať, nedá sa z nich prečítať cieľ. -->
+            <a class="addr" href="https://www.google.com/maps?cid=161974492916168468"
                target="_blank" rel="noopener" aria-label="Technická ulica, Trnava, smer Dolná Krupá — zobraziť na mape">
               Technická ul.<br><b>Trnava</b>
               <span class="addr-map">Zobraziť na mape →</span>
@@ -1264,10 +1284,8 @@
           </div>
         </div>
         <nav class="promo-nav promo-col-right">
-          <a class="sf promo-navbtn" href="/sluzby/"><span>Služby</span></a>
-          <a class="sf promo-navbtn" href="/cennik/"><span>Cenník</span></a>
-          <a class="sf promo-navbtn" href="/uzitocne-informacie/"><span>Info</span></a>
-          <a class="sf promo-navbtn" href="/kontakt/"><span>Kontakt</span></a>
+          <a class="sf promo-navbtn" href="/rezervacia/"><span>Rezervácie</span></a>
+          <a class="sf promo-navbtn" href="/chat/"><span>Info</span></a>
           <a class="sf promo-navbtn" href="/clanky/"><span>Blog</span></a>
         </nav>
       </div>
@@ -1278,14 +1296,16 @@
         <div class="g-head">Najlepšie hodnotená STK<br>na Slovensku.</div>
         <div class="g-logo-big"><span class="g-b">G</span><span class="g-r">o</span><span class="g-y">o</span><span class="g-b">g</span><span class="g-g">l</span><span class="g-r">e</span></div>
         <div class="g-rate-row">
-          <div class="g-pill">4,9 ★★★★★</div>
+          <a class="g-pill" href="https://www.google.com/maps?cid=161974492916168468" target="_blank" rel="noopener noreferrer" aria-label="Hodnotenie 4,9 z 5 — otvoriť recenzie na Google">4,9 ★★★★★</a>
           <a class="g-add" href="https://g.page/r/CRQ38XDxcj8CEBM/review" target="_blank" rel="noopener noreferrer" aria-label="Pridať recenziu na Google" title="Pridať recenziu na Google">+</a>
         </div>
-        <!-- presný počet od Mateja (2026-07-17), NIE zaokrúhlené Google "5,7 tis." -->
-        <div class="g-count-wrap">
-          <div class="g-count-big">5708</div>
+        <!-- presný počet odčítaný z profilu, NIE zaokrúhlené Google "5,7 tis."
+             Naposledy overené 4. 8. 2026 = 5 716. Číslo rastie — pri každej väčšej
+             úprave hero ho prečítaj znova na profile (odkaz nižšie), inak zastará. -->
+        <a class="g-count-wrap" href="https://www.google.com/maps?cid=161974492916168468" target="_blank" rel="noopener noreferrer" aria-label="5716 recenzií na Google — otvoriť profil">
+          <div class="g-count-big">5716</div>
           <div class="g-count-label">recenzií</div>
-        </div>
+        </a>
       </div>
     </div>
 

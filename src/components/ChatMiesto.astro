@@ -1,8 +1,10 @@
 ---
 /**
- * Miesto pre chat. Chat sa v NOCI 1 NEROBÍ — potrebuje znalostnú bázu
- * rozobratú fakt po fakte + testovanie (plan.html §02). Toto je len blok,
- * ktorý drží priestor a zatiaľ posiela človeka na telefón.
+ * Odkaz na CHAT — pilier č. 3.
+ *
+ * Chat sám ešte neodpovedá (nemá znalostnú bázu ani backend), ale stránka
+ * `/chat/` už existuje a je plnohodnotná: cenník, služby, tlačivá, rozcestník
+ * na všetko mimo menu. Tento blok tam preto posiela, nie „drží priestor".
  */
 import { KONTAKT } from "../data/firma";
 
@@ -18,35 +20,32 @@ const {
 ---
 
 <div
-  class:list={[
-    "nb-card bg-ec-cyan text-white",
-    velky ? "p-6 md:p-10" : "p-5 md:p-6",
-  ]}
+  class:list={["nb relative border-ec-cyan/50", velky ? "p-6 md:p-10" : "p-5 md:p-6"]}
   data-chat-placeholder
 >
-  <div class="t-sub text-xs text-white/80">Pripravujeme</div>
+  <span class="nb-corner top-2 left-2 border-r-0 border-b-0"></span>
+  <span class="nb-corner bottom-2 right-2 border-l-0 border-t-0"></span>
+
+  <div class="t-sub text-[0.7rem] text-ec-cyan">Easy Check · asistent</div>
   <div class:list={["t-display", velky ? "text-3xl md:text-5xl mt-2" : "text-xl md:text-2xl mt-1"]}>
-    Opýtaj sa na čokoľvek
+    Opýtajte sa <span class="t-glow-y">na čokoľvek</span>
   </div>
-  <p class:list={["mt-3 text-white/90", velky ? "text-base md:text-lg max-w-2xl" : "text-sm"]}>
-    Chat, ktorý odpovie z overených faktov a ku každej odpovedi dá zdroj a dátum overenia.
-    Zatiaľ nebeží — kým nie je istý, radšej vás spojíme s technikom.
+  <p class:list={["mt-3 text-ec-ink/80", velky ? "text-base md:text-lg max-w-2xl" : "text-sm"]}>
+    Cenník, služby, lehoty, tlačivá aj všetky ostatné stránky nájdete na jednom mieste.
   </p>
 
   {
     velky && (
       <ul class="mt-6 flex flex-wrap gap-2">
         {otazky.map((o) => (
-          <li class="nb-tag bg-white/95 text-ec-ink normal-case tracking-normal font-normal">
-            „{o}“
-          </li>
+          <li class="nb-tag normal-case tracking-normal font-normal text-ec-ink/85">{o}</li>
         ))}
       </ul>
     )
   }
 
   <div class="mt-6 flex flex-wrap items-center gap-3">
-    <a href={KONTAKT.telHref} class="nb-btn text-sm">Zavolať {KONTAKT.tel}</a>
-    <span class="text-xs text-white/80">{velky ? "Po–Pia 07:00–19:00 · So 07:00–13:00" : ""}</span>
+    <a href="/chat/" class="nb-btn text-sm">Otvoriť chat</a>
+    <a href={KONTAKT.telHref} class="nb-btn-ghost text-sm">Zavolať {KONTAKT.tel}</a>
   </div>
 </div>

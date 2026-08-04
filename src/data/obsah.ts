@@ -40,9 +40,9 @@ export const REZERVACIA = "https://klasik.as.me/KLASIK-OSOBNE-VOZIDLA-Technicka-
 export type Kat = "kontrola" | "easy" | "info" | "neutral";
 
 export const KAT_FARBA: Record<Kat, string> = {
-  kontrola: "bg-ec-red text-white",
-  easy: "bg-ec-green text-white",
-  info: "bg-ec-cyan text-white",
+  kontrola: "border-ec-red/60 text-ec-ink",
+  easy: "border-ec-green/60 text-ec-ink",
+  info: "border-ec-cyan/60 text-ec-ink",
   neutral: "bg-ec-paper",
 };
 

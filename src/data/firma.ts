@@ -18,7 +18,11 @@ export const KONTAKT = {
   tel: "033 20 20 211",
   telHref: "tel:+421332020211",
   mail: "stk@easycheck.sk",
-  mapa: "https://maps.app.goo.gl/5rPigU95M78qd6Ju9",
+  // ⚠️ `?cid=` = stabilné ID prevádzky „EASY CHECK STK - KO -TACHOGRAFY TRNAVA".
+  // Skrátený `maps.app.goo.gl/5rPigU95M78qd6Ju9`, ktorý tu bol do 4. 8. 2026, otváral
+  // ÚPLNE INÝ podnik (Optimus Prime, 300 m vedľa). Skrátené odkazy sem nedávať —
+  // nedá sa z nich prečítať, kam vedú, kým ich niekto neklikne.
+  mapa: "https://www.google.com/maps?cid=161974492916168468",
   // embed cez presné súradnice prevádzky — názov ulice sa v mapách líši, bod nie
   mapaEmbed:
     "https://www.google.com/maps?q=48.4174872,17.5822691&z=16&output=embed",
@@ -41,16 +45,24 @@ export const REZERVACIA =
   "https://klasik.as.me/KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola";
 
 /**
- * MENU — 7 položiek podľa plan.html §01. Nič viac.
- * Rezervácia je jediné farebne odlíšené tlačidlo.
+ * MENU — 4 piliere (Matej, 4. 8. 2026). Nič viac.
+ *
+ * ⚠️ MENU NIE JE SITEMAPA. Cenník, Služby, Kontakt a ďalších ~60 URL
+ * starého webu ostávajú ŽIVÉ na svojich adresách — len sa na ne
+ * z navigácie neodkazuje. Zrušiť tie adresy = zahodiť roky pozícií
+ * vo vyhľadávaní. Vstup do nich vedie cez Chat a pätičku.
+ *
+ * Rezervácie zámerne žijú na starej `/rezervacia/` — je to najlinkovanejšia
+ * URL starého webu (95 interných odkazov). Nová adresa by tú hodnotu zahodila.
+ * Popisky zjednotené s URL (Matej, 4. 8. 2026): „Objednávka" → Rezervácie,
+ * „Chat" → Info (na /chat/ nie je len chat, ale aj cenník, služby a rozcestník
+ * na všetko mimo menu — popisok „Chat" sľuboval menej, než tá stránka je).
  */
 export const MENU = [
   { t: "Domov", h: "/" },
-  { t: "Cenník", h: "/cennik/" },
-  { t: "Služby", h: "/sluzby/" },
-  { t: "Info", h: "/uzitocne-informacie/" },
+  { t: "Rezervácie", h: "/rezervacia/" },
+  { t: "Info", h: "/chat/" },
   { t: "Blog", h: "/clanky/" },
-  { t: "Kontakt", h: "/kontakt/" },
 ];
 
 /**

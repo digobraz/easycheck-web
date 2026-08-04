@@ -14,7 +14,7 @@ const datum = (d: Date) =>
   titul="Blog Easy Check — články o STK, emisných a technike"
   popis="Články zo stanice technickej kontroly Trnava: lehoty, povinná výbava, príprava na STK, oznamy a zaujímavosti zo sveta áut."
 >
-  <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+  <header class="border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-hud">
     <div class="max-w-[1100px] mx-auto px-4 py-12 md:py-16">
       <h1 class="t-display text-4xl md:text-6xl">Blog</h1>
       <p class="mt-4 text-lg md:text-xl max-w-2xl">
@@ -26,7 +26,7 @@ const datum = (d: Date) =>
 
   <div class="max-w-[1100px] mx-auto px-4 py-10 md:py-14">
     <div class="flex flex-wrap gap-2" role="group" aria-label="Filter kategórií">
-      <button class="nb-tag bg-ec-yellow" data-kat="vsetky" aria-pressed="true">
+      <button class="nb-tag bg-ec-hud" data-kat="vsetky" aria-pressed="true">
         Všetky ({clanky.length})
       </button>
       {
@@ -48,10 +48,10 @@ const datum = (d: Date) =>
                   src={c.data.obrazok}
                   alt=""
                   loading="lazy"
-                  class="w-full h-44 object-cover border-b-[var(--stroke)] border-ec-ink"
+                  class="w-full h-44 object-cover border-b-[var(--stroke)] border-ec-cyan/30"
                 />
               ) : (
-                <div class="w-full h-44 bg-ec-cyan border-b-[var(--stroke)] border-ec-ink flex items-center justify-center">
+                <div class="w-full h-44 bg-ec-cyan/15 border-b-[var(--stroke)] border-ec-cyan/30 flex items-center justify-center">
                   <span class="t-display text-4xl text-white/90">EC</span>
                 </div>
               )}
@@ -80,7 +80,7 @@ const datum = (d: Date) =>
         document.querySelectorAll("button[data-kat]").forEach((x) => {
           const akt = x === b;
           x.setAttribute("aria-pressed", String(akt));
-          x.classList.toggle("bg-ec-yellow", akt);
+          x.classList.toggle("bg-ec-hud", akt);
           x.classList.toggle("bg-ec-paper", !akt);
         });
         polozky.forEach((p) => {

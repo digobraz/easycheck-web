@@ -1,54 +1,92 @@
 @import "tailwindcss";
 
 /* ============================================================
-   EASY CHECK — Neo-brutalist design system
-   Brand: vstupy/Brand + project_easycheck_brand_manual
-   Pravidlo štýlu: hrubý obrys, tvrdý tieň, ostré rohy, plné farby.
-   Žiadne jemné tiene, žiadne gradienty, žiadny border-radius.
+   EASY CHECK — JEDEN DIZAJN SYSTÉM (tmavý HUD)
+   Prepnuté 4. 8. 2026 (Matej): hero scéna udáva tón celému webu.
+
+   Predtým tu boli dva svety: tmavá futuristická homepage a svetlý
+   neobrutalistický zvyšok. Zjednotené na tmavý.
+
+   Pravidlo štýlu: tmavý panel, tenká svetelná linka, zrezaný roh,
+   žltá ako jediný silný akcent. Žiadny papier, žiadny tvrdý čierny
+   tieň, žiadne veľké žlté plochy.
+
+   ⚠️ Názvy tried `nb-*` sa ZÁMERNE nepremenovali. Drží ich 60+ stránok
+   a premenovanie by bolo 300 mechanických editov bez prínosu. Trieda
+   `nb` dnes znamená „panel", nie „neobrutalistický blok".
    ============================================================ */
 
 @theme {
   /* --- brand farby (LOCKED, z loga + FB) --- */
-  --color-ec-yellow: #FFE600;   /* primary surface */
-  --color-ec-green:  #5BBA47;   /* EASY */
-  --color-ec-red:    #E12128;   /* CHECK */
-  --color-ec-cyan:   #18B6E4;   /* maskot */
-  --color-ec-ink:    #231F20;   /* text / obrys */
-  --color-ec-paper:  #FFFDF5;   /* papier */
+  --color-ec-yellow: #FFE600;   /* akcent — tlačidlá, čísla, aktívny stav */
+  --color-ec-green:  #38E04A;   /* EASY — potvrdenie, „otvorené" */
+  --color-ec-red:    #FF3A41;   /* CHECK — výstraha, štítok úkonu */
+  --color-ec-cyan:   #18B6E4;   /* maskot — linky HUD, odkazy */
+
+  /* --- tmavý svet ---
+     `paper` a `ink` si nechali mená, ale otočili význam: paper = povrch
+     (dnes tmavý), ink = text/obrys (dnes svetlý). Vďaka tomu `bg-ec-paper`
+     a `text-ec-ink` na starých stránkach fungujú ďalej a rovno stmavnú. */
+  --color-ec-void:   #05080A;   /* pozadie stránky, rovnaké ako hero */
+  --color-ec-paper:  #0B111A;   /* povrch panelu */
+  --color-ec-hud:    #0F1922;   /* zvýraznený pás — bývalé žlté plochy */
+  --color-ec-ink:    #DCE9F0;   /* text */
+  --color-ec-muted:  #8FA3B0;   /* druhoradý text */
+  --color-ec-line:   #1B2A3D;   /* obrys bez svetla */
 
   /* TYPOGRAFIA ZAMKNUTÁ 2026-07-22 — dve rodiny, tri váhy.
-     Saira nesie nadpis aj štítok: tá istá rodina, iná váha.
-     Anton (jediná váha 400) vyradený — práve on si vynucoval tretí font. */
+     Orbitron z hero prototypu sa NEPRENÁŠA — bola by to tretia rodina. */
   --font-display: "Saira Condensed", system-ui, sans-serif;
   --font-sub: "Saira Condensed", system-ui, sans-serif;
   --font-body: "DM Sans", system-ui, sans-serif;
 }
 
 :root {
-  --ink: #231F20;
-  --stroke: 3px;          /* hrúbka obrysu */
-  --stroke-thick: 5px;
-  --shadow-x: 6px;
-  --shadow-y: 6px;
+  --ink: #DCE9F0;
+  --void: #05080A;
+  --panel: #0B111A;
+  --line: rgb(24 182 228 / 0.30);   /* svetelná linka HUD */
+  --line-strong: rgb(24 182 228 / 0.55);
+  --line-y: rgb(255 230 0 / 0.45);
+  --cut: 14px;                      /* zrez rohu panelu */
+  --glow: 0 0 24px rgb(24 182 228 / 0.10);
+
+  /* Dedičstvo neobrutalizmu: 72 miest na stránkach píše border šírku cez
+     `border-[var(--stroke)]`. Tokeny sa preto NEMAŽÚ, len stenčujú na
+     HUD linku — inak by tie stránky ostali bez obrysu. */
+  --stroke: 1px;
+  --stroke-thick: 1px;
 }
 
 @media (max-width: 640px) {
-  :root { --stroke: 2.5px; --stroke-thick: 4px; --shadow-x: 4px; --shadow-y: 4px; }
+  :root { --cut: 10px; }
 }
 
 html {
   font-family: var(--font-body);
   color: var(--ink);
+  background: var(--void);
   -webkit-text-size-adjust: 100%;
 }
 
-body { margin: 0; }
+body {
+  margin: 0;
+  background: var(--void);
+  /* jemná mriežka podlahy — rovnaký motív ako hero scéna */
+  background-image:
+    linear-gradient(rgb(24 182 228 / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(24 182 228 / 0.045) 1px, transparent 1px);
+  background-size: 46px 46px;
+  background-attachment: fixed;
+}
+
+::selection { background: var(--color-ec-yellow); color: #05080A; }
 
 /* --- typografia --- */
 @utility t-display {
   font-family: var(--font-display);
   text-transform: uppercase;
-  line-height: 0.88;
+  line-height: 0.9;
   letter-spacing: 0.01em;
   font-weight: 800;
 }
@@ -56,76 +94,119 @@ body { margin: 0; }
   font-family: var(--font-sub);
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 @utility t-num { font-variant-numeric: tabular-nums; }
 
-/* --- neobrutalistické primitívy --- */
+/* neónový nádych na nadpisoch — striedmo, nie na každom texte */
+@utility t-glow-y { color: #FFE600; text-shadow: 0 0 18px rgb(255 230 0 / 0.45); }
+@utility t-glow-c { color: #18B6E4; text-shadow: 0 0 16px rgb(24 182 228 / 0.55); }
 
-/* obrysový blok = základ celého webu */
+/* ============================================================
+   PRIMITÍVY (`nb-*` = panel HUD)
+   ============================================================ */
+
+/* panel = základ celého webu */
 @utility nb {
-  border: var(--stroke) solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: 0;
-  background: #FFFDF5;
+  background: rgb(11 17 26 / 0.82);
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)),
+                     calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
 }
 
-/* tvrdý tieň — nie rozostrený, plný ink */
-@utility nb-shadow {
-  box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--ink);
-}
-@utility nb-shadow-sm {
-  box-shadow: 3px 3px 0 0 var(--ink);
-}
+/* bývalý tvrdý tieň = dnes svetlo pod panelom */
+@utility nb-shadow { box-shadow: var(--glow); }
+@utility nb-shadow-sm { box-shadow: 0 0 14px rgb(24 182 228 / 0.08); }
 
-/* karta = obrys + tieň */
+/* karta = panel + svetlo */
 @utility nb-card {
-  border: var(--stroke) solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: 0;
-  box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--ink);
-  background: #FFFDF5;
+  background: rgb(11 17 26 / 0.82);
+  box-shadow: var(--glow);
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)),
+                     calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
 }
 
-/* tlačidlo — stlačenie posunie blok do tieňa */
+/* tlačidlo — žltá je jediná plná plocha na webe */
 @utility nb-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: var(--stroke) solid var(--ink);
+  border: 1px solid #FFE600;
   border-radius: 0;
-  box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--ink);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   font-family: var(--font-sub);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   padding: 0.9rem 1.6rem;
   background: #FFE600;
+  color: #05080A;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgb(255 230 0 / 0.28);
+  transition: box-shadow 0.18s ease, background 0.18s ease;
+}
+.nb-btn:hover { box-shadow: 0 0 34px rgb(255 230 0 / 0.55); background: #FFF04D; }
+.nb-btn:active { box-shadow: 0 0 10px rgb(255 230 0 / 0.4); }
+
+/* druhoradé tlačidlo — obrys, žiadna plocha */
+@utility nb-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  font-family: var(--font-sub);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.9rem 1.6rem;
+  background: rgb(11 17 26 / 0.7);
   color: var(--ink);
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition: border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
 }
-.nb-btn:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 0 var(--ink); }
-.nb-btn:active { transform: translate(var(--shadow-x), var(--shadow-y)); box-shadow: 0 0 0 0 var(--ink); }
+.nb-btn-ghost:hover { border-color: #FFE600; color: #FFE600; box-shadow: 0 0 18px rgb(255 230 0 / 0.18); }
 
-/* karta ktorá reaguje na hover rovnakou logikou */
-@utility nb-lift {
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-.nb-lift:hover { transform: translate(-2px, -2px); box-shadow: 9px 9px 0 0 var(--ink); }
+/* karta, ktorá reaguje na hover — svetlo, nie posun */
+@utility nb-lift { transition: border-color 0.18s ease, box-shadow 0.18s ease; }
+.nb-lift:hover { border-color: var(--line-strong); box-shadow: 0 0 28px rgb(24 182 228 / 0.18); }
 
-/* pásik / štítok */
+/* štítok */
 @utility nb-tag {
   display: inline-block;
-  border: var(--stroke) solid var(--ink);
+  border: 1px solid var(--line-strong);
   border-radius: 0;
   padding: 0.25rem 0.7rem;
   font-family: var(--font-sub);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   font-size: 0.75rem;
-  background: #fff;
+  background: rgb(5 8 10 / 0.6);
+  color: var(--ink);
+}
+
+/* rohová značka HUD — dekor do rohu panelu */
+@utility nb-corner {
+  position: absolute;
+  width: 10px; height: 10px;
+  border: 1px solid var(--color-ec-yellow);
+}
+
+/* mriežka (bývalé bodkované pozadie) */
+@utility nb-dots {
+  background-image:
+    linear-gradient(rgb(24 182 228 / 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(24 182 228 / 0.10) 1px, transparent 1px);
+  background-size: 44px 44px;
 }
 
 /* --- vstupné animácie (nie hover) --- */
@@ -143,19 +224,8 @@ body { margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .nb-in { animation: none; }
-  .nb-btn, .nb-lift { transition: none; }
+  .nb-btn, .nb-btn-ghost, .nb-lift { transition: none; }
 }
-
-/* bodkované pozadie (Pinterest referencia)
-   POZOR: plný ink robil bodky cez text → zle čitateľný lead. Držať nízky kontrast. */
-@utility nb-dots {
-  background-image: radial-gradient(rgb(35 31 32 / 0.16) 1.3px, transparent 1.3px);
-  background-size: 20px 20px;
-}
-
-/* ============================================================
-   PROTOTYP — pohyb
-   ============================================================ */
 
 /* --- marquee pásik --- */
 @keyframes nbMarquee {
@@ -184,18 +254,15 @@ body { margin: 0; }
 .reveal-4 { transition-delay: 0.24s; }
 .reveal-5 { transition-delay: 0.30s; }
 
-/* --- razítko: jemné pootočenie bloku ---
-   Na mobile VYPNUTÉ: rotácia + tvrdý tieň pretekali cez pravý okraj (390px). */
-@utility nb-tilt-l { transform: rotate(-1.2deg); }
-@utility nb-tilt-r { transform: rotate(1.2deg); }
-@media (max-width: 640px) {
-  .nb-tilt-l, .nb-tilt-r { transform: none; }
-}
+/* Razítko: v tmavom systéme sa nič nenakláňa — HUD panely stoja rovno.
+   Triedy ostávajú, aby staré stránky nespadli, ale nerobia nič. */
+@utility nb-tilt-l { transform: none; }
+@utility nb-tilt-r { transform: none; }
 
-/* --- pulz na štítku "termín ihneď" --- */
+/* --- pulz na štítku „termín ihneď" --- */
 @keyframes nbPulse {
-  0%, 100% { box-shadow: 4px 4px 0 0 var(--ink); }
-  50%      { box-shadow: 7px 7px 0 0 var(--ink); }
+  0%, 100% { box-shadow: 0 0 12px rgb(255 230 0 / 0.25); }
+  50%      { box-shadow: 0 0 26px rgb(255 230 0 / 0.55); }
 }
 .nb-pulse { animation: nbPulse 2.4s ease-in-out infinite; }
 
@@ -206,15 +273,14 @@ body { margin: 0; }
 }
 
 /* ============================================================
-   PROTOTYP 2 — SCI-FI PUNK (Optimus / Cybertron)
-   Samostatná vrstva. Neobrutalistické `nb-*` sa tu NEPOUŽÍVAJÚ.
-   Brand farby ostávajú, len sa menia na svetlo v tme.
+   SCI-FI vrstva — hero prototyp a variantné stránky.
+   Odteraz je to tá istá paleta ako `nb-*`, len s vlastnými menami.
    ============================================================ */
 
 @theme {
-  --color-sf-void: #05070A;   /* takmer čierna */
-  --color-sf-deep: #0B111A;   /* panel */
-  --color-sf-line: #1B2A3D;   /* obrys */
+  --color-sf-void: #05070A;
+  --color-sf-deep: #0B111A;
+  --color-sf-line: #1B2A3D;
 }
 
 @utility sf-mono {
@@ -223,7 +289,6 @@ body { margin: 0; }
   letter-spacing: 0.16em;
 }
 
-/* --- HUD panel: zrezaný roh, svetelný obrys --- */
 @utility sf-panel {
   position: relative;
   background: rgb(11 17 26 / 0.82);
@@ -231,23 +296,18 @@ body { margin: 0; }
   clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
   backdrop-filter: blur(6px);
 }
-@utility sf-panel-y {
-  border-color: rgb(255 230 0 / 0.42);
-}
+@utility sf-panel-y { border-color: rgb(255 230 0 / 0.42); }
 
-/* --- rohové značky HUD --- */
 @utility sf-corner {
   position: absolute;
   width: 12px; height: 12px;
   border: 2px solid var(--color-ec-yellow);
 }
 
-/* --- neónový text --- */
 @utility sf-glow-c { color: #18B6E4; text-shadow: 0 0 12px rgb(24 182 228 / 0.65); }
 @utility sf-glow-y { color: #FFE600; text-shadow: 0 0 14px rgb(255 230 0 / 0.55); }
-@utility sf-glow-r { color: #E12128; text-shadow: 0 0 12px rgb(225 33 40 / 0.6); }
+@utility sf-glow-r { color: #FF3A41; text-shadow: 0 0 12px rgb(255 58 65 / 0.6); }
 
-/* --- mriežka podlahy (Cybertron) --- */
 @utility sf-grid {
   background-image:
     linear-gradient(rgb(24 182 228 / 0.10) 1px, transparent 1px),
@@ -255,28 +315,24 @@ body { margin: 0; }
   background-size: 44px 44px;
 }
 
-/* --- skenovacie linky --- */
 @utility sf-scan {
   background-image: repeating-linear-gradient(
     0deg, rgb(0 0 0 / 0.30) 0 1px, transparent 1px 3px
   );
 }
 
-/* --- piedestál: rotujúce prstence --- */
 @keyframes sfSpin { to { transform: rotate(360deg); } }
 @keyframes sfSpinRev { to { transform: rotate(-360deg); } }
 .sf-ring { animation: sfSpin 14s linear infinite; transform-origin: center; }
 .sf-ring-2 { animation: sfSpinRev 22s linear infinite; transform-origin: center; }
 .sf-ring-3 { animation: sfSpin 34s linear infinite; transform-origin: center; }
 
-/* --- pulzujúca svetelná základňa --- */
 @keyframes sfBase {
   0%, 100% { opacity: 0.45; transform: scaleX(1); }
   50%      { opacity: 0.85; transform: scaleX(1.06); }
 }
 .sf-base { animation: sfBase 3.4s ease-in-out infinite; }
 
-/* --- materializácia vozidla pri prepnutí --- */
 @keyframes sfMaterialize {
   0%   { opacity: 0; filter: brightness(3) blur(7px); transform: translateY(8px) scale(0.97); }
   55%  { opacity: 1; filter: brightness(1.6) blur(1px); }
@@ -284,14 +340,12 @@ body { margin: 0; }
 }
 .sf-materialize { animation: sfMaterialize 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
 
-/* --- jemné vznášanie --- */
 @keyframes sfFloat {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-9px); }
 }
 .sf-float { animation: sfFloat 5s ease-in-out infinite; }
 
-/* --- glitch na nadpise --- */
 @keyframes sfGlitch {
   0%, 92%, 100% { transform: none; opacity: 1; }
   93% { transform: translate(-2px, 1px); opacity: 0.85; }
@@ -307,14 +361,14 @@ body { margin: 0; }
 
 /* ============================================================
    PRÓZA — text z WP (články + zákonné stránky).
-   Tailwind reset zhodí nadpisy aj zoznamy; toto ich vráti späť
-   v brandovej typografii. Používa sa cez `class="ec-proza"`.
+   Tailwind reset zhodí nadpisy aj zoznamy; toto ich vráti späť.
+   Používa sa cez `class="ec-proza"`.
    ============================================================ */
 .ec-proza {
   font-family: var(--font-body);
   font-size: 1.0625rem;
-  line-height: 1.7;
-  color: var(--ink);
+  line-height: 1.75;
+  color: #C7D8E2;
 }
 .ec-proza > * + * { margin-top: 1.1em; }
 .ec-proza h2 {
@@ -324,42 +378,55 @@ body { margin: 0; }
   line-height: 1;
   font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.1rem);
   margin-top: 2em;
+  color: var(--ink);
 }
 .ec-proza h3 {
   font-family: var(--font-sub);
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   font-size: 1.15rem;
   margin-top: 1.8em;
+  color: var(--ink);
 }
-.ec-proza h4 { font-family: var(--font-sub); font-weight: 700; font-size: 1rem; margin-top: 1.5em; }
+.ec-proza h4 {
+  font-family: var(--font-sub); font-weight: 700; font-size: 1rem;
+  margin-top: 1.5em; color: var(--ink);
+}
 .ec-proza p { margin-bottom: 0; }
-.ec-proza a { color: #C51920; text-decoration: underline; text-underline-offset: 3px; }
-.ec-proza a:hover { background: var(--color-ec-yellow, #FFE600); text-decoration: none; }
-.ec-proza strong { font-weight: 700; }
+.ec-proza a { color: #18B6E4; text-decoration: underline; text-underline-offset: 3px; }
+.ec-proza a:hover { color: #FFE600; text-decoration: none; }
+.ec-proza strong { font-weight: 700; color: var(--ink); }
 .ec-proza ul, .ec-proza ol { padding-left: 1.4em; }
 .ec-proza ul { list-style: disc; }
 .ec-proza ol { list-style: decimal; }
 .ec-proza li + li { margin-top: 0.4em; }
+.ec-proza li::marker { color: #18B6E4; }
 .ec-proza img {
   max-width: 100%;
   height: auto;
-  border: var(--stroke) solid var(--ink);
+  border: 1px solid var(--line);
   display: block;
 }
 .ec-proza figure { margin: 1.8em 0; }
-.ec-proza figcaption { font-size: 0.85rem; opacity: 0.7; margin-top: 0.5em; }
+.ec-proza figcaption { font-size: 0.85rem; color: var(--color-ec-muted); margin-top: 0.5em; }
 .ec-proza blockquote {
-  border-left: var(--stroke-thick) solid var(--color-ec-yellow, #FFE600);
+  border-left: 3px solid var(--color-ec-yellow);
   padding-left: 1.1em;
   font-size: 1.15rem;
+  color: var(--ink);
 }
 .ec-proza table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-.ec-proza th, .ec-proza td { border: 1px solid rgb(35 31 32 / 0.25); padding: 0.5em 0.7em; text-align: left; }
-.ec-proza th { background: rgb(255 230 0 / 0.35); font-family: var(--font-sub); text-transform: uppercase; font-size: 0.8rem; }
-.ec-proza hr { border: 0; border-top: var(--stroke) solid var(--ink); margin: 2.4em 0; }
-.ec-proza iframe { max-width: 100%; border: var(--stroke) solid var(--ink); aspect-ratio: 16 / 9; height: auto; width: 100%; }
+.ec-proza th, .ec-proza td { border: 1px solid rgb(24 182 228 / 0.18); padding: 0.5em 0.7em; text-align: left; }
+.ec-proza th {
+  background: rgb(24 182 228 / 0.10);
+  font-family: var(--font-sub);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+.ec-proza hr { border: 0; border-top: 1px solid var(--line); margin: 2.4em 0; }
+.ec-proza iframe { max-width: 100%; border: 1px solid var(--line); aspect-ratio: 16 / 9; height: auto; width: 100%; }
 
 /* tabuľka, ktorá sa nezmestí, smie scrollovať sama — stránka nikdy vodorovne */
 .ec-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }

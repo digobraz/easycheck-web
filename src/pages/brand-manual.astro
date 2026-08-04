@@ -32,7 +32,7 @@ const FARBY = [
   popis="Firemné farby, logotypy a písma Easy Check pre partnerov a médiá. Presné hex kódy a informácie, ako získať logotypy na stiahnutie."
   robots="noindex, nofollow"
 >
-  <header class="border-b-[var(--stroke-thick)] border-ec-ink bg-ec-yellow">
+  <header class="border-b-[var(--stroke-thick)] border-ec-cyan/30 bg-ec-hud">
     <div class="max-w-[860px] mx-auto px-4 py-12 md:py-16">
       <h1 class="t-display text-4xl md:text-6xl">Brand manuál</h1>
       <p class="mt-5 text-xl max-w-2xl">
@@ -45,7 +45,7 @@ const FARBY = [
     <!-- Manuál je prevzatý 1:1 zo starého webu (2024). Web od 2026 beží na inej
          typografii aj inom odtieni žltej — bez tejto poznámky by si partner stiahol
          font a farbu, ktoré web reálne nepoužíva. Rozpor rieši Matej. -->
-    <div class="nb-card bg-ec-cyan text-white p-5 md:p-6">
+    <div class="nb-card border-ec-cyan/60 p-5 md:p-6">
       <div class="t-sub text-xs text-white/80">Pozor</div>
       <p class="mt-2 text-sm md:text-base text-white/95">
         Tento manuál je z roku 2024. Web od roku 2026 používa písma
@@ -76,7 +76,7 @@ const FARBY = [
       <div class="ec-scroll-x">
         <table class="w-full text-sm md:text-base">
           <thead>
-            <tr class="border-b-[var(--stroke)] border-ec-ink text-left">
+            <tr class="border-b-[var(--stroke)] border-ec-cyan/30 text-left">
               <th class="py-2 pr-4 t-sub text-xs">Farba</th>
               <th class="py-2 t-sub text-xs">Hex</th>
             </tr>
@@ -84,11 +84,11 @@ const FARBY = [
           <tbody>
             {
               FARBY.map((f) => (
-                <tr class="border-b border-ec-ink/15 last:border-0">
+                <tr class="border-b border-ec-cyan/15 last:border-0">
                   <td class="py-3 pr-4">
                     <span class="inline-flex items-center gap-2">
                       <span
-                        class="inline-block w-5 h-5 border-[1.5px] border-ec-ink"
+                        class="inline-block w-5 h-5 border-[1.5px] border-ec-cyan/30"
                         style={`background:${f.hex}`}
                       />
                       {f.nazov}
