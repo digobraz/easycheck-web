@@ -1,0 +1,24 @@
+{
+  "verzia": 1,
+  "poznamka": "Statická záloha zoznamu súborov na stiahnutie. Na Cloudflare Pages ju prekryje živý zoznam z R2 (functions/subory/[[cesta]].js). Splnomocnenia zatiaľ odkazujú na starý web: docx obsahujú rodné čísla a čísla OP splnomocnencov, preto nie sú v (verejnom) repe — pred prechodom domény ich personál nahrá cez /admin/ (Nahradiť).",
+  "subory": [
+    {
+      "meno": "splnomocnenie-fyzicka-osoba.docx",
+      "nazov": "Splnomocnenie",
+      "popis": "fyzická osoba",
+      "typ": "docx",
+      "pata": true,
+      "url": "https://easycheck.sk/wp-content/uploads/2026/10/Splnomocnenie-fyzicka-osoba102026.docx",
+      "povodne": ["https://easycheck.sk/wp-content/uploads/2026/10/Splnomocnenie-fyzicka-osoba102026.docx"]
+    },
+    {
+      "meno": "splnomocnenie-spolocnost.docx",
+      "nazov": "Splnomocnenie",
+      "popis": "spoločnosť",
+      "typ": "docx",
+      "pata": true,
+      "url": "https://easycheck.sk/wp-content/uploads/2026/10/Generalne-plnomocenstvo-spolocnost102026.docx",
+      "povodne": ["https://easycheck.sk/wp-content/uploads/2026/10/Generalne-plnomocenstvo-spolocnost102026.docx"]
+    }
+  ]
+}

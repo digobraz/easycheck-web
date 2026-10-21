@@ -2,182 +2,30 @@
 <html lang="sk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://stk.digobraz.sk/rezervacia/">
+<meta name="theme-color" content="#FFE600">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="sk_SK">
+<meta property="og:site_name" content="Easy Check STK Trnava">
+<meta property="og:title" content="Rezervácia termínu STK — Easy Check Trnava">
+<meta property="og:description" content="Rezervujte si termín technickej, emisnej kontroly alebo kontroly originality v Easy Check Trnava. Stálym zákazníkom stačí zadať EČV.">
+<meta property="og:url" content="https://stk.digobraz.sk/rezervacia/">
+<meta property="og:image" content="https://stk.digobraz.sk/foto/og-uvod.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="font" type="font/woff2" href="/zaklad/fonty/dm-sans-var.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/zaklad/fonty/saira-condensed-800.woff2" crossorigin>
 <title>Rezervácia termínu STK — Easy Check Trnava</title>
 <meta name="description" content="Rezervujte si termín technickej, emisnej kontroly alebo kontroly originality v Easy Check Trnava. Stálym zákazníkom stačí zadať EČV.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/zaklad/zaklad.css">
-<style>
-/* /rezervacia/ — návrh 21. 10. 2026. Kroky: 1 Vozidlo · 2 Služba · 3 Termín · 4 Kontakt.
-   Most EČV → e-mail + vozidlá: zatiaľ DEMO (falošné dáta v JS), naostro Cloudflare Worker nad dátami z Acuity.
-   Termíny = ukážka; naostro Acuity API (availability/times). */
-.rz-hl{display:flex;justify-content:space-between;align-items:end;gap:1rem 2rem;flex-wrap:wrap;max-width:1520px;margin:0 auto;padding:calc(var(--gap) + 54px + 1.6rem) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}
-.rz-hl h1{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.4rem,4vw,4.2rem);line-height:.88}
-.rz-hl h1 small{display:block;font-family:var(--body);font-weight:500;text-transform:none;font-size:clamp(1rem,.3vw + .85rem,1.2rem);color:var(--muted);margin-bottom:.5rem}
-.postup{list-style:none;display:flex;gap:.4rem;flex-wrap:wrap}
-.postup li{display:flex;align-items:center;gap:.45rem;font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:.25rem .85rem .25rem .3rem;border:2.5px solid #CFC9BA;color:#9A9384;border-radius:999px}
-.postup li i{font-style:normal;display:grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:50%;background:#EEEAE0;font-family:var(--mono);font-size:.72rem}
-.postup li.hot{border-color:var(--ink);color:var(--ink)}
-.postup li.hot i{background:var(--y);border:2px solid var(--ink)}
-.postup li.ted{border-color:var(--ink);background:var(--ink);color:var(--paper)}
-.postup li.ted i{background:var(--y);color:var(--ink)}
-.postup button{all:unset;cursor:pointer;display:contents}
-
-.rz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:clamp(1.5rem,4vw,4rem);align-items:start;max-width:1520px;margin:0 auto;padding:clamp(1.6rem,3vw,2.4rem) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}
-.krok{display:flex;flex-direction:column;gap:clamp(1.4rem,3vw,2rem);min-width:0}
-.krok h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.7rem,2vw + .7rem,2.6rem);line-height:.92}
-.krok h2 small{display:block;font-family:var(--mono);font-weight:400;font-size:.7rem;letter-spacing:.12em;color:var(--muted);margin-bottom:.45rem}
-.medzi{display:flex;align-items:center;gap:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.medzi::before,.medzi::after{content:'';flex:1;border-top:1.5px dashed #CFC9BA}
-
-/* --- EČV ako tabuľka --- */
-.ecv-box{padding:1.4rem 1.4rem 1.3rem;background:var(--y);display:flex;flex-direction:column;gap:.9rem}
-.ecv-box b.t{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.4rem,1.3vw + .8rem,1.9rem);line-height:1}
-.ecv-box p{font-size:.95rem;color:#4A4436;max-width:52ch}
-.ecv-r{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
-.tabulka{display:flex;align-items:stretch;background:#fff;border:3px solid var(--ink);border-radius:10px;box-shadow:4px 4px 0 0 var(--ink);overflow:hidden;flex:1 1 260px;max-width:380px}
-.tabulka .eu{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;width:42px;flex-shrink:0;background:#0B4EA2;color:#fff;font-family:var(--disp);font-weight:800;font-size:1.05rem;padding:.3rem 0 .35rem}
-.tabulka .eu svg{width:24px;height:24px}
-.tabulka input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,2vw + 1rem,2.5rem);letter-spacing:.08em;text-transform:uppercase;padding:.2rem .8rem;color:var(--ink)}
-.tabulka input::placeholder{color:#C9C3B4}
-.tabulka:focus-within{outline:3px solid var(--c);outline-offset:3px}
-.ecv-r .btn{box-shadow:4px 4px 0 0 var(--ink);background:var(--ink)}
-.ecv-r .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
-.ecv-pozn{font-size:.78rem!important;color:#5C5320!important}
-.ecv-pozn a{text-decoration:underline}
-
-/* výsledok vyhľadania */
-.znamy{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.9rem;background:var(--paper);animation:vyjst .35s ease both}
-@keyframes vyjst{from{opacity:0;transform:translateY(-8px)}}
-.znamy-hl{display:flex;align-items:center;gap:.7rem}
-.znamy-hl .ok{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:50%;background:var(--g);color:#fff;border:2.5px solid var(--ink);font-weight:700;flex-shrink:0}
-.znamy-hl b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.45rem;line-height:1}
-.znamy-hl small{display:block;font-size:.85rem;color:var(--muted)}
-.vozidla{list-style:none;display:flex;flex-direction:column;gap:.55rem}
-.vozidla button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.9rem;width:100%;padding:.65rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink);transition:transform .1s,box-shadow .1s}
-.vozidla button:hover{background:#FFF7C2;transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}
-.vozidla button.vyb{background:var(--y)}
-.vozidla .mini{font-family:var(--disp);font-weight:800;font-size:1.05rem;letter-spacing:.06em;background:#fff;border:2px solid var(--ink);border-left:9px solid #0B4EA2;border-radius:6px;padding:.05rem .5rem;white-space:nowrap}
-.vozidla .op b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1.05}
-.vozidla .op small{font-size:.8rem;color:var(--muted)}
-.vozidla .sip{font-weight:700}
-.nenasli{padding:.9rem 1.1rem;border:2.5px dashed var(--ink);border-radius:12px;background:var(--paper);font-size:.95rem}
-
-/* výber vozidla */
-.prepinac{display:inline-flex;border:var(--ram);border-radius:999px;padding:3px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink);width:max-content;max-width:100%}
-.prepinac button{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.05rem;padding:.4rem 1.1rem;border-radius:999px;white-space:nowrap}
-.prepinac button small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.06em;margin-left:.35rem;opacity:.7}
-.prepinac button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
-.ikony{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.9rem}
-.ik{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;padding:1rem .4rem .85rem;text-align:center}
-.ik:hover,.ik:focus-visible,.ik.vyb{background:var(--y)}
-.ik svg{width:100%;max-width:74px;height:auto;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linejoin:round;stroke-linecap:round}
-.ik span{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;line-height:1}
-.pohon{display:flex;flex-wrap:wrap;gap:.6rem}
-.pohon button{display:flex;flex-direction:column;padding:.6rem 1rem;border:2.5px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 0 var(--ink);background:var(--paper)}
-.pohon button b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1}
-.pohon button small{font-size:.78rem;color:var(--muted)}
-.pohon button:hover{background:#FFF7C2}
-.pohon button[aria-pressed=true]{background:var(--y)}
-
-/* služby */
-.riadky{list-style:none;overflow:hidden}
-.riadky li+li>*{border-top:1.5px dashed var(--ink)}
-.riadky li>*{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem;width:100%;padding:.9rem 1.1rem;transition:background .12s}
-.riadky li>*:hover,.riadky li>*:focus-visible{background:#FFF7C2;outline-offset:-4px}
-.riadky li>*[aria-pressed=true]{background:var(--y)}
-.riadky b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.35rem;line-height:1}
-.riadky small{display:block;font-size:.84rem;color:var(--muted);margin-top:.2rem}
-.riadky .c{font-family:var(--disp);font-weight:800;font-size:1.35rem;white-space:nowrap;text-align:right}
-.stitok.zel{background:var(--g)}
-.doplnky{display:flex;flex-wrap:wrap;gap:.55rem}
-.doplnky label{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:.98rem;padding:.35rem .85rem .35rem .5rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper);cursor:pointer;user-select:none}
-.doplnky label small{font-family:var(--mono);font-weight:400;font-size:.68rem;color:var(--muted)}
-.doplnky input{appearance:none;width:1.2rem;height:1.2rem;border:2.5px solid var(--ink);border-radius:50%;margin:0;display:grid;place-items:center;background:#fff}
-.doplnky input:checked{background:var(--g)}
-.doplnky input:checked::after{content:'';width:.28rem;height:.5rem;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
-.doplnky label:has(input:checked){background:#E7F5E3}
-.pickup{display:flex;gap:1rem;align-items:center;padding:1rem 1.2rem;background:var(--paper)}
-.pickup .vyp{appearance:none;width:3.2rem;height:1.8rem;border:2.5px solid var(--ink);border-radius:999px;background:#EEEAE0;position:relative;flex-shrink:0;cursor:pointer;margin:0}
-.pickup .vyp::after{content:'';position:absolute;top:2px;left:2px;width:1.15rem;height:1.15rem;border-radius:50%;background:var(--ink);transition:transform .15s}
-.pickup .vyp:checked{background:#14B8A6}
-.pickup .vyp:checked::after{transform:translateX(1.35rem);background:#fff;border:2px solid var(--ink)}
-.pickup b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.2rem;line-height:1}
-.pickup span{font-size:.88rem;color:var(--muted)}
-
-/* termín */
-.dni{display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;padding:2px 8px 10px 2px;margin-right:-8px}
-.dni::-webkit-scrollbar{display:none}
-.dni button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:4.6rem;padding:.55rem .5rem;border:2.5px solid var(--ink);border-radius:14px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink)}
-.dni button small{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.dni button b{font-family:var(--disp);font-weight:900;font-size:1.7rem;line-height:1}
-.dni button span{font-size:.72rem;color:var(--muted)}
-.dni button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
-.dni button[aria-pressed=true] small,.dni button[aria-pressed=true] span{color:var(--y)}
-.casy{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:.55rem}
-.casy button{font-family:var(--mono);font-weight:500;font-size:.95rem;padding:.55rem 0;text-align:center;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper)}
-.casy button:hover{background:#FFF7C2}
-.casy button[aria-pressed=true]{background:var(--y);box-shadow:3px 3px 0 0 var(--ink)}
-.casy button:disabled{border-color:#DDD8CB;color:#C2BCAD;text-decoration:line-through;cursor:not-allowed;background:transparent}
-.ukazka{display:inline-block;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;outline:1px dashed currentColor;outline-offset:3px;border-radius:4px;color:var(--muted)}
-
-/* kontakt */
-.polia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
-.pole{display:flex;flex-direction:column;gap:.35rem}
-.pole.cela{grid-column:1/-1}
-.pole span{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.pole input,.pole textarea{font:inherit;font-size:1.05rem;padding:.75rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);box-shadow:3px 3px 0 0 var(--ink)}
-.pole input:focus,.pole textarea:focus{outline:3px solid var(--c);outline-offset:2px}
-.potvrd{padding:1.2rem 1.3rem;background:#E7F5E3;display:flex;flex-direction:column;gap:.5rem}
-.potvrd b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.35rem;line-height:1}
-.potvrd .mail{font-family:var(--mono);font-size:1.05rem;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:.2rem .55rem;width:max-content;max-width:100%}
-.potvrd button{font-size:.88rem;text-decoration:underline;text-underline-offset:3px;width:max-content}
-.suhlas{display:flex;gap:.6rem;align-items:flex-start;font-size:.88rem;color:#4A4436}
-.suhlas input{margin-top:.2rem;width:1.1rem;height:1.1rem;accent-color:var(--ink)}
-.suhlas a{text-decoration:underline}
-.dalej{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:.4rem}
-.dalej .btn{font-size:1.2rem;padding:.75rem 1.4rem}
-.dalej .btn[disabled]{opacity:.4;cursor:not-allowed}
-.spat{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:999px;padding:.32rem .8rem}
-.spat:hover{background:var(--ink);color:var(--paper)}
-
-/* súhrn vpravo */
-.suhrn{position:sticky;top:20px;padding:1.3rem 1.3rem 1.2rem;display:flex;flex-direction:column;gap:.2rem}
-.suhrn h3{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
-.suhrn dl{display:flex;flex-direction:column}
-.suhrn dl div{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-top:1.5px dashed #D9D4C6}
-.suhrn dt{font-size:.85rem;color:var(--muted)}
-.suhrn dd{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;text-align:right;line-height:1.1}
-.suhrn dd.prazd{color:#C2BCAD;font-weight:700}
-.suhrn .spolu{display:flex;justify-content:space-between;align-items:baseline;border-top:var(--ram);margin-top:.4rem;padding-top:.8rem}
-.suhrn .spolu span{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
-.suhrn .spolu b{font-family:var(--disp);font-weight:900;font-size:2.3rem;line-height:1}
-.suhrn .pomoc{margin-top:.9rem;font-size:.85rem;color:var(--muted)}
-.suhrn .pomoc a{color:var(--ink);font-weight:700}
-
-/* hotovo */
-.hotovo{padding:clamp(1.5rem,3vw,2.4rem);background:var(--y);display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
-.hotovo b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2rem,3vw,3rem);line-height:.9}
-
-@media (max-width:1000px){
-  .rz{grid-template-columns:1fr}
-  .suhrn{position:static;padding:.9rem 1rem}
-  .suhrn dl div{padding:.4rem 0}
-  .suhrn .pomoc{display:none}
-}
-@media (max-width:820px){
-  .rz-hl{padding-top:calc(var(--gap) + 30px + 1.4rem)}
-  .postup li{font-size:.8rem;padding-right:.6rem}
-  .postup li span{display:none}
-  .postup li.ted span{display:inline}
-  .ikony{grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
-  .ik span{font-size:.85rem}
-  .polia{grid-template-columns:1fr}
-}
-</style>
+<style>@font-face{font-family:Saira Condensed;font-style:normal;font-weight:600;font-display:swap;src:url(/zaklad/fonty/saira-condensed-600.woff2) format("woff2")}@font-face{font-family:Saira Condensed;font-style:normal;font-weight:700;font-display:swap;src:url(/zaklad/fonty/saira-condensed-700.woff2) format("woff2")}@font-face{font-family:Saira Condensed;font-style:normal;font-weight:800;font-display:swap;src:url(/zaklad/fonty/saira-condensed-800.woff2) format("woff2")}@font-face{font-family:Saira Condensed;font-style:normal;font-weight:900;font-display:swap;src:url(/zaklad/fonty/saira-condensed-900.woff2) format("woff2")}@font-face{font-family:DM Sans;font-style:normal;font-weight:400 700;font-display:swap;src:url(/zaklad/fonty/dm-sans-var.woff2) format("woff2")}@font-face{font-family:IBM Plex Mono;font-style:normal;font-weight:400;font-display:swap;src:url(/zaklad/fonty/ibm-plex-mono-400.woff2) format("woff2")}@font-face{font-family:IBM Plex Mono;font-style:normal;font-weight:500;font-display:swap;src:url(/zaklad/fonty/ibm-plex-mono-500.woff2) format("woff2")}</style>
+<style>:root{--y:#FFE600;--r:#E12128;--g:#5BBA47;--c:#18B6E4;--ink:#231F20;--paper:#FFFDF5;--muted:#6E6A63;--disp:"Saira Condensed","Arial Narrow",sans-serif;--body:"DM Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;--ram:3px solid var(--ink);--rad:16px;--tien:6px 6px 0 0 var(--ink);--gap:clamp(12px,1.4vw,20px);--okraj:clamp(0px,6vw - 30px,90px)}*{box-sizing:border-box;margin:0;padding:0}html{-webkit-text-size-adjust:100%}body{font-family:var(--body);color:var(--ink);background:var(--paper)}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}:focus-visible{outline:3px solid var(--c);outline-offset:3px}.slab{border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);position:relative;background:var(--paper)}.perf:before{content:"";position:absolute;inset:5px;border:1.5px dashed currentColor;border-radius:11px;pointer-events:none;opacity:.5}.zatlac{transition:transform .1s,box-shadow .1s}.zatlac:hover,.zatlac:focus-visible{transform:translate(3px,3px);box-shadow:3px 3px 0 0 var(--ink)}.zatlac:active{transform:translate(6px,6px);box-shadow:0 0 0 0 var(--ink)}html{touch-action:pan-x pan-y}html,body{overflow-x:clip}.bez{overflow:hidden;white-space:nowrap}.bez-in{display:inline-flex;animation:bez 42s linear infinite}.bez:hover .bez-in{animation-play-state:paused}@keyframes bez{to{transform:translate(-50%)}}@media (prefers-reduced-motion:reduce){.bez-in{animation:none}}.pas{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}.pas-in{display:flex;align-items:center;width:max-content;padding:.4rem 0;animation:bez 52s linear infinite reverse}.pas-in>*{display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap}.pas-in>*{margin-right:2.4rem}.pas:hover .pas-in{animation-play-state:paused}.pas .tbd{outline:1px dashed var(--y);outline-offset:3px;border-radius:4px}.pas a:hover{color:var(--y)}.pas .bod{width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 0 3px #5bba4740}.pas .bod.zat{background:var(--r);box-shadow:0 0 0 3px #e1212840}.pas .y{color:var(--y)}.pas .dim{opacity:.55}.pas .pp{font-family:var(--disp);font-weight:700;font-size:.88rem;letter-spacing:.05em;background:var(--y);color:var(--ink);border-radius:999px;padding:.08rem .7rem}.pas a.pp:hover{background:var(--paper);color:var(--ink)}#z-hore{height:calc(37px + var(--gap) - 2px + 84px)}.pas{height:37px}@media (max-width:820px){#z-hore{height:103px}}.hl{--hb:84px;--zt:54px;--zw:248px;--zs:40px;position:relative;z-index:5;height:var(--hb);display:flex;align-items:center;gap:var(--gap);padding:0 .7rem 0 calc(var(--zw) + var(--zs));margin:calc(var(--gap) - 2px) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}.hl-tvar{position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:-1}.hl-tvar .tien{fill:var(--ink)}.hl-tvar .plast{fill:var(--y);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}.logo{position:absolute;left:0;width:calc(var(--zw) + var(--zs) * .5);top:.55rem;bottom:calc(-1 * var(--zt) + .55rem);display:flex;align-items:center;justify-content:center}.logo img{height:100%;width:auto;display:block}.hl nav{display:flex;gap:.2rem;margin-left:auto}.hl nav a{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:1rem;padding:.45rem .95rem;border-radius:999px;border:2px solid transparent}.hl nav a:hover{border-color:var(--ink)}.jazyk{position:relative}.jazyk summary{list-style:none;display:flex;align-items:center;gap:.35rem;padding:.32rem .5rem .32rem .38rem;border:var(--ram);border-radius:999px;background:var(--paper);cursor:pointer;box-shadow:3px 3px 0 0 var(--ink)}.jazyk summary::-webkit-details-marker{display:none}.jazyk summary:hover{background:var(--ink)}.jazyk summary:hover .sip{stroke:var(--paper)}.jazyk .sip{width:12px;height:12px;fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}.jazyk[open] .sip{transform:rotate(180deg)}.vlajka{width:30px;height:20px;border-radius:5px;outline:1.5px solid var(--ink);display:block;flex-shrink:0;overflow:hidden}.jazyk ul{position:absolute;right:0;top:calc(100% + 12px);list-style:none;min-width:230px;background:var(--paper);border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);padding:.4rem;z-index:30}.jazyk li a{display:flex;align-items:center;gap:.65rem;padding:.5rem .6rem;border-radius:10px;font-weight:500}.jazyk li a:hover{background:var(--y)}.jazyk li a.akt{background:var(--ink);color:var(--paper)}.jazyk li small{margin-left:auto;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.jazyk li a.akt small{color:var(--y)}.tel{font-family:var(--disp);font-weight:800;font-size:1.15rem;letter-spacing:.02em;white-space:nowrap;background:var(--ink);color:var(--paper);border:var(--ram);border-radius:999px;padding:.3rem .8rem;box-shadow:3px 3px 0 0 var(--paper)}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.spat{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:999px;padding:.28rem .75rem;white-space:nowrap}.spat:hover{background:var(--ink);color:var(--paper)}.riadky{list-style:none;overflow:hidden;flex-shrink:0}.riadky li+li>*{border-top:1.5px dashed var(--ink)}.riadky li>*{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem;width:100%;padding:.8rem 1rem;transition:background .12s}.riadky li>*:hover,.riadky li>*:focus-visible{background:var(--y);outline-offset:-4px}.riadky b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.3rem;line-height:1}.riadky small{display:block;font-size:.82rem;color:var(--muted);margin-top:.2rem}.riadky .c{font-family:var(--disp);font-weight:800;font-size:1.3rem;white-space:nowrap;text-align:right}.stitok{display:inline-block;font-family:var(--mono);font-weight:400;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;background:var(--r);color:var(--paper);border-radius:999px;padding:.16rem .5rem;margin-left:.4rem;vertical-align:middle}.pozn{font-size:.82rem;color:var(--muted)}.pozn a,.pozn b{color:var(--ink)}.pozn a{text-decoration:underline;text-underline-offset:3px}.menu{display:none;position:relative}.menu summary{list-style:none;display:flex;align-items:center;gap:.5rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:1rem;background:var(--ink);color:var(--paper);border:var(--ram);border-radius:50%;width:44px;height:44px;justify-content:center;cursor:pointer}.menu summary::-webkit-details-marker{display:none}.menu .ham{width:18px;height:14px;display:grid;align-content:space-between}.menu .ham i{height:2.5px;background:currentColor;border-radius:2px;transition:transform .2s,opacity .2s}.menu[open] .ham i:nth-child(1){transform:translateY(5.75px) rotate(45deg)}.menu[open] .ham i:nth-child(2){opacity:0}.menu[open] .ham i:nth-child(3){transform:translateY(-5.75px) rotate(-45deg)}.menu{position:static}.menu-panel{position:absolute;right:.45rem;top:calc(var(--hb) - 22px);width:min(320px,calc(100vw - 40px));max-height:calc(100dvh - var(--hb) - 40px);overflow-y:auto;background:var(--paper);border:var(--ram);border-radius:0 0 var(--rad) var(--rad);box-shadow:var(--tien);padding:calc(22px + var(--zt) + .2rem) .5rem .5rem;z-index:-2;display:flex;flex-direction:column;gap:.1rem}.menu[open] .menu-panel{animation:vysun .32s cubic-bezier(.2,.8,.2,1) both}@keyframes vysun{0%{transform:translateY(-100%);clip-path:inset(100% -12px -12px -12px)}to{transform:none;clip-path:inset(0 -12px -12px -12px)}}.menu[open]>summary:before{content:"";position:fixed;inset:0;z-index:-3;background:#231f2073;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:stmav .25s ease both;cursor:default}@keyframes stmav{0%{opacity:0}}@media (prefers-reduced-motion:reduce){.menu[open] .menu-panel,.menu[open]>summary:before{animation:none}}.menu-panel>a{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:1.15rem;line-height:1.1;padding:.38rem .7rem;border-radius:10px}.menu-panel>a:hover{background:var(--y)}.menu-panel .m-tel{display:flex;justify-content:center;background:var(--ink);color:var(--paper);border-radius:999px;margin:.2rem 0}.menu-panel .m-tel:hover{background:var(--ink);color:var(--y)}.menu-panel details{border-top:1.5px dashed var(--ink);padding-top:.4rem}.menu-panel details summary{all:unset;display:flex;align-items:center;gap:.6rem;padding:.45rem .7rem;cursor:pointer;font-weight:500;border-radius:10px}.menu-panel details summary:hover{background:var(--y)}.menu-panel details summary .sip{margin-left:auto;width:12px;height:12px;fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}.menu-panel details[open] summary .sip{transform:rotate(180deg)}.menu-panel ul{list-style:none;padding:.2rem 0 0;display:grid;grid-template-columns:1fr 1fr;gap:.15rem}.menu-panel li a{display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:10px;font-weight:500;min-width:0}.menu-panel li a:hover{background:var(--y)}.menu-panel li a.akt{background:var(--ink);color:var(--paper)}.menu-panel li small{margin-left:auto;font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.menu-panel li a.akt small{color:var(--y)}@media (max-width:1100px){.hl nav,.jazyk,.hl>.tel{display:none}.menu{display:block;margin-left:auto}}@media (max-width:820px){:root{--gap:12px}.tel{font-size:1rem;padding:.28rem .65rem}.hl{--hb:56px;--zt:30px;--zw:128px;--zs:24px;margin:10px 16px 0 10px;padding-right:.45rem}.logo{left:8px;width:calc(var(--zw) + var(--zs) * .5 - 14px);top:.4rem;bottom:calc(-1 * var(--zt) + .4rem)}.logo img{width:100%;height:100%;object-fit:contain}}.sek{padding:calc(clamp(4rem,9vw,7.5rem) + 50px) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj));max-width:1520px;margin:0 auto}.sek-hl{display:flex;justify-content:space-between;align-items:end;gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.8rem,4vw,3rem)}.sek-hl .kick{display:block;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}.sek-hl h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.2rem,4.2vw,4.2rem);line-height:.9;letter-spacing:.005em}.sek-hl p{max-width:34ch;color:var(--muted);font-size:1.02rem}.btn{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:1.05rem;padding:.6rem 1.1rem;border:var(--ram);border-radius:999px;background:var(--ink);color:var(--paper);box-shadow:4px 4px 0 0 var(--y)}.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 0 var(--y)}.btn.sv{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 0 var(--ink)}.btn.sv:hover{box-shadow:2px 2px 0 0 var(--ink)}.ani{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 90ms)}.ani.vid{opacity:1;transform:none}.ani.nal{transform:translate(-6px,-22px) rotate(-1.2deg);box-shadow:0 0 0 0 var(--ink)}.ani.nal.vid{transform:none;box-shadow:var(--tien);transition:opacity .35s ease,transform .5s cubic-bezier(.3,1.5,.5,1),box-shadow .25s ease;transition-delay:calc(var(--i,0) * .11s),calc(var(--i,0) * .11s),calc(var(--i,0) * .11s + .38s)}@media (prefers-reduced-motion:reduce){.ani,.ani.nal{opacity:1;transform:none;transition:none}.ani.nal{box-shadow:var(--tien)}}.vysv{position:relative;display:inline-block}.vysv button{font:inherit;color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--y);cursor:help}.vysv .bub{position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,-6px);width:min(280px,80vw);padding:.7rem .9rem;background:var(--ink);color:var(--paper);border-radius:12px;box-shadow:4px 4px 0 0 var(--y);font-size:.9rem;line-height:1.35;opacity:0;visibility:hidden;transition:opacity .15s,transform .15s,visibility .15s;z-index:5}.vysv .bub:after{content:"";position:absolute;left:50%;bottom:100%;margin-left:-7px;border:7px solid transparent;border-bottom-color:var(--ink)}.vysv:hover .bub,.vysv:focus-within .bub,.vysv.otv .bub{opacity:1;visibility:visible;transform:translate(-50%)}.kde-l{display:flex;flex-direction:column;gap:clamp(1.5rem,3vw,2.5rem);min-width:0}.faq h3{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.5rem,1.4vw + .8rem,2.1rem);line-height:1;margin-bottom:.9rem}.faq details{border:var(--ram);border-radius:14px;background:var(--paper);margin-bottom:.7rem;box-shadow:4px 4px 0 0 var(--ink);transition:background .15s}.faq details[open]{background:#fff7c2}.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.15rem;letter-spacing:.01em}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";flex-shrink:0;display:grid;place-items:center;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--y);border:2.5px solid var(--ink);font-family:var(--body);font-size:1.2rem;line-height:1;transition:transform .2s}.faq details[open] summary:after{transform:rotate(45deg)}.faq details p{padding:0 1.1rem 1rem;color:#4a4436;line-height:1.5;max-width:62ch}.hodiny{list-style:none;font-size:1rem}.hodiny li{display:flex;justify-content:space-between;gap:1rem;padding:.45rem .7rem;border-radius:10px}.hodiny li.dnes{background:var(--g);color:var(--paper);border:2.5px solid var(--ink);box-shadow:3px 3px 0 0 var(--ink)}.hodiny li.dnes span:last-child{color:var(--paper);font-weight:700}.hodiny li span:last-child{font-family:var(--mono);font-size:.9rem}.stav{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}.stav i{width:10px;height:10px;border-radius:50%;background:var(--g);box-shadow:0 0 0 3px #5bba4740}.stav.zat i{background:var(--r);box-shadow:0 0 0 3px #e1212840}.pata{margin-top:clamp(4.5rem,10vw,8rem);background:var(--y);color:var(--ink);border-top:var(--ram);overflow:hidden}.pata-in{padding:clamp(2.5rem,5vw,4rem) calc(var(--gap) + 12px + var(--okraj)) 1.5rem;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:clamp(1.2rem,3vw,2.5rem);max-width:1520px;margin:0 auto}.pk{display:flex;flex-direction:column;align-items:flex-start;gap:.55rem;background:var(--paper);border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);padding:1.4rem 1.4rem 1.3rem}.pk .velke{font-family:var(--disp);font-weight:900;font-size:clamp(1.6rem,1.4vw + .9rem,2.2rem);line-height:1;letter-spacing:.01em}.pk .velke.m{font-size:clamp(1.3rem,1vw + .8rem,1.7rem)}.pk .velke small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;vertical-align:middle;margin-left:.3rem;color:var(--muted)}.pk>span{color:var(--muted);line-height:1.4}.pk-kont{position:relative;overflow:hidden}.pk-kont>*:not(.pk-symbol){position:relative;z-index:1}.pk-symbol{position:absolute;right:0;top:50%;height:80%;width:auto;aspect-ratio:870 / 960;transform:translate(calc(19.5% + 45px),-50%);opacity:.22;pointer-events:none}@media (min-width:1001px){.pk-symbol{transform:translate(calc(19.5% + 55px),-50%)}}.soc{display:flex;gap:.55rem;margin-top:auto;padding-top:.6rem}.soc a{display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:50%;background:var(--ink);color:var(--paper);transition:transform .15s,background .15s}.soc a:hover{background:var(--y);color:var(--ink);transform:translateY(-2px)}.soc svg{width:1.25rem;height:1.25rem;fill:currentColor}.ph{list-style:none;width:100%}.ph li{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0}.ph li+li{border-top:1.5px dashed #D9D4C6}.ph b{font-family:var(--mono);font-weight:500;font-size:.92rem}.pcta .btn,.pcta .gbtn,.pcta .stiah{width:100%;justify-content:center}.pcta .gbtn{padding-block:.65rem}.stiah{display:flex;align-items:center;gap:.7rem;padding:.55rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:var(--y);transition:transform .12s,box-shadow .12s;box-shadow:3px 3px 0 0 var(--ink)}.stiah:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}.stiah svg{width:1.3rem;height:1.3rem;flex-shrink:0}.stiah span{display:flex;flex-direction:column;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.03em;line-height:1.05;flex:1}.stiah small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.1em;color:#4a4436}.pata-spod nav{display:flex;gap:1.2rem;flex-wrap:wrap}.pata-spod nav a{text-decoration:underline;text-underline-offset:3px}.pata-spod i{font-style:normal;margin:0 .4rem;opacity:.5}.pata-logo{aspect-ratio:2126 / 866;width:75%;margin:clamp(1rem,3vw,2.5rem) auto 0;overflow:hidden;position:relative}.pata-logo img{position:absolute;left:0;top:0;width:100%;height:auto;display:block}.pata-logo.vid img{animation:logo-vyjst 1s cubic-bezier(.2,.8,.2,1) both}@keyframes logo-vyjst{0%{transform:translateY(25%);opacity:0}}@media (prefers-reduced-motion:reduce){.pata-logo.vid img{animation:none}}.pata-in h3,.pata-in h4{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#5c5320;margin-bottom:.8rem}.pata-spod{grid-column:1/-1;display:flex;justify-content:space-between;gap:.8rem 1.5rem;flex-wrap:wrap;border-top:1.5px solid rgba(35,31,32,.25);padding-top:1.2rem;margin-top:.6rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#3b3517}.tbd2{outline:1px dashed currentColor;outline-offset:3px;border-radius:4px}@media (max-width:1000px){.pata-in{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:620px){.pata-in{grid-template-columns:1fr}}.obal{max-width:1520px;margin:0 auto;padding-inline:calc(var(--gap) + var(--okraj)) calc(var(--gap) + 6px + var(--okraj))}.str{display:grid;grid-template-columns:minmax(0,62fr) minmax(0,38fr);gap:calc(var(--gap) + 14px);align-items:end;padding:calc(var(--gap) + 10px) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj));max-width:1520px;margin:0 auto}.str-foto{overflow:hidden;margin:calc(-1 * (var(--gap) + 10px) - 24px) 0 0 clamp(18px,2vw,34px);border-top-left-radius:0;border-top-right-radius:0;background:var(--ink);height:clamp(300px,48vh,500px)}.str-foto img{width:100%;height:100%;object-fit:cover;display:block}.str-foto.plocha-f{background:var(--f,var(--y));display:flex;align-items:flex-end;padding:1.2rem 1.4rem}.str-foto.plocha-f span{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(4rem,11vw,10rem);line-height:.8;letter-spacing:-.01em;color:var(--ink);opacity:.14;white-space:nowrap}.str-tit{display:flex;flex-direction:column;gap:1rem;padding-bottom:.4rem}.drobky{display:flex;flex-wrap:wrap;gap:.35rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.drobky a{text-decoration:underline;text-underline-offset:3px}.drobky a:hover{color:var(--ink)}.drobky span[aria-hidden]{opacity:.5}.str h1{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.6rem,4.4vw,4.8rem);line-height:.88;letter-spacing:.005em;text-wrap:balance}.str .lead{font-size:clamp(1.02rem,.35vw + .9rem,1.2rem);line-height:1.5;color:#4a4436;max-width:46ch}.str-cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.3rem}.str-meta{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.str.siroka{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.str.siroka h1{font-size:clamp(2.1rem,3.2vw,3.6rem)}@media (max-width:820px){.str,.str.siroka{grid-template-columns:1fr;gap:20px}.str-foto{margin:calc(-1 * (var(--gap) + 10px) - 18px) 14px 0 14px;height:clamp(190px,30vh,280px);min-height:0;box-shadow:4px 4px 0 0 var(--ink)}.str-tit{padding-inline:2px}}.kotvy{position:sticky;top:0;z-index:4;background:var(--paper);border-bottom:1.5px dashed #D9D4C6;margin-top:clamp(2rem,4vw,3rem)}.kotvy-in{max-width:1520px;margin:0 auto;display:flex;gap:.5rem;overflow-x:auto;scrollbar-width:none;padding:.7rem calc(var(--gap) + 6px + var(--okraj)) .7rem calc(var(--gap) + var(--okraj))}.kotvy-in::-webkit-scrollbar{display:none}.kotvy a{flex-shrink:0;font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.92rem;padding:.3rem .85rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper);white-space:nowrap}.kotvy a:hover,.kotvy a.akt{background:var(--ink);color:var(--paper)}.kotvy a i{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--f,var(--y));border:1.5px solid var(--ink);margin-right:.4rem;vertical-align:.05em}.chip{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;background:var(--f,var(--y));color:var(--ink);border:2.5px solid var(--ink);border-radius:999px;padding:.14rem .7rem;width:max-content}.chip.biely{color:var(--paper)}.sl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.8rem,4.5vw,4.5rem);align-items:start;max-width:1520px;margin:0 auto;padding:clamp(4rem,8vw,6.5rem) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj));scroll-margin-top:70px}.sl:nth-child(2n of.sl) .sl-foto{order:2}.sl-foto{position:relative;overflow:hidden;padding:0;aspect-ratio:4/3.4;background:var(--f,var(--ink));position:sticky;top:80px}.sl-foto img{width:100%;height:100%;object-fit:cover;display:block}.sl-foto .chip{position:absolute;left:14px;top:14px;z-index:1}.sl-foto.bez{display:grid;place-items:center;background:var(--f)}.sl-foto.bez svg{width:38%;height:auto;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.85}.sl-foto.bez figcaption{position:absolute;right:12px;bottom:12px;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;background:var(--paper);border:2px dashed var(--ink);border-radius:999px;padding:.15rem .6rem}.sl-obs{display:flex;flex-direction:column;gap:1.1rem;min-width:0}.sl h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.2rem,3.6vw,3.8rem);line-height:.9;text-wrap:balance}.sl-lead{font-size:1.08rem;line-height:1.55;color:#4a4436;max-width:56ch}.sl-bloky{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:.9rem;margin-top:.3rem}.sl-blok{padding:1rem 1.05rem .95rem;border:2.5px solid var(--ink);border-radius:14px;background:var(--paper);box-shadow:4px 4px 0 0 var(--ink);display:flex;flex-direction:column;gap:.3rem}.sl-blok b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.2rem;line-height:1}.sl-blok span{font-size:.92rem;line-height:1.45;color:#4a4436}.sl-blok.f{background:var(--f)}.sl-blok.f.biely,.sl-blok.f.biely span{color:var(--paper)}.sl-zoz{list-style:none;display:flex;flex-direction:column;gap:.5rem}.sl-zoz li{position:relative;padding-left:1.9rem;line-height:1.45}.sl-zoz li:before{content:"";position:absolute;left:0;top:.08em;width:1.25rem;height:1.25rem;border-radius:50%;background:var(--f,var(--y));border:2px solid var(--ink)}.sl-zoz li:after{content:"";position:absolute;left:.42rem;top:.36em;width:.32rem;height:.55rem;border:solid var(--ink);border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}.sl-cta{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-top:.4rem}.sl-pozn{font-size:.85rem;color:var(--muted)}@media (max-width:900px){.sl{grid-template-columns:1fr}.sl:nth-child(2n of.sl) .sl-foto{order:0}.sl-foto{position:relative;top:0;aspect-ratio:16/10}}.box{padding:1.2rem 1.3rem;border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);background:var(--f,#FFF7C2)}.box b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.2rem}.cta-pas{max-width:1520px;margin:clamp(4rem,8vw,6rem) auto 0;padding-inline:calc(var(--gap) + var(--okraj)) calc(var(--gap) + 6px + var(--okraj))}.cta-pas>div{display:flex;justify-content:space-between;align-items:center;gap:1.2rem 2rem;flex-wrap:wrap;padding:clamp(1.5rem,3vw,2.4rem);background:var(--ink);color:var(--paper);border:var(--ram);border-radius:var(--rad);box-shadow:6px 6px 0 0 var(--y)}.cta-pas h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.9rem,3vw,3rem);line-height:.92}.cta-pas p{opacity:.75;margin-top:.4rem}.cta-pas .btn{background:var(--y);color:var(--ink);box-shadow:4px 4px 0 0 var(--paper)}.tab-w{overflow-x:auto;border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);background:var(--paper)}.tab-w table{border-collapse:collapse;width:100%;min-width:520px}.tab-w th,.tab-w td{padding:.7rem 1rem;text-align:left;vertical-align:top}.tab-w thead th{font-family:var(--mono);font-weight:500;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--paper)}.tab-w tbody tr+tr td{border-top:1.5px dashed #D9D4C6}.tab-w td.c,.tab-w th.c{text-align:right;white-space:nowrap;font-family:var(--disp);font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums}.tab-w tbody tr:hover td{background:#fff7c2}.tab-w thead th.c{font-family:var(--mono);font-size:.68rem;font-weight:500}.clanok>*{min-width:0}.clanok{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:clamp(2rem,5vw,5rem);max-width:1240px;margin:clamp(2.5rem,5vw,4rem) auto 0;padding-inline:calc(var(--gap) + var(--okraj) + 4px) calc(var(--gap) + 6px + var(--okraj))}.clanok aside{position:sticky;top:24px;align-self:start;display:flex;flex-direction:column;gap:1rem}@media (max-width:1000px){.clanok{grid-template-columns:minmax(0,1fr)}.clanok aside{position:static}}.prose{max-width:70ch;font-size:1.06rem;line-height:1.7;color:#2e2a27}.prose>*+*{margin-top:1.05em}.prose h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.7rem,2vw + .6rem,2.4rem);line-height:.95;margin-top:1.9em;color:var(--ink)}.prose h3{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.4rem;line-height:1;margin-top:1.6em;color:var(--ink)}.prose a{text-decoration:underline;text-decoration-color:var(--y);text-decoration-thickness:3px;text-underline-offset:3px;font-weight:500}.prose a:hover{background:var(--y)}.prose ul,.prose ol{padding-left:1.4rem}.prose li+li{margin-top:.35em}.prose ul li::marker{color:var(--ink)}.prose strong{color:var(--ink)}.prose img{max-width:100%;height:auto;border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);display:block}.prose blockquote{border-left:6px solid var(--y);padding:.3rem 0 .3rem 1.1rem;font-style:italic;color:#4a4436}.prose table{border-collapse:collapse;width:100%;font-size:.95rem}.prose th,.prose td{border-bottom:1.5px dashed #D9D4C6;padding:.5rem .6rem;text-align:left;vertical-align:top}.prose th{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}.prose .tab-w{font-size:.95rem}.prose iframe{max-width:100%;border:var(--ram);border-radius:var(--rad)}.aktual{align-self:flex-start;display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;background:var(--g);color:var(--paper);border:2.5px solid var(--ink);border-radius:999px;padding:.18rem .7rem}.karty{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:clamp(1.2rem,2.2vw,2rem)}.kc{display:flex;flex-direction:column;overflow:hidden;padding:0}.kc .obr{aspect-ratio:16/9;background:var(--f,var(--y));border-bottom:var(--ram);overflow:hidden;display:grid;place-items:center}.kc .obr img{width:100%;height:100%;object-fit:cover;transition:transform .4s}.kc:hover .obr img{transform:scale(1.04)}.kc .obr span{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:3.4rem;opacity:.16}.kc .tx{display:flex;flex-direction:column;gap:.5rem;padding:1rem 1.1rem 1.1rem;flex:1}.kc h3{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.35rem;line-height:1;text-wrap:balance}.kc p{font-size:.92rem;line-height:1.45;color:#4a4436;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.kc .meta{margin-top:auto;display:flex;justify-content:space-between;gap:.6rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:.5rem}.kc:hover h3{text-decoration:underline;text-decoration-color:var(--y);text-decoration-thickness:4px;text-underline-offset:3px}.hl nav a[aria-current]{border-color:var(--ink);background:var(--paper)}.menu-panel>a[aria-current]{background:var(--ink);color:var(--paper)}.glogo{width:1.6rem;height:1.6rem;flex-shrink:0}.gbtn{display:inline-flex;align-items:center;gap:.75rem;padding:.75rem 1.5rem .75rem 1.1rem;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:999px;font-family:Roboto,Google Sans,Arial,sans-serif;font-weight:500;font-size:1.05rem;letter-spacing:.01em;box-shadow:0 1px 2px #3c40434d,0 1px 3px 1px #3c404326;transition:box-shadow .2s,background .2s}.gbtn:hover{background:#f8faff;box-shadow:0 1px 3px #3c40434d,0 4px 8px 3px #3c404326}.gbtn:focus-visible{outline:2px solid #1a73e8;outline-offset:2px}.gbtn .gb-g{width:1.35rem;height:1.35rem}</style>
+<style>.rz-hl{display:flex;justify-content:space-between;align-items:end;gap:1rem 2rem;flex-wrap:wrap;max-width:1520px;margin:0 auto;padding:calc(var(--gap) + 54px + 1.6rem) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}.rz-hl h1{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.4rem,4vw,4.2rem);line-height:.88}.rz-hl h1 small{display:block;font-family:var(--body);font-weight:500;text-transform:none;font-size:clamp(1rem,.3vw + .85rem,1.2rem);color:var(--muted);margin-bottom:.5rem}.postup{list-style:none;display:flex;gap:.4rem;flex-wrap:wrap}.postup:empty{height:38px;flex:0 1 330px}.krok:empty{min-height:100vh}.postup li{display:flex;align-items:center;gap:.45rem;font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:.25rem .85rem .25rem .3rem;border:2.5px solid #CFC9BA;color:#9a9384;border-radius:999px}.postup li i{font-style:normal;display:grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:50%;background:#eeeae0;font-family:var(--mono);font-size:.72rem}.postup li.hot{border-color:var(--ink);color:var(--ink)}.postup li.hot i{background:var(--y);border:2px solid var(--ink)}.postup li.ted{border-color:var(--ink);background:var(--ink);color:var(--paper)}.postup li.ted i{background:var(--y);color:var(--ink)}.postup button{all:unset;cursor:pointer;display:contents}.rz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:clamp(1.5rem,4vw,4rem);align-items:start;max-width:1520px;margin:0 auto;padding:clamp(1.6rem,3vw,2.4rem) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}.krok{display:flex;flex-direction:column;gap:clamp(1.4rem,3vw,2rem);min-width:0}.krok h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.7rem,2vw + .7rem,2.6rem);line-height:.92}.krok h2 small{display:block;font-family:var(--mono);font-weight:400;font-size:.7rem;letter-spacing:.12em;color:var(--muted);margin-bottom:.45rem}.medzi{display:flex;align-items:center;gap:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.medzi:before,.medzi:after{content:"";flex:1;border-top:1.5px dashed #CFC9BA}.ecv-box{padding:1.4rem 1.4rem 1.3rem;background:var(--y);display:flex;flex-direction:column;gap:.9rem}.ecv-box b.t{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.4rem,1.3vw + .8rem,1.9rem);line-height:1}.ecv-box p{font-size:.95rem;color:#4a4436;max-width:52ch}.ecv-r{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}.tabulka{display:flex;align-items:stretch;background:#fff;border:3px solid var(--ink);border-radius:10px;box-shadow:4px 4px 0 0 var(--ink);overflow:hidden;flex:1 1 260px;max-width:380px}.tabulka .eu{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;width:42px;flex-shrink:0;background:#0b4ea2;color:#fff;font-family:var(--disp);font-weight:800;font-size:1.05rem;padding:.3rem 0 .35rem}.tabulka .eu svg{width:24px;height:24px}.tabulka input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,2vw + 1rem,2.5rem);letter-spacing:.08em;text-transform:uppercase;padding:.2rem .8rem;color:var(--ink)}.tabulka input::placeholder{color:#c9c3b4}.tabulka:focus-within{outline:3px solid var(--c);outline-offset:3px}.ecv-r .btn{box-shadow:4px 4px 0 0 var(--ink);background:var(--ink)}.ecv-r .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}.ecv-pozn{font-size:.78rem!important;color:#5c5320!important}.ecv-pozn a{text-decoration:underline}.znamy{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.9rem;background:var(--paper);animation:vyjst .35s ease both}@keyframes vyjst{0%{opacity:0;transform:translateY(-8px)}}.znamy-hl{display:flex;align-items:center;gap:.7rem}.znamy-hl .ok{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:50%;background:var(--g);color:#fff;border:2.5px solid var(--ink);font-weight:700;flex-shrink:0}.znamy-hl b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.45rem;line-height:1}.znamy-hl small{display:block;font-size:.85rem;color:var(--muted)}.vozidla{list-style:none;display:flex;flex-direction:column;gap:.55rem}.vozidla button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.9rem;width:100%;padding:.65rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink);transition:transform .1s,box-shadow .1s}.vozidla button:hover{background:#fff7c2;transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}.vozidla button.vyb{background:var(--y)}.vozidla .mini{font-family:var(--disp);font-weight:800;font-size:1.05rem;letter-spacing:.06em;background:#fff;border:2px solid var(--ink);border-left:9px solid #0B4EA2;border-radius:6px;padding:.05rem .5rem;white-space:nowrap}.vozidla .op b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1.05}.vozidla .op small{font-size:.8rem;color:var(--muted)}.vozidla .sip{font-weight:700}.nenasli{padding:.9rem 1.1rem;border:2.5px dashed var(--ink);border-radius:12px;background:var(--paper);font-size:.95rem}.prepinac{display:inline-flex;border:var(--ram);border-radius:999px;padding:3px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink);width:max-content;max-width:100%}.prepinac button{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.05rem;padding:.4rem 1.1rem;border-radius:999px;white-space:nowrap}.prepinac button small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.06em;margin-left:.35rem;opacity:.7}.prepinac button[aria-pressed=true]{background:var(--ink);color:var(--paper)}.ikony{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.9rem}.ik{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;padding:1rem .4rem .85rem;text-align:center}.ik:hover,.ik:focus-visible,.ik.vyb{background:var(--y)}.ik svg{width:100%;max-width:74px;height:auto;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linejoin:round;stroke-linecap:round}.ik span{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;line-height:1}.pohon{display:flex;flex-wrap:wrap;gap:.6rem}.pohon button{display:flex;flex-direction:column;padding:.6rem 1rem;border:2.5px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 0 var(--ink);background:var(--paper)}.pohon button b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1}.pohon button small{font-size:.78rem;color:var(--muted)}.pohon button:hover{background:#fff7c2}.pohon button[aria-pressed=true]{background:var(--y)}.riadky{list-style:none;overflow:hidden}.riadky li+li>*{border-top:1.5px dashed var(--ink)}.riadky li>*{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem;width:100%;padding:.9rem 1.1rem;transition:background .12s}.riadky li>*:hover,.riadky li>*:focus-visible{background:#fff7c2;outline-offset:-4px}.riadky li>*[aria-pressed=true]{background:var(--y)}.riadky b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.35rem;line-height:1}.riadky small{display:block;font-size:.84rem;color:var(--muted);margin-top:.2rem}.riadky .c{font-family:var(--disp);font-weight:800;font-size:1.35rem;white-space:nowrap;text-align:right}.stitok.zel{background:var(--g)}.doplnky{display:flex;flex-wrap:wrap;gap:.55rem}.doplnky label{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:.98rem;padding:.35rem .85rem .35rem .5rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper);cursor:pointer;user-select:none}.doplnky label small{font-family:var(--mono);font-weight:400;font-size:.68rem;color:var(--muted)}.doplnky input{appearance:none;width:1.2rem;height:1.2rem;border:2.5px solid var(--ink);border-radius:50%;margin:0;display:grid;place-items:center;background:#fff}.doplnky input:checked{background:var(--g)}.doplnky input:checked:after{content:"";width:.28rem;height:.5rem;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}.doplnky label:has(input:checked){background:#e7f5e3}.pickup{display:flex;gap:1rem;align-items:center;padding:1rem 1.2rem;background:var(--paper)}.pickup .vyp{appearance:none;width:3.2rem;height:1.8rem;border:2.5px solid var(--ink);border-radius:999px;background:#eeeae0;position:relative;flex-shrink:0;cursor:pointer;margin:0}.pickup .vyp:after{content:"";position:absolute;top:2px;left:2px;width:1.15rem;height:1.15rem;border-radius:50%;background:var(--ink);transition:transform .15s}.pickup .vyp:checked{background:#14b8a6}.pickup .vyp:checked:after{transform:translate(1.35rem);background:#fff;border:2px solid var(--ink)}.pickup b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.2rem;line-height:1}.pickup span{font-size:.88rem;color:var(--muted)}.dni{display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;padding:2px 8px 10px 2px;margin-right:-8px}.dni::-webkit-scrollbar{display:none}.dni button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:4.6rem;padding:.55rem .5rem;border:2.5px solid var(--ink);border-radius:14px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink)}.dni button small{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.dni button b{font-family:var(--disp);font-weight:900;font-size:1.7rem;line-height:1}.dni button span{font-size:.72rem;color:var(--muted)}.dni button[aria-pressed=true]{background:var(--ink);color:var(--paper)}.dni button[aria-pressed=true] small,.dni button[aria-pressed=true] span{color:var(--y)}.casy{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:.55rem}.casy button{font-family:var(--mono);font-weight:500;font-size:.95rem;padding:.55rem 0;text-align:center;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper)}.casy button:hover{background:#fff7c2}.casy button[aria-pressed=true]{background:var(--y);box-shadow:3px 3px 0 0 var(--ink)}.casy button:disabled{border-color:#ddd8cb;color:#c2bcad;text-decoration:line-through;cursor:not-allowed;background:transparent}.ukazka{display:inline-block;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;outline:1px dashed currentColor;outline-offset:3px;border-radius:4px;color:var(--muted)}.polia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.pole{display:flex;flex-direction:column;gap:.35rem}.pole.cela{grid-column:1/-1}.pole span{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.pole input,.pole textarea{font:inherit;font-size:1.05rem;padding:.75rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);box-shadow:3px 3px 0 0 var(--ink)}.pole input:focus,.pole textarea:focus{outline:3px solid var(--c);outline-offset:2px}.potvrd{padding:1.2rem 1.3rem;background:#e7f5e3;display:flex;flex-direction:column;gap:.5rem}.potvrd b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.35rem;line-height:1}.potvrd .mail{font-family:var(--mono);font-size:1.05rem;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:.2rem .55rem;width:max-content;max-width:100%}.potvrd button{font-size:.88rem;text-decoration:underline;text-underline-offset:3px;width:max-content}.suhlas{display:flex;gap:.6rem;align-items:flex-start;font-size:.88rem;color:#4a4436}.suhlas input{margin-top:.2rem;width:1.1rem;height:1.1rem;accent-color:var(--ink)}.suhlas a{text-decoration:underline}.dalej{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:.4rem}.dalej .btn{font-size:1.2rem;padding:.75rem 1.4rem}.dalej .btn[disabled]{opacity:.4;cursor:not-allowed}.spat{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:999px;padding:.32rem .8rem}.spat:hover{background:var(--ink);color:var(--paper)}.suhrn{position:sticky;top:20px;padding:1.3rem 1.3rem 1.2rem;display:flex;flex-direction:column;gap:.2rem}.suhrn h3{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}.suhrn dl{display:flex;flex-direction:column}.suhrn dl div{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-top:1.5px dashed #D9D4C6}.suhrn dt{font-size:.85rem;color:var(--muted)}.suhrn dd{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;text-align:right;line-height:1.1}.suhrn dd.prazd{color:#c2bcad;font-weight:700}.suhrn .spolu{display:flex;justify-content:space-between;align-items:baseline;border-top:var(--ram);margin-top:.4rem;padding-top:.8rem}.suhrn .spolu span{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}.suhrn .spolu b{font-family:var(--disp);font-weight:900;font-size:2.3rem;line-height:1}.suhrn .pomoc{margin-top:.9rem;font-size:.85rem;color:var(--muted)}.suhrn .pomoc a{color:var(--ink);font-weight:700}.hotovo{padding:clamp(1.5rem,3vw,2.4rem);background:var(--y);display:flex;flex-direction:column;gap:1rem;align-items:flex-start}.hotovo b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2rem,3vw,3rem);line-height:.9}@media (max-width:1000px){.rz{grid-template-columns:1fr}.suhrn{position:static;padding:.9rem 1rem}.suhrn dl div{padding:.4rem 0}.suhrn .pomoc{display:none}}@media (max-width:820px){.rz-hl{padding-top:calc(var(--gap) + 30px + 1.4rem)}.postup li{font-size:.8rem;padding-right:.6rem}.postup li span{display:none}.postup li.ted span{display:inline}.ikony{grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}.ik span{font-size:.85rem}.polia{grid-template-columns:1fr}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Domov","item":"https://stk.digobraz.sk/"},{"@type":"ListItem","position":2,"name":"Objednať na STK","item":"https://stk.digobraz.sk/rezervacia/"}]}</script>
 </head>
 <body>
 <div id="z-hore"></div>
@@ -194,335 +42,77 @@
 </main>
 
 <div id="z-pata"></div>
-<script src="/zaklad/zaklad.js"></script>
-<script>
-/* ===================== DÁTA (kópia z index.html — Acuity odkazy a ceny) ===================== */
-const A = 'https://Klasik.as.me/';
-const KO_AUTO = A+'KLASIK-OSOBNY-AUTOMOBIL-Kontrola-originality';
-
-const SVG = {
-  auto:'<path d="M5 30h54M9 30v-7l7-11h25l11 11h5v7"/><circle cx="19" cy="31" r="5"/><circle cx="46" cy="31" r="5"/>',
-  dodavka:'<path d="M4 30V9h34l11 9h9v12M4 30h54M38 9v9h11"/><circle cx="16" cy="31" r="5"/><circle cx="47" cy="31" r="5"/>',
-  moto:'<circle cx="14" cy="29" r="7"/><circle cx="50" cy="29" r="7"/><path d="M14 29l11-13h11l14 13M25 16l-3-6h-7M36 16h9"/>',
-  stvorkolka:'<circle cx="15" cy="29" r="7"/><circle cx="49" cy="29" r="7"/><path d="M8 22h48l-6-8H20zM30 14l-4-7h-7M22 29h20"/>',
-  vozik:'<path d="M8 11h32v15H8zM40 22h16"/><circle cx="24" cy="30" r="5"/>',
-  kamion:'<path d="M2 7h36v19H2zM40 31V13h10l7 8v10M2 31h56"/><circle cx="10" cy="32" r="4"/><circle cx="20" cy="32" r="4"/><circle cx="49" cy="32" r="4"/>',
-  naves:'<path d="M4 8h44v19H4zM48 22h10"/><circle cx="30" cy="31" r="4"/><circle cx="40" cy="31" r="4"/>',
-  autobus:'<path d="M4 7h52v23H4zM4 17h52M14 7v10M26 7v10M38 7v10"/><circle cx="15" cy="31" r="4"/><circle cx="46" cy="31" r="4"/>',
-  traktor:'<circle cx="18" cy="26" r="10"/><circle cx="50" cy="30" r="6"/><path d="M18 16V5h14l5 15h15v6M28 5v15"/>',
-  zeriav:'<path d="M4 31V20h40v11M44 20h8l6 7v4M4 31h54M12 20L50 3M50 3v12"/><circle cx="12" cy="32" r="4"/><circle cx="24" cy="32" r="4"/><circle cx="50" cy="32" r="4"/>',
-};
-
-const BLOKY = [
-  { id:'do', ik:'/ikony/auto-biela.png', t:'Osobné', k:'do 3,5 t', p:'auto, dodávka, motorka, štvorkolka, vozík', voz:[
-    { id:'auto', t:'Auto', pohon:1 }, { id:'dodavka', t:'Dodávka', pohon:1 }, { id:'moto', t:'Motorka' },
-    { id:'stvorkolka', t:'Štvorkolka' }, { id:'vozik', t:'Vozík' } ]},
-  { id:'nad', ik:'/ikony/nakladne-biela.png', t:'Nákladné', k:'nad 3,5 t', p:'kamión, náves, autobus, traktor, žeriav', voz:[
-    { id:'kamion', t:'Kamión' }, { id:'naves', t:'Náves' }, { id:'autobus', t:'Autobus' },
-    { id:'traktor', t:'Traktor' }, { id:'zeriav', t:'Žeriav' } ]},
-];
-
-const POHON = [
-  { id:'bd',  t:'Benzín / diesel', p:'bežné auto' },
-  { id:'alt', t:'LPG, CNG, hybrid, elektro', p:'alternatívny pohon' },
-  { id:'kat', t:'NKAT / BKAT', p:'staršie benzínové ročníky' },
-];
-
-const MOTO = [
-  { t:'Kompletná STK', p:'L3, L4, L6', top:1, u:'https://klasik.as.me/motocykel-L3-L4-L6' },
-  { t:'Kompletná STK', p:'L5, L7', u:'https://klasik.as.me/motocykel-L5-L7' },
-  { t:'Technická kontrola', p:'motocykel, trojkolka, štvorkolka', c:'45 €', u:A+'Technicka-kontrola-motocykel-trojkolka-stvorkolka' },
-  { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'25 / 30 €', u:A+'Opakovana-technicka-kontrola-motocykel-trojkolka-stvorkolka' },
-];
-const NAKL_TK  = { t:'Technická kontrola', p:'pravidelná', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-kontrola' };
-const NAKL_EK  = { t:'Emisná kontrola', p:'pravidelná', u:A+'KLASIK-NAKLADNE-VOZIDLA-Emisna-kontrola' };
-const NAKL_OTK = { t:'Opakovaná technická', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-opakovana-Technicka-kontrola' };
-const NAKL_OEK = { t:'Opakovaná emisná', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-opakovana-Emisna-kontrola' };
-
-const KONTROLY = {
-  'auto:bd': [
-    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola' },
-    { t:'Technická kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola' },
-    { t:'Emisná kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-Benzin-Diesel' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'20 / 35 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Opakovana-Technicka-kontrola' },
-    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'20 / 30 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-Benzin-Diesel' },
-    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
-  ],
-  'auto:alt': [
-    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-HYBRID' },
-    { t:'Technická kontrola', p:'pravidelná', c:'65 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA' },
-    { t:'Emisná kontrola', p:'pravidelná', c:'75 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-LPG-CNG-HYBRID' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'20 / 35 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA' },
-    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'35 / 50 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-LPG-CNG-HYBRID' },
-    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
-  ],
-  'auto:kat': [
-    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-BKAT-NKAT' },
-    { t:'Technická kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola' },
-    { t:'Emisná kontrola', p:'pravidelná', c:'75 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-NKAT-BKAT' },
-    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'30 / 45 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-NKAT-BKAT' },
-    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
-  ],
-  moto: [ ...MOTO,
-    { t:'Kontrola originality', p:'malý motocykel', u:A+'KLASIK-MALY-MOTOCYKEL-Kontrola-originality' },
-    { t:'Kontrola originality', p:'veľký motocykel', u:A+'KLASIK-VELKY-MOTOCYKEL-Kontrola-originality' } ],
-  stvorkolka: MOTO,
-  vozik: [
-    { t:'Technická kontrola', p:'O1, O2 · pravidelná', top:1, c:'35 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola' },
-    { t:'Opakovaná technická', p:'do 60 dní', c:'20 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola' },
-  ],
-  kamion: [
-    { t:'Kompletná STK — ťahač', p:'technická + emisná', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-TAHAC-NAVESOV-Technicka-Emisna-kontrola' },
-    { t:'Kompletná STK — súprava', p:'ťahač + náves', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola' },
-    { t:'Kompletná STK — sólo', p:'technická + emisná', u:A+'KLASIK-NAKLADNE-VOZIDLA-SOLO-Technicka-Emisna-kontrola' },
-    { ...NAKL_TK, c:'85 €' }, { ...NAKL_EK, c:'75 €' }, { ...NAKL_OTK, c:'30 / 50 €' }, { ...NAKL_OEK, c:'30 / 42 €' },
-  ],
-  naves: [
-    { t:'Technická kontrola', p:'O3, O4 · pravidelná', top:1, c:'75 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola' },
-    { t:'Opakovaná technická', p:'do 60 dní', c:'40 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola' },
-    { t:'Kompletná STK — súprava', p:'ťahač + náves', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola' },
-  ],
-  autobus: [ { ...NAKL_TK, top:1 }, NAKL_EK, NAKL_OTK, NAKL_OEK ],
-  traktor: [
-    { t:'Kompletná STK', p:'traktor, pracovný stroj', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Technicka-Emisna-kontrola' },
-    { t:'Traktorová súprava', p:'traktor + prípojné vozidlo', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOROVA-SUPRAVA-Technicka-Emisna-kontrola' },
-    { t:'Technická kontrola', p:'pravidelná', c:'90 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PS-technicka-kontrola' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Opakovana-technicka-kontrola' },
-  ],
-  zeriav: [
-    { t:'Kompletná STK', p:'špeciálne, terénne vozidlo', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-SPECIALNE-Technicka-Emisna-kontrola' },
-    { t:'Technická kontrola', p:'N2G, N3G · pravidelná', c:'120 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TERENNE-Technicka-kontrola' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'45 / 70 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TERENNE-opakovana-Technicka-kontrola' },
-  ],
-};
-const POZN = {
-  kamion:'ADR a CEMT majú vlastné termíny → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',
-  naves:'ADR a CEMT náves → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',
-};
-
-/* doplnky z Acuity „EXTRA SERVIS“ (ACUITY-TAXONOMIA.md) — ceny overiť s cenníkom 2026 */
-const DOPLNKY = [ ['Test tlmičov',16], ['Kontrola bŕzd',16], ['Kontrola dezénu',16], ['Meranie svietivosti',16], ['Test geometrie',11], ['Diagnostika',26] ];
-
-/* ===================== DEMO: most EČV → e-mail + vozidlá =====================
-   Naostro: GET /api/ecv?v=TT123AB (Cloudflare Worker nad tabuľkou z Acuity). Odpoveď nikdy nevráti celý e-mail
-   ani celé EČV iných vozidiel — len masku. Tu sú vymyslené dáta, aby sa dal flow vyskúšať. */
-const DEMO = {
-  TT123AB: { meno:'Ján', email:'ja•••@gmail.com', vozidla:[
-    { ecv:'TT123AB', blok:'do', voz:'auto', pohon:'bd', popis:'Osobné auto · benzín / diesel', posledna:'Technická + emisná · 3/2024' },
-    { ecv:'TT•••KL', blok:'do', voz:'moto', popis:'Motocykel', posledna:'Kompletná STK · 5/2025' },
-  ]},
-  TT777XY: { meno:'Firma', email:'fl•••@doprava.sk', vozidla:[
-    { ecv:'TT777XY', blok:'nad', voz:'kamion', popis:'Ťahač návesov', posledna:'Kompletná STK — ťahač · 9/2025' },
-    { ecv:'TT•••AC', blok:'nad', voz:'naves', popis:'Náves O4', posledna:'Technická kontrola · 9/2025' },
-    { ecv:'TT•••BD', blok:'nad', voz:'kamion', popis:'Ťahač návesov', posledna:'Kompletná STK — ťahač · 2/2026' },
-    { ecv:'TT•••FF', blok:'do', voz:'dodavka', pohon:'bd', popis:'Dodávka · diesel', posledna:'Technická + emisná · 6/2025' },
-  ]},
-};
-
-/* ===================== STAV ===================== */
-const $ = id => document.getElementById(id);
-const q = new URLSearchParams(location.search);
-const st = { krok:1, blok: q.get('v') === 'nakladne' ? 'nad' : 'do', ko: q.get('v') === 'ko', voz:null, pohon:null, sluzba:null,
-             doplnky:[], pickup:false, den:null, cas:null, ecv:'', znamy:null, hladane:false, inyMail:false };
-const vsetkyVoz = BLOKY.flatMap(b => b.voz);
-const najdi = id => vsetkyVoz.find(v => v.id === id);
-const KROKY = ['Vozidlo','Služba','Termín','Kontakt'];
-const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const normEcv = s => s.toUpperCase().replace(/[^A-Z0-9]/g, '');
-const pekneEcv = s => s.length === 7 ? `${s.slice(0,2)} ${s.slice(2,5)}${s.slice(5)}` : s;
-const cena = s => { const m = s && s.c && s.c.match(/^(\d+)/); return m ? +m[1] : null; };
-const zoznamKontrol = () => {
-  const v = najdi(st.voz); if(!v) return [];
-  let z = KONTROLY[v.pohon ? `auto:${st.pohon || 'bd'}` : v.id] || [];
-  if(st.ko) z = [...z].sort((a,b) => /originality/i.test(b.t) - /originality/i.test(a.t));
-  return z;
-};
-const vozOk = () => st.voz && (!najdi(st.voz).pohon || st.pohon);
-
-/* ===================== VYKRESLENIE ===================== */
-function postup(){
-  $('postup').innerHTML = KROKY.map((t, i) => {
-    const n = i + 1, cls = n === st.krok ? 'ted' : n < st.krok ? 'hot' : '';
-    const inner = `<i>${n < st.krok ? '✓' : n}</i><span>${t}</span>`;
-    return `<li class="${cls}">${n < st.krok ? `<button data-na="${n}">${inner}</button>` : inner}</li>`;
-  }).join('');
-}
-
-function suhrn(){
-  const v = najdi(st.voz), s = st.sluzba, d = st.doplnky.map(i => DOPLNKY[i]);
-  const p = st.pohon ? POHON.find(x => x.id === st.pohon).t : '';
-  const den = st.den ? new Date(st.den).toLocaleDateString('sk-SK', { weekday:'short', day:'numeric', month:'numeric' }) : '';
-  const spolu = s && cena(s) !== null ? cena(s) + d.reduce((a, x) => a + x[1], 0) : null;
-  const r = (t, h) => `<div><dt>${t}</dt><dd class="${h ? '' : 'prazd'}">${h || '—'}</dd></div>`;
-  $('suhrn').innerHTML = `<h3>Vaša rezervácia</h3><dl>
-    ${r('EČV', st.ecv ? pekneEcv(st.ecv) : '')}
-    ${r('Vozidlo', v ? v.t + (p ? `<br><small style="font-family:var(--body);font-weight:400;text-transform:none;font-size:.8rem">${p}</small>` : '') : '')}
-    ${r('Služba', s ? s.t : '')}
-    ${d.length ? r('Doplnky', d.map(x => x[0]).join(', ')) : ''}
-    ${st.pickup ? r('Pickup servis', 'áno') : ''}
-    ${r('Termín', st.cas ? `${den} · ${st.cas}` : '')}
+<script src="/zaklad/zaklad.b838f09e.js"></script>
+<script>const A="https://Klasik.as.me/",KO_AUTO=A+"KLASIK-OSOBNY-AUTOMOBIL-Kontrola-originality",SVG={auto:'<path d="M5 30h54M9 30v-7l7-11h25l11 11h5v7"/><circle cx="19" cy="31" r="5"/><circle cx="46" cy="31" r="5"/>',dodavka:'<path d="M4 30V9h34l11 9h9v12M4 30h54M38 9v9h11"/><circle cx="16" cy="31" r="5"/><circle cx="47" cy="31" r="5"/>',moto:'<circle cx="14" cy="29" r="7"/><circle cx="50" cy="29" r="7"/><path d="M14 29l11-13h11l14 13M25 16l-3-6h-7M36 16h9"/>',stvorkolka:'<circle cx="15" cy="29" r="7"/><circle cx="49" cy="29" r="7"/><path d="M8 22h48l-6-8H20zM30 14l-4-7h-7M22 29h20"/>',vozik:'<path d="M8 11h32v15H8zM40 22h16"/><circle cx="24" cy="30" r="5"/>',kamion:'<path d="M2 7h36v19H2zM40 31V13h10l7 8v10M2 31h56"/><circle cx="10" cy="32" r="4"/><circle cx="20" cy="32" r="4"/><circle cx="49" cy="32" r="4"/>',naves:'<path d="M4 8h44v19H4zM48 22h10"/><circle cx="30" cy="31" r="4"/><circle cx="40" cy="31" r="4"/>',autobus:'<path d="M4 7h52v23H4zM4 17h52M14 7v10M26 7v10M38 7v10"/><circle cx="15" cy="31" r="4"/><circle cx="46" cy="31" r="4"/>',traktor:'<circle cx="18" cy="26" r="10"/><circle cx="50" cy="30" r="6"/><path d="M18 16V5h14l5 15h15v6M28 5v15"/>',zeriav:'<path d="M4 31V20h40v11M44 20h8l6 7v4M4 31h54M12 20L50 3M50 3v12"/><circle cx="12" cy="32" r="4"/><circle cx="24" cy="32" r="4"/><circle cx="50" cy="32" r="4"/>'},BLOKY=[{id:"do",ik:"/ikony/auto-biela.webp",t:"Osobné",k:"do 3,5 t",p:"auto, dodávka, motorka, štvorkolka, vozík",voz:[{id:"auto",t:"Auto",pohon:1},{id:"dodavka",t:"Dodávka",pohon:1},{id:"moto",t:"Motorka"},{id:"stvorkolka",t:"Štvorkolka"},{id:"vozik",t:"Vozík"}]},{id:"nad",ik:"/ikony/nakladne-biela.webp",t:"Nákladné",k:"nad 3,5 t",p:"kamión, náves, autobus, traktor, žeriav",voz:[{id:"kamion",t:"Kamión"},{id:"naves",t:"Náves"},{id:"autobus",t:"Autobus"},{id:"traktor",t:"Traktor"},{id:"zeriav",t:"Žeriav"}]}],POHON=[{id:"bd",t:"Benzín / diesel",p:"bežné auto"},{id:"alt",t:"LPG, CNG, hybrid, elektro",p:"alternatívny pohon"},{id:"kat",t:"NKAT / BKAT",p:"staršie benzínové ročníky"}],MOTO=[{t:"Kompletná STK",p:"L3, L4, L6",top:1,u:"https://klasik.as.me/motocykel-L3-L4-L6"},{t:"Kompletná STK",p:"L5, L7",u:"https://klasik.as.me/motocykel-L5-L7"},{t:"Technická kontrola",p:"motocykel, trojkolka, štvorkolka",c:"45 €",u:A+"Technicka-kontrola-motocykel-trojkolka-stvorkolka"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"25 / 30 €",u:A+"Opakovana-technicka-kontrola-motocykel-trojkolka-stvorkolka"}],NAKL_TK={t:"Technická kontrola",p:"pravidelná",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-kontrola"},NAKL_EK={t:"Emisná kontrola",p:"pravidelná",u:A+"KLASIK-NAKLADNE-VOZIDLA-Emisna-kontrola"},NAKL_OTK={t:"Opakovaná technická",p:"v deň / do 60 dní",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-opakovana-Technicka-kontrola"},NAKL_OEK={t:"Opakovaná emisná",p:"v deň / do 60 dní",u:A+"KLASIK-NAKLADNE-VOZIDLA-opakovana-Emisna-kontrola"},KONTROLY={"auto:bd":[{t:"Technická + emisná",p:"kompletná STK naraz",top:1,u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola"},{t:"Technická kontrola",p:"pravidelná",c:"60 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola"},{t:"Emisná kontrola",p:"pravidelná",c:"60 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-Benzin-Diesel"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"20 / 35 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Opakovana-Technicka-kontrola"},{t:"Opakovaná emisná",p:"v deň / do 60 dní",c:"20 / 30 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-Benzin-Diesel"},{t:"Kontrola originality",p:"automobil M1",c:"120 €",u:KO_AUTO}],"auto:alt":[{t:"Technická + emisná",p:"kompletná STK naraz",top:1,u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-HYBRID"},{t:"Technická kontrola",p:"pravidelná",c:"65 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA"},{t:"Emisná kontrola",p:"pravidelná",c:"75 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-LPG-CNG-HYBRID"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"20 / 35 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA"},{t:"Opakovaná emisná",p:"v deň / do 60 dní",c:"35 / 50 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-LPG-CNG-HYBRID"},{t:"Kontrola originality",p:"automobil M1",c:"120 €",u:KO_AUTO}],"auto:kat":[{t:"Technická + emisná",p:"kompletná STK naraz",top:1,u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-BKAT-NKAT"},{t:"Technická kontrola",p:"pravidelná",c:"60 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola"},{t:"Emisná kontrola",p:"pravidelná",c:"75 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-NKAT-BKAT"},{t:"Opakovaná emisná",p:"v deň / do 60 dní",c:"30 / 45 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-NKAT-BKAT"},{t:"Kontrola originality",p:"automobil M1",c:"120 €",u:KO_AUTO}],moto:[...MOTO,{t:"Kontrola originality",p:"malý motocykel",u:A+"KLASIK-MALY-MOTOCYKEL-Kontrola-originality"},{t:"Kontrola originality",p:"veľký motocykel",u:A+"KLASIK-VELKY-MOTOCYKEL-Kontrola-originality"}],stvorkolka:MOTO,vozik:[{t:"Technická kontrola",p:"O1, O2 · pravidelná",top:1,c:"35 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola"},{t:"Opakovaná technická",p:"do 60 dní",c:"20 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola"}],kamion:[{t:"Kompletná STK — ťahač",p:"technická + emisná",top:1,u:A+"KLASIK-NAKLADNE-VOZIDLA-TAHAC-NAVESOV-Technicka-Emisna-kontrola"},{t:"Kompletná STK — súprava",p:"ťahač + náves",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola"},{t:"Kompletná STK — sólo",p:"technická + emisná",u:A+"KLASIK-NAKLADNE-VOZIDLA-SOLO-Technicka-Emisna-kontrola"},{...NAKL_TK,c:"85 €"},{...NAKL_EK,c:"75 €"},{...NAKL_OTK,c:"30 / 50 €"},{...NAKL_OEK,c:"30 / 42 €"}],naves:[{t:"Technická kontrola",p:"O3, O4 · pravidelná",top:1,c:"75 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola"},{t:"Opakovaná technická",p:"do 60 dní",c:"40 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola"},{t:"Kompletná STK — súprava",p:"ťahač + náves",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola"}],autobus:[{...NAKL_TK,top:1},NAKL_EK,NAKL_OTK,NAKL_OEK],traktor:[{t:"Kompletná STK",p:"traktor, pracovný stroj",top:1,u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Technicka-Emisna-kontrola"},{t:"Traktorová súprava",p:"traktor + prípojné vozidlo",u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOROVA-SUPRAVA-Technicka-Emisna-kontrola"},{t:"Technická kontrola",p:"pravidelná",c:"90 €",u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PS-technicka-kontrola"},{t:"Opakovaná technická",p:"v deň / do 60 dní",u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Opakovana-technicka-kontrola"}],zeriav:[{t:"Kompletná STK",p:"špeciálne, terénne vozidlo",top:1,u:A+"KLASIK-NAKLADNE-VOZIDLA-SPECIALNE-Technicka-Emisna-kontrola"},{t:"Technická kontrola",p:"N2G, N3G · pravidelná",c:"120 €",u:A+"KLASIK-NAKLADNE-VOZIDLA-TERENNE-Technicka-kontrola"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"45 / 70 €",u:A+"KLASIK-NAKLADNE-VOZIDLA-TERENNE-opakovana-Technicka-kontrola"}]},POZN={kamion:'ADR a CEMT majú vlastné termíny → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',naves:'ADR a CEMT náves → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>'},DOPLNKY=[["Test tlmičov",16],["Kontrola bŕzd",16],["Kontrola dezénu",16],["Meranie svietivosti",16],["Test geometrie",11],["Diagnostika",26]],DEMO={TT123AB:{meno:"Ján",email:"ja•••@gmail.com",vozidla:[{ecv:"TT123AB",blok:"do",voz:"auto",pohon:"bd",popis:"Osobné auto · benzín / diesel",posledna:"Technická + emisná · 3/2024"},{ecv:"TT•••KL",blok:"do",voz:"moto",popis:"Motocykel",posledna:"Kompletná STK · 5/2025"}]},TT777XY:{meno:"Firma",email:"fl•••@doprava.sk",vozidla:[{ecv:"TT777XY",blok:"nad",voz:"kamion",popis:"Ťahač návesov",posledna:"Kompletná STK — ťahač · 9/2025"},{ecv:"TT•••AC",blok:"nad",voz:"naves",popis:"Náves O4",posledna:"Technická kontrola · 9/2025"},{ecv:"TT•••BD",blok:"nad",voz:"kamion",popis:"Ťahač návesov",posledna:"Kompletná STK — ťahač · 2/2026"},{ecv:"TT•••FF",blok:"do",voz:"dodavka",pohon:"bd",popis:"Dodávka · diesel",posledna:"Technická + emisná · 6/2025"}]}},$=a=>document.getElementById(a),q=new URLSearchParams(location.search),st={krok:1,blok:q.get("v")==="nakladne"?"nad":"do",ko:q.get("v")==="ko",voz:null,pohon:null,sluzba:null,doplnky:[],pickup:!1,den:null,cas:null,ecv:"",znamy:null,hladane:!1,inyMail:!1},vsetkyVoz=BLOKY.flatMap(a=>a.voz),najdi=a=>vsetkyVoz.find(n=>n.id===a),KROKY=["Vozidlo","Služba","Termín","Kontakt"],esc=a=>String(a).replace(/[&<>"]/g,n=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[n]),normEcv=a=>a.toUpperCase().replace(/[^A-Z0-9]/g,""),pekneEcv=a=>a.length===7?`${a.slice(0,2)} ${a.slice(2,5)}${a.slice(5)}`:a,cena=a=>{const n=a&&a.c&&a.c.match(/^(\d+)/);return n?+n[1]:null},zoznamKontrol=()=>{const a=najdi(st.voz);if(!a)return[];let n=KONTROLY[a.pohon?`auto:${st.pohon||"bd"}`:a.id]||[];return st.ko&&(n=[...n].sort((o,t)=>/originality/i.test(t.t)-/originality/i.test(o.t))),n},vozOk=()=>st.voz&&(!najdi(st.voz).pohon||st.pohon);function postup(){$("postup").innerHTML=KROKY.map((a,n)=>{const o=n+1,t=o===st.krok?"ted":o<st.krok?"hot":"",e=`<i>${o<st.krok?"✓":o}</i><span>${a}</span>`;return`<li class="${t}">${o<st.krok?`<button data-na="${o}">${e}</button>`:e}</li>`}).join("")}function suhrn(){const a=najdi(st.voz),n=st.sluzba,o=st.doplnky.map(i=>DOPLNKY[i]),t=st.pohon?POHON.find(i=>i.id===st.pohon).t:"",e=st.den?new Date(st.den).toLocaleDateString("sk-SK",{weekday:"short",day:"numeric",month:"numeric"}):"",l=n&&cena(n)!==null?cena(n)+o.reduce((i,c)=>i+c[1],0):null,s=(i,c)=>`<div><dt>${i}</dt><dd class="${c?"":"prazd"}">${c||"—"}</dd></div>`;$("suhrn").innerHTML=`<h3>Vaša rezervácia</h3><dl>
+    ${s("EČV",st.ecv?pekneEcv(st.ecv):"")}
+    ${s("Vozidlo",a?a.t+(t?`<br><small style="font-family:var(--body);font-weight:400;text-transform:none;font-size:.8rem">${t}</small>`:""):"")}
+    ${s("Služba",n?n.t:"")}
+    ${o.length?s("Doplnky",o.map(i=>i[0]).join(", ")):""}
+    ${st.pickup?s("Pickup servis","áno"):""}
+    ${s("Termín",st.cas?`${e} · ${st.cas}`:"")}
   </dl>
-  <div class="spolu"><span>Spolu</span><b>${spolu !== null ? spolu + ' €' : s ? '<small style="font-size:1rem">podľa <a href="/cennik/" style="text-decoration:underline">cenníka</a></small>' : '—'}</b></div>
-  <p class="pomoc">Neviete si rady? Zavolajte <a href="tel:+421332020211">033 20 20 211</a> — vyberieme za vás.</p>`;
-}
-
-function krok1(){
-  const b = BLOKY.find(x => x.id === st.blok);
-  const zn = st.znamy;
-  return `
+  <div class="spolu"><span>Spolu</span><b>${l!==null?l+" €":n?'<small style="font-size:1rem">podľa <a href="/cennik/" style="text-decoration:underline">cenníka</a></small>':"—"}</b></div>
+  <p class="pomoc">Neviete si rady? Zavolajte <a href="tel:+421332020211">033 20 20 211</a> — vyberieme za vás.</p>`}function krok1(){const a=BLOKY.find(o=>o.id===st.blok),n=st.znamy;return`
     <div class="ecv-box slab perf">
       <b class="t">Už ste u nás boli?</b>
       <p>Zadajte EČV. Ak vás poznáme, doplníme vozidlo aj kontakt — nič nevypisujete.</p>
       <form class="ecv-r" id="ecv-f">
-        <label class="tabulka"><span class="eu"><svg viewBox="0 0 24 24" aria-hidden="true">${Array.from({length:12}, (_, i) => { const a = i * Math.PI / 6; return `<circle cx="${12 + 8*Math.cos(a)}" cy="${12 + 8*Math.sin(a)}" r="1.3" fill="#FFE600"/>`; }).join('')}</svg>SK</span>
+        <label class="tabulka"><span class="eu"><svg viewBox="0 0 24 24" aria-hidden="true">${Array.from({length:12},(o,t)=>{const e=t*Math.PI/6;return`<circle cx="${12+8*Math.cos(e)}" cy="${12+8*Math.sin(e)}" r="1.3" fill="#FFE600"/>`}).join("")}</svg>SK</span>
           <input id="ecv" name="ecv" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="10" placeholder="TT 123AB" value="${esc(pekneEcv(st.ecv))}" aria-label="Evidenčné číslo vozidla"></label>
         <button class="btn" type="submit" id="ecv-b">Nájsť <span aria-hidden="true">→</span></button>
       </form>
       <p class="ecv-pozn">Demo: skúste <b>TT123AB</b> (vodič) alebo <b>TT777XY</b> (firma so 4 vozidlami). · <a href="/ochrana-osobnych-udajov/">Ako narábame s údajmi</a></p>
     </div>
-    ${zn ? `
+    ${n?`
       <div class="znamy slab">
-        <div class="znamy-hl"><span class="ok" aria-hidden="true">✓</span><div><b>Poznáme vás</b><small>Potvrdenie pošleme na ${zn.email}. Vyberte vozidlo:</small></div></div>
-        <ul class="vozidla">${zn.vozidla.map((v, i) => `
-          <li><button type="button" data-zv="${i}" class="${st.ecv === normEcv(v.ecv) && st.voz === v.voz ? 'vyb' : ''}">
-            <span class="mini">${pekneEcv(v.ecv)}</span>
-            <span class="op"><b>${v.popis}</b><small>Naposledy: ${v.posledna}</small></span>
-            <span class="sip" aria-hidden="true">→</span></button></li>`).join('')}</ul>
-      </div>` : st.hladane ? `<div class="nenasli">Toto EČV u nás zatiaľ nemáme. Nevadí — vyberte vozidlo nižšie, kontakt vyplníte raz a nabudúce ho už doplníme.</div>` : ''}
+        <div class="znamy-hl"><span class="ok" aria-hidden="true">✓</span><div><b>Poznáme vás</b><small>Potvrdenie pošleme na ${n.email}. Vyberte vozidlo:</small></div></div>
+        <ul class="vozidla">${n.vozidla.map((o,t)=>`
+          <li><button type="button" data-zv="${t}" class="${st.ecv===normEcv(o.ecv)&&st.voz===o.voz?"vyb":""}">
+            <span class="mini">${pekneEcv(o.ecv)}</span>
+            <span class="op"><b>${o.popis}</b><small>Naposledy: ${o.posledna}</small></span>
+            <span class="sip" aria-hidden="true">→</span></button></li>`).join("")}</ul>
+      </div>`:st.hladane?'<div class="nenasli">Toto EČV u nás zatiaľ nemáme. Nevadí — vyberte vozidlo nižšie, kontakt vyplníte raz a nabudúce ho už doplníme.</div>':""}
     <div class="medzi">alebo vyberte vozidlo</div>
     <div class="prepinac" role="group" aria-label="Hmotnosť vozidla">
-      ${BLOKY.map(x => `<button type="button" data-blok="${x.id}" aria-pressed="${x.id === st.blok}">${x.t}<small>${x.k}</small></button>`).join('')}
+      ${BLOKY.map(o=>`<button type="button" data-blok="${o.id}" aria-pressed="${o.id===st.blok}">${o.t}<small>${o.k}</small></button>`).join("")}
     </div>
-    <div class="ikony">${b.voz.map(v => `
-      <button type="button" class="ik slab zatlac${st.voz === v.id ? ' vyb' : ''}" data-voz="${v.id}" aria-pressed="${st.voz === v.id}"><svg viewBox="0 0 64 40" aria-hidden="true">${SVG[v.id]}</svg><span>${v.t}</span></button>`).join('')}
+    <div class="ikony">${a.voz.map(o=>`
+      <button type="button" class="ik slab zatlac${st.voz===o.id?" vyb":""}" data-voz="${o.id}" aria-pressed="${st.voz===o.id}"><svg viewBox="0 0 64 40" aria-hidden="true">${SVG[o.id]}</svg><span>${o.t}</span></button>`).join("")}
     </div>
-    ${st.voz && najdi(st.voz).pohon ? `
+    ${st.voz&&najdi(st.voz).pohon?`
       <div><h2 style="font-size:1.5rem;margin-bottom:.8rem">Aký má pohon?</h2>
-      <div class="pohon">${POHON.map(p => `<button type="button" data-pohon="${p.id}" aria-pressed="${st.pohon === p.id}"><b>${p.t}</b><small>${p.p}</small></button>`).join('')}</div></div>` : ''}
-    <div class="dalej"><span></span><button class="btn" data-dalej ${vozOk() ? '' : 'disabled'}>Pokračovať <span aria-hidden="true">→</span></button></div>`;
-}
-
-function krok2(){
-  const v = najdi(st.voz), z = zoznamKontrol();
-  return `
-    <ul class="riadky slab">${z.map((k, i) => `
-      <li><button type="button" data-sl="${i}" aria-pressed="${st.sluzba === k}"><span><b>${k.t}${k.top && !st.ko ? '<span class="stitok">najčastejšie</span>' : ''}${st.posledna && st.posledna.startsWith(k.t) ? '<span class="stitok zel">ako minule</span>' : ''}</b><small>${k.p}</small></span>
-        <span class="c">${k.c || '→'}</span></button></li>`).join('')}</ul>
-    ${POZN[v.id] ? `<p class="pozn">${POZN[v.id]}</p>` : ''}
+      <div class="pohon">${POHON.map(o=>`<button type="button" data-pohon="${o.id}" aria-pressed="${st.pohon===o.id}"><b>${o.t}</b><small>${o.p}</small></button>`).join("")}</div></div>`:""}
+    <div class="dalej"><span></span><button class="btn" data-dalej ${vozOk()?"":"disabled"}>Pokračovať <span aria-hidden="true">→</span></button></div>`}function krok2(){const a=najdi(st.voz);return`
+    <ul class="riadky slab">${zoznamKontrol().map((o,t)=>`
+      <li><button type="button" data-sl="${t}" aria-pressed="${st.sluzba===o}"><span><b>${o.t}${o.top&&!st.ko?'<span class="stitok">najčastejšie</span>':""}${st.posledna&&st.posledna.startsWith(o.t)?'<span class="stitok zel">ako minule</span>':""}</b><small>${o.p}</small></span>
+        <span class="c">${o.c||"→"}</span></button></li>`).join("")}</ul>
+    ${POZN[a.id]?`<p class="pozn">${POZN[a.id]}</p>`:""}
     <div><h2 style="font-size:1.5rem;margin-bottom:.8rem">Pridať k tomu?</h2>
-      <div class="doplnky">${DOPLNKY.map(([t, c], i) => `<label><input type="checkbox" data-dop="${i}" ${st.doplnky.includes(i) ? 'checked' : ''}>${t}<small>+${c} €</small></label>`).join('')}</div></div>
-    <label class="pickup slab"><input type="checkbox" class="vyp" data-pickup ${st.pickup ? 'checked' : ''}>
+      <div class="doplnky">${DOPLNKY.map(([o,t],e)=>`<label><input type="checkbox" data-dop="${e}" ${st.doplnky.includes(e)?"checked":""}>${o}<small>+${t} €</small></label>`).join("")}</div></div>
+    <label class="pickup slab"><input type="checkbox" class="vyp" data-pickup ${st.pickup?"checked":""}>
       <span><b>Pickup servis</b><br><span>Vozidlo vyzdvihneme na vašej adrese a vrátime. Zdarma do 15 km.</span></span></label>
-    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-dalej ${st.sluzba ? '' : 'disabled'}>Vybrať termín <span aria-hidden="true">→</span></button></div>`;
-}
-
-/* ukážkové termíny: 10 pracovných dní dopredu, 20-min sloty podľa otváracích hodín, „obsadené“ pseudonáhodne */
-const HODINY = {1:[7,20],2:[7,20],3:[7,20],4:[7,20],5:[7,20],6:[7,13]};
-function dni(){
-  const o = [], d = new Date(); d.setHours(0,0,0,0);
-  while(o.length < 12){ if(HODINY[d.getDay()]) o.push(new Date(d)); d.setDate(d.getDate() + 1); }
-  return o;
-}
-function casy(den){
-  const [a, b] = HODINY[new Date(den).getDay()], o = [], ted = new Date();
-  for(let m = a * 60; m < b * 60 - 20; m += 20){
-    const t = `${String(m / 60 | 0).padStart(2,'0')}:${String(m % 60).padStart(2,'0')}`;
-    const d = new Date(den); d.setHours(m / 60 | 0, m % 60);
-    const obs = d < ted || ((m * 7 + new Date(den).getDate() * 13) % 5 === 0);
-    o.push([t, obs]);
-  }
-  return o;
-}
-function krok3(){
-  const D = dni(); if(!st.den) st.den = +D[0];
-  return `
-    <div class="dni" role="group" aria-label="Deň">${D.map(d => `
-      <button type="button" data-den="${+d}" aria-pressed="${+d === st.den}"><small>${d.toLocaleDateString('sk-SK', { weekday:'short' })}</small><b>${d.getDate()}</b><span>${d.toLocaleDateString('sk-SK', { month:'short' })}</span></button>`).join('')}
+    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-dalej ${st.sluzba?"":"disabled"}>Vybrať termín <span aria-hidden="true">→</span></button></div>`}const HODINY={1:[7,20],2:[7,20],3:[7,20],4:[7,20],5:[7,20],6:[7,13]};function dni(){const a=[],n=new Date;for(n.setHours(0,0,0,0);a.length<12;)HODINY[n.getDay()]&&a.push(new Date(n)),n.setDate(n.getDate()+1);return a}function casy(a){const[n,o]=HODINY[new Date(a).getDay()],t=[],e=new Date;for(let l=n*60;l<o*60-20;l+=20){const s=`${String(l/60|0).padStart(2,"0")}:${String(l%60).padStart(2,"0")}`,i=new Date(a);i.setHours(l/60|0,l%60);const c=i<e||(l*7+new Date(a).getDate()*13)%5===0;t.push([s,c])}return t}function krok3(){const a=dni();return st.den||(st.den=+a[0]),`
+    <div class="dni" role="group" aria-label="Deň">${a.map(n=>`
+      <button type="button" data-den="${+n}" aria-pressed="${+n===st.den}"><small>${n.toLocaleDateString("sk-SK",{weekday:"short"})}</small><b>${n.getDate()}</b><span>${n.toLocaleDateString("sk-SK",{month:"short"})}</span></button>`).join("")}
     </div>
-    <div class="casy" role="group" aria-label="Čas">${casy(st.den).map(([t, obs]) => `<button type="button" data-cas="${t}" ${obs ? 'disabled' : ''} aria-pressed="${st.cas === t}">${t}</button>`).join('')}</div>
+    <div class="casy" role="group" aria-label="Čas">${casy(st.den).map(([n,o])=>`<button type="button" data-cas="${n}" ${o?"disabled":""} aria-pressed="${st.cas===n}">${n}</button>`).join("")}</div>
     <p class="pozn"><span class="ukazka">ukážka</span> Naostro sa voľné časy načítajú priamo z rezervačného systému. Trvanie: cca 20 min na linke, vyhraďte si cca 60 min.</p>
-    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-dalej ${st.cas ? '' : 'disabled'}>Pokračovať <span aria-hidden="true">→</span></button></div>`;
-}
-
-function krok4(){
-  const zn = st.znamy && !st.inyMail;
-  return `
-    ${zn ? `
+    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-dalej ${st.cas?"":"disabled"}>Pokračovať <span aria-hidden="true">→</span></button></div>`}function krok4(){const a=st.znamy&&!st.inyMail;return`
+    ${a?`
       <div class="potvrd slab"><b>Kontakt máme</b>
         <span>Potvrdenie a pripomienku pred termínom pošleme na</span><span class="mail">${st.znamy.email}</span>
-        <button type="button" data-inymail>Chcem použiť iný e-mail</button></div>` : `
+        <button type="button" data-inymail>Chcem použiť iný e-mail</button></div>`:`
       <div class="polia">
         <label class="pole"><span>Meno a priezvisko</span><input name="meno" autocomplete="name" required></label>
         <label class="pole"><span>Telefón</span><input name="tel" type="tel" autocomplete="tel" placeholder="09xx xxx xxx" required></label>
         <label class="pole cela"><span>E-mail — pošleme naň potvrdenie</span><input name="email" type="email" autocomplete="email" required></label>
-        ${st.ecv ? '' : `<label class="pole"><span>EČV (nepovinné)</span><input name="ecv2" autocapitalize="characters" placeholder="TT 123AB"></label>`}
+        ${st.ecv?"":'<label class="pole"><span>EČV (nepovinné)</span><input name="ecv2" autocapitalize="characters" placeholder="TT 123AB"></label>'}
         <label class="pole cela"><span>Poznámka (nepovinné)</span><textarea name="pozn" rows="2"></textarea></label>
       </div>`}
-    <label class="suhlas"><input type="checkbox" id="suhlas" ${zn ? 'checked' : ''}><span>Súhlasím so <a href="/ochrana-osobnych-udajov/">spracovaním údajov</a> na účel rezervácie.</span></label>
-    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-potvrd>Potvrdiť rezerváciu <span aria-hidden="true">→</span></button></div>`;
-}
-
-function hotovo(){
-  const den = new Date(st.den).toLocaleDateString('sk-SK', { weekday:'long', day:'numeric', month:'long' });
-  return `<div class="hotovo slab perf"><b>Hotovo, tešíme sa</b>
-    <p>${najdi(st.voz).t} · ${st.sluzba.t} · <strong>${den} o ${st.cas}</strong>.<br>Potvrdenie sme poslali${st.znamy && !st.inyMail ? ' na ' + st.znamy.email : ' e-mailom'}.</p>
+    <label class="suhlas"><input type="checkbox" id="suhlas" ${a?"checked":""}><span>Súhlasím so <a href="/ochrana-osobnych-udajov/">spracovaním údajov</a> na účel rezervácie.</span></label>
+    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-potvrd>Potvrdiť rezerváciu <span aria-hidden="true">→</span></button></div>`}function hotovo(){const a=new Date(st.den).toLocaleDateString("sk-SK",{weekday:"long",day:"numeric",month:"long"});return`<div class="hotovo slab perf"><b>Hotovo, tešíme sa</b>
+    <p>${najdi(st.voz).t} · ${st.sluzba.t} · <strong>${a} o ${st.cas}</strong>.<br>Potvrdenie sme poslali${st.znamy&&!st.inyMail?" na "+st.znamy.email:" e-mailom"}.</p>
     <p class="pozn"><span class="ukazka">ukážka</span> V prototype sa nič neodosiela.</p>
-    <a class="btn sv" href="/">Späť na úvod</a></div>`;
-}
-
-const NADPIS = ['', 'Aké vozidlo vám skontrolujeme?', 'Akú službu potrebujete?', 'Kedy vám to vyhovuje?', 'Kam pošleme potvrdenie?'];
-function render(){
-  postup(); suhrn();
-  const el = $('krok');
-  if(st.krok === 5){ el.innerHTML = hotovo(); return; }
-  el.innerHTML = `<h2><small>Krok ${st.krok} / 4</small>${NADPIS[st.krok]}</h2>` + [krok1, krok2, krok3, krok4][st.krok - 1]();
-}
-
-/* ===================== UDALOSTI ===================== */
-function hladaj(){
-  st.ecv = normEcv($('ecv').value);
-  st.hladane = !!st.ecv; st.znamy = DEMO[st.ecv] || null;
-  if(st.znamy){ const v = st.znamy.vozidla.find(x => normEcv(x.ecv) === st.ecv); if(v) vyberZname(v, false); }
-  render();
-}
-function vyberZname(v, dalej = true){
-  st.blok = v.blok; st.voz = v.voz; st.pohon = v.pohon || null; st.posledna = v.posledna;
-  if(!v.ecv.includes('•')) st.ecv = normEcv(v.ecv);
-  if(dalej){ st.krok = 2; st.sluzba = zoznamKontrol().find(k => v.posledna.startsWith(k.t)) || null; }
-}
-document.addEventListener('submit', e => { if(e.target.id === 'ecv-f'){ e.preventDefault(); hladaj(); } });
-document.addEventListener('input', e => {
-  if(e.target.id === 'ecv'){ const p = e.target.selectionStart; e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(p, p); }
-});
-document.addEventListener('change', e => {
-  const t = e.target;
-  if(t.dataset.dop !== undefined){ const i = +t.dataset.dop; st.doplnky = t.checked ? [...st.doplnky, i] : st.doplnky.filter(x => x !== i); suhrn(); }
-  if('pickup' in t.dataset){ st.pickup = t.checked; suhrn(); }
-});
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-blok],[data-voz],[data-pohon],[data-dalej],[data-spat],[data-sl],[data-den],[data-cas],[data-zv],[data-na],[data-inymail],[data-potvrd]');
-  if(!b || !b.closest('main')) return;
-  const d = b.dataset, hore = () => $('krok').closest('.rz').scrollIntoView({ behavior:'smooth', block:'start' });
-  if(d.blok){ st.blok = d.blok; st.voz = st.pohon = null; }
-  else if(d.voz){ st.voz = d.voz; st.pohon = null; st.sluzba = null; }
-  else if(d.pohon){ st.pohon = d.pohon; st.sluzba = null; }
-  else if(d.zv){ vyberZname(st.znamy.vozidla[+d.zv]); hore(); }
-  else if(d.sl){ st.sluzba = zoznamKontrol()[+d.sl]; }
-  else if(d.den){ st.den = +d.den; st.cas = null; }
-  else if(d.cas){ st.cas = d.cas; }
-  else if(d.na){ st.krok = +d.na; }
-  else if('inymail' in d){ st.inyMail = true; }
-  else if('dalej' in d){ if(b.disabled) return; st.krok++; hore(); }
-  else if('spat' in d){ st.krok--; hore(); }
-  else if('potvrd' in d){
-    if(!$('suhlas').checked){ $('suhlas').closest('label').style.color = 'var(--r)'; return; }
-    const f = [...document.querySelectorAll('.polia input[required]')];
-    const zle = f.find(i => !i.checkValidity()); if(zle){ zle.reportValidity(); return; }
-    st.krok = 5; hore();
-  }
-  render();
-});
-render();
-</script>
+    <a class="btn sv" href="/">Späť na úvod</a></div>`}const NADPIS=["","Aké vozidlo vám skontrolujeme?","Akú službu potrebujete?","Kedy vám to vyhovuje?","Kam pošleme potvrdenie?"];function render(){postup(),suhrn();const a=$("krok");if(st.krok===5){a.innerHTML=hotovo();return}a.innerHTML=`<h2><small>Krok ${st.krok} / 4</small>${NADPIS[st.krok]}</h2>`+[krok1,krok2,krok3,krok4][st.krok-1]()}function hladaj(){if(st.ecv=normEcv($("ecv").value),st.hladane=!!st.ecv,st.znamy=DEMO[st.ecv]||null,st.znamy){const a=st.znamy.vozidla.find(n=>normEcv(n.ecv)===st.ecv);a&&vyberZname(a,!1)}render()}function vyberZname(a,n=!0){st.blok=a.blok,st.voz=a.voz,st.pohon=a.pohon||null,st.posledna=a.posledna,a.ecv.includes("•")||(st.ecv=normEcv(a.ecv)),n&&(st.krok=2,st.sluzba=zoznamKontrol().find(o=>a.posledna.startsWith(o.t))||null)}document.addEventListener("submit",a=>{a.target.id==="ecv-f"&&(a.preventDefault(),hladaj())}),document.addEventListener("input",a=>{if(a.target.id==="ecv"){const n=a.target.selectionStart;a.target.value=a.target.value.toUpperCase(),a.target.setSelectionRange(n,n)}}),document.addEventListener("change",a=>{const n=a.target;if(n.dataset.dop!==void 0){const o=+n.dataset.dop;st.doplnky=n.checked?[...st.doplnky,o]:st.doplnky.filter(t=>t!==o),suhrn()}"pickup"in n.dataset&&(st.pickup=n.checked,suhrn())}),document.addEventListener("click",a=>{const n=a.target.closest("[data-blok],[data-voz],[data-pohon],[data-dalej],[data-spat],[data-sl],[data-den],[data-cas],[data-zv],[data-na],[data-inymail],[data-potvrd]");if(!n||!n.closest("main"))return;const o=n.dataset,t=()=>$("krok").closest(".rz").scrollIntoView({behavior:"smooth",block:"start"});if(o.blok)st.blok=o.blok,st.voz=st.pohon=null;else if(o.voz)st.voz=o.voz,st.pohon=null,st.sluzba=null;else if(o.pohon)st.pohon=o.pohon,st.sluzba=null;else if(o.zv)vyberZname(st.znamy.vozidla[+o.zv]),t();else if(o.sl)st.sluzba=zoznamKontrol()[+o.sl];else if(o.den)st.den=+o.den,st.cas=null;else if(o.cas)st.cas=o.cas;else if(o.na)st.krok=+o.na;else if("inymail"in o)st.inyMail=!0;else if("dalej"in o){if(n.disabled)return;st.krok++,t()}else if("spat"in o)st.krok--,t();else if("potvrd"in o){if(!$("suhlas").checked){$("suhlas").closest("label").style.color="var(--r)";return}const l=[...document.querySelectorAll(".polia input[required]")].find(s=>!s.checkValidity());if(l){l.reportValidity();return}st.krok=5,t()}render()}),render();</script>
 </body>
 </html>

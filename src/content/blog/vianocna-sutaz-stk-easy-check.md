@@ -4,13 +4,13 @@ titulSeo: "Vianočná súťaž z STK Easy Check Trnava"
 popis: "Usporiadali sme súťaž o hodnotné ceny, kde jedinou podmienkou je ohodnotiť nás ONLINE a samozrejme byť našim STK zákazníkom."
 datum: 2020-12-20
 kategorie: ["oznamy"]
-obrazok: "/blog/2021/snimka-obrazovky-2021-01-29-o-13.22.41-1-941x1024.jpg"
+obrazok: "/blog/2021/easy-check-stk-hodnotenie-1024x741.jpeg"
 zdroj: "https://easycheck.sk/blog/vianocna-sutaz-stk-easy-check/"
 prazdny: false
 ---
 S blížiacimi Vianocami sme sa rozhodli potešiť všetkých našich zákazníkov. Usporiadali sme súťaž o hodnotné ceny, kde jedinou podmienkou je ohodnotiť nás ONLINE a samozrejme byť našim STK zákazníkom. Stačí doslova jedno kliknutie a vo veľkom žrebovaní sa Vám môže ujsť jedna z 10 cien !
 
-![](/blog/2021/snimka-obrazovky-2021-01-29-o-13.22.41-1-941x1024.jpg)![](/blog/2021/easy-check-stk-hodnotenie-1024x741.jpeg)
+![](/blog/2021/easy-check-stk-hodnotenie-1024x741.jpeg)
 
 ## Google či Facebook
 

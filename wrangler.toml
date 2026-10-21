@@ -1,0 +1,21 @@
+# Cloudflare Pages — nový web easycheck.sk (statický web staticky/ + Pages Functions vo functions/).
+# Návod na zapnutie: ~/AI/EASYCHECK/vystupy/web-brutal/_zdroj/ADMIN-SUBORY.md
+# ŽIADNE TAJOMSTVÁ SEM — repo je verejné. Heslo (ADMIN_HESLO_HASH) ide ako secret:
+#   npx wrangler@4 pages secret put ADMIN_HESLO_HASH --project-name easycheck-web
+# Pozor: keď tento súbor existuje, Pages berie bindingy a premenné z neho (nie z dashboardu).
+name = "easycheck-web"
+pages_build_output_dir = "staticky"
+compatibility_date = "2025-09-01"
+
+# Súbory na stiahnutie (splnomocnenia, cenník, tlačivá) — bucket vytvorí Matej v dashboarde
+[[r2_buckets]]
+binding = "SUBORY"
+bucket_name = "easycheck-subory"
+
+[vars]
+# Cloudflare Access (Zero Trust → Settings → Custom pages / Team domain), napr. "easycheck.cloudflareaccess.com"
+ACCESS_TEAM_DOMAIN = ""
+# Access → Applications → <aplikácia admin> → Overview → Application Audience (AUD) Tag
+ACCESS_AUD = ""
+# Limit veľkosti jedného súboru v MB
+MAX_MB = "20"

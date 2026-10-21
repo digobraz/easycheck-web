@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Cloudflare Pages Functions — lokálne tajomstvá a lokálne R2/stav wranglera (nikdy do repa, repo je verejné)
+.dev.vars
+.wrangler/

@@ -1,0 +1,9 @@
+/* Lokálne fonty (Google Fonts, licencia OFL) — generuje scripts/web-fonty.py; len znaky webu, font-display:swap.
+   Vkladá ich scripts/web-build.py namiesto odkazu na fonts.googleapis.com. */
+@font-face{font-family:'Saira Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(/zaklad/fonty/saira-condensed-600.woff2) format('woff2')}
+@font-face{font-family:'Saira Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(/zaklad/fonty/saira-condensed-700.woff2) format('woff2')}
+@font-face{font-family:'Saira Condensed';font-style:normal;font-weight:800;font-display:swap;src:url(/zaklad/fonty/saira-condensed-800.woff2) format('woff2')}
+@font-face{font-family:'Saira Condensed';font-style:normal;font-weight:900;font-display:swap;src:url(/zaklad/fonty/saira-condensed-900.woff2) format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url(/zaklad/fonty/dm-sans-var.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(/zaklad/fonty/ibm-plex-mono-400.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url(/zaklad/fonty/ibm-plex-mono-500.woff2) format('woff2')}

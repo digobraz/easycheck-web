@@ -2,518 +2,36 @@
 <html lang="sk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="robots" content="noindex">
-<title>STK Trnava — Easy Check</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-/* index.html = uvod-v13 + (21. 10.) Osobné/Nákladné vedú na /rezervacia/?v=…, výber vozidla už nie je v hero; menu podľa mapy webu.
-   Úvod v2 — SOFT SLAB (brand-manual/smery-v1.html, zamknuté 22. 7. 2026).
-   v4 (Matej, 20. 10.): logo + menu v žltom bloku, info pás beží opačne. Vpravo dva oddelené bloky
-   s chipom (bez ikon) → vozidlo s ikonou až v 2. kroku. Služby = 3 pomaly bežiace riadky pills
-   vo farbách dlaždíc zo súčasného easycheck.sk.
-   v5: header so zástavkou vľavo (náčrt Matej) — väčšie logo prekrýva roh fotky; text STK Trnava z fotky preč.
-   v6: topbar beží (stojí pri hover) — stav, hodiny, víkendy a sviatky, bez čakania, adresa, kontakt.
-   Čierne pills „STK s výhodami“ presunuté hore, dolu ostali 2 riadky. */
-:root{
-  --y:#FFE600; --r:#E12128; --g:#5BBA47; --c:#18B6E4; --ink:#231F20; --paper:#FFFDF5; --muted:#6E6A63;
-  --disp:'Saira Condensed','Arial Narrow',sans-serif;
-  --body:'DM Sans',system-ui,sans-serif;
-  --mono:'IBM Plex Mono',ui-monospace,monospace;
-  --ram:3px solid var(--ink); --rad:16px; --tien:6px 6px 0 0 var(--ink);
-  --gap:clamp(12px,1.4vw,20px);
-  /* v8: širší okraj z oboch strán (Matej: „web je moc doširoka“); na mobile 0 */
-  --okraj:clamp(0px,6vw - 30px,90px);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
-body{font-family:var(--body);color:var(--ink);background:var(--paper)}
-a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
-:focus-visible{outline:3px solid var(--c);outline-offset:3px}
-
-/* nálepka: rámik + tieň + perforácia vo farbe textu */
-.slab{border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);position:relative;background:var(--paper)}
-.perf::before{content:'';position:absolute;inset:5px;border:1.5px dashed currentColor;border-radius:11px;pointer-events:none;opacity:.5}
-.zatlac{transition:transform .1s,box-shadow .1s}
-.zatlac:hover,.zatlac:focus-visible{transform:translate(3px,3px);box-shadow:3px 3px 0 0 var(--ink)}
-.zatlac:active{transform:translate(6px,6px);box-shadow:0 0 0 0 var(--ink)}
-
-/* 21. 10.: bez pinch-zoomu a bočného posúvania na mobile */
-html{touch-action:pan-x pan-y}
-html,body{overflow-x:clip}
-
-.uvod{height:100vh;height:100dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr);overflow:hidden}
-
-/* ---------- bežiace pásy (info hore, služby dole) ---------- */
-.bez{overflow:hidden;white-space:nowrap}
-.bez-in{display:inline-flex;animation:bez 42s linear infinite}
-.bez:hover .bez-in{animation-play-state:paused}
-@keyframes bez{to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion:reduce){.bez-in{animation:none}}
-
-.pas{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}
-.pas-in{display:flex;align-items:center;width:max-content;padding:.4rem 0;animation:bez 52s linear infinite reverse}
-.pas-in>*{display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap}
-.pas-in>*{margin-right:2.4rem}
-.pas:hover .pas-in{animation-play-state:paused}
-.pas .tbd{outline:1px dashed var(--y);outline-offset:3px;border-radius:4px}
-.pas a:hover{color:var(--y)}
-.pas .bod{width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 0 3px rgba(91,186,71,.25)}
-.pas .bod.zat{background:var(--r);box-shadow:0 0 0 3px rgba(225,33,40,.25)}
-.pas .y{color:var(--y)}
-.pas .dim{opacity:.55}
-/* pills z „STK s výhodami“ — na čiernom páse obrátené: žltá výplň, čierny text */
-.pas .pp{font-family:var(--disp);font-weight:700;font-size:.88rem;letter-spacing:.05em;background:var(--y);color:var(--ink);border-radius:999px;padding:.08rem .7rem}
-.pas a.pp:hover{background:var(--paper);color:var(--ink)}
-
-/* ---------- logo + menu: žltý pás so zástavkou vľavo dole ----------
-   Tvar kreslí SVG (JS podľa šírky) — rámik + tvrdý tieň musia ísť aj po šikmej hrane zástavky,
-   čo border/box-shadow nevedia. --hb výška pásu, --zt o koľko zástavka visí nižšie, --zw jej šírka. */
-.hl{--hb:84px;--zt:54px;--zw:248px;--zs:40px;position:relative;z-index:5;height:var(--hb);display:flex;align-items:center;gap:var(--gap);padding:0 .7rem 0 calc(var(--zw) + var(--zs));margin:calc(var(--gap) - 2px) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}
-.hl-tvar{position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:-1}
-.hl-tvar .tien{fill:var(--ink)}
-.hl-tvar .plast{fill:var(--y);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}
-.logo{position:absolute;left:0;width:calc(var(--zw) + var(--zs) * .5);top:.55rem;bottom:calc(-1 * var(--zt) + .55rem);display:flex;align-items:center;justify-content:center}
-.logo img{height:100%;width:auto;display:block}
-.hl nav{display:flex;gap:.2rem;margin-left:auto}
-.hl nav a{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:1rem;padding:.45rem .95rem;border-radius:999px;border:2px solid transparent}
-.hl nav a:hover{border-color:var(--ink)}
-/* jazyk: chip s vlajkou + rozbaľovací zoznam (natívny <details>, funguje aj bez JS) */
-.jazyk{position:relative}
-.jazyk summary{list-style:none;display:flex;align-items:center;gap:.35rem;padding:.32rem .5rem .32rem .38rem;border:var(--ram);border-radius:999px;background:var(--paper);cursor:pointer;box-shadow:3px 3px 0 0 var(--ink)}
-.jazyk summary::-webkit-details-marker{display:none}
-.jazyk summary:hover{background:var(--ink)}
-.jazyk summary:hover .sip{stroke:var(--paper)}
-.jazyk .sip{width:12px;height:12px;fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
-.jazyk[open] .sip{transform:rotate(180deg)}
-.vlajka{width:30px;height:20px;border-radius:5px;outline:1.5px solid var(--ink);display:block;flex-shrink:0;overflow:hidden}
-.jazyk ul{position:absolute;right:0;top:calc(100% + 12px);list-style:none;min-width:230px;background:var(--paper);border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);padding:.4rem;z-index:30}
-.jazyk li a{display:flex;align-items:center;gap:.65rem;padding:.5rem .6rem;border-radius:10px;font-weight:500}
-.jazyk li a:hover{background:var(--y)}
-.jazyk li a.akt{background:var(--ink);color:var(--paper)}
-.jazyk li small{margin-left:auto;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.jazyk li a.akt small{color:var(--y)}
-.tel{font-family:var(--disp);font-weight:800;font-size:1.15rem;letter-spacing:.02em;white-space:nowrap;background:var(--ink);color:var(--paper);border:var(--ram);border-radius:999px;padding:.3rem .8rem;box-shadow:3px 3px 0 0 var(--paper)}
-
-/* ---------- 70 / 30 ---------- */
-.plocha>*{min-width:0}
-.plocha{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,3fr);gap:calc(var(--gap) + 6px);min-height:0;padding:calc(var(--gap) + 10px) calc(var(--gap) + 6px + var(--okraj)) calc(var(--gap) + 8px) calc(var(--gap) + var(--okraj))}
-
-.foto{overflow:hidden;margin:calc(-1 * (var(--gap) + 10px) - 24px) 0 0 clamp(18px,2vw,34px);border-top-left-radius:0;border-top-right-radius:0;background:var(--ink);display:flex;flex-direction:column}
-.foto .obr{position:relative;flex:1;min-height:0}
-.foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease}
-.foto img.on{opacity:1}
-/* H1 ostáva pre Google a čítačky, vizuálne ho nesie fotka + logo */
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.foto figcaption{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:.65rem 1rem;background:var(--ink);color:var(--paper)}
-.foto figcaption a{color:var(--y)}
-.bodky{display:flex;gap:.35rem}
-.bodky i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--paper)}
-.bodky i.on{background:var(--paper)}
-
-.vyber{display:flex;flex-direction:column;gap:clamp(1.1rem,2.6vh,1.7rem);min-height:0;overflow:auto;padding:0 8px 8px 0;margin:0 -8px -8px 0}
-.vyber-hl{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
-.vyber-hl h2{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:clamp(1.8rem,1.5vw + 1rem,3rem);line-height:.95}
-.vyber-hl h2 small{display:block;font-family:var(--body);font-weight:500;text-transform:none;font-size:clamp(1rem,.3vw + .85rem,1.25rem);color:var(--muted);margin-bottom:.4rem;letter-spacing:0}
-.spat{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:999px;padding:.28rem .75rem;white-space:nowrap}
-.spat:hover{background:var(--ink);color:var(--paper)}
-
-/* krok 1: dva oddelené bloky s chipom */
-.blok{display:flex;flex-direction:column;justify-content:center;width:100%;padding:1.6rem 1.3rem 1.2rem;flex:1 1 0;min-height:130px;max-height:340px}
-/* v6: bloky čierne so žltým chipom — bez červenej/zelenej (Matej: „nech to nie je až tak klaunské“).
-   Ikony vozidiel prídu, keď bude hotová kolekcia (kie). */
-.blok.do,.blok.nad{background:var(--ink);color:var(--paper)}
-.blok{--ts:var(--y);box-shadow:6px 6px 0 0 var(--ts)}
-.blok.zatlac:hover,.blok.zatlac:focus-visible{box-shadow:3px 3px 0 0 var(--ts)}
-.blok.zatlac:active{box-shadow:0 0 0 0 var(--ts)}
-.blok .k{position:absolute;top:-14px;left:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;background:var(--y);color:var(--ink);border:var(--ram);border-radius:999px;padding:.12rem .65rem}
-.blok b{display:flex;justify-content:space-between;align-items:center;gap:.9rem;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.8rem,1.4vw + .9rem,3rem);line-height:.95;letter-spacing:.01em;white-space:nowrap}
-.blok b .sip{flex-shrink:0;display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:var(--y);color:var(--ink);font-family:var(--body);font-weight:700;font-size:1.2rem;transition:transform .15s}
-.blok:hover b .sip,.blok:focus-visible b .sip{transform:translateX(4px)}
-/* ikona z kie variant C (biela čiara + žltý akcent), výrez z ikony/kie/variant-C.png — neskôr SVG */
-.blok b .tx{flex:1;min-width:0}
-.blok .ikc{height:clamp(34px,4.8vh,54px);width:clamp(90px,6.8vw,150px);object-fit:contain;object-position:left center;flex-shrink:0;transition:transform .25s;margin-block:-.6rem}
-/* nákladiak má vyšší pomer strán → pri rovnakej výške vychádzal menší; 1,5× výška (Matej) */
-.blok.nad .ikc{height:clamp(51px,7.2vh,81px)}
-.blok:hover .ikc,.blok:focus-visible .ikc{transform:translateX(8px)}
-.blok:hover b,.blok:focus-visible b{color:var(--y)}
-/* vymenovanie vozidiel len pri hover/focus; na dotykových zariadeniach stále */
-.blok small{display:block;font-size:1rem;opacity:0;max-height:0;margin-top:0;overflow:hidden;transition:opacity .2s,max-height .2s,margin-top .2s}
-.blok:hover small,.blok:focus-visible small{opacity:.75;max-height:3em;margin-top:.45rem}
-@media (hover:none){.blok small{opacity:.75;max-height:none;margin-top:.45rem}}
-
-/* krok 2: vozidlá s ikonami */
-.ikony{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.9rem;flex-shrink:0;padding-top:4px}
-.ik{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;padding:1rem .4rem .8rem;min-width:0;text-align:center}
-.ik:hover,.ik:focus-visible{background:var(--y)}
-.ik svg{width:100%;max-width:70px;height:auto;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linejoin:round;stroke-linecap:round}
-.ik span{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.05rem;line-height:1}
-
-
-/* zoznam kontrol */
-.riadky{list-style:none;overflow:hidden;flex-shrink:0}
-.riadky li+li>*{border-top:1.5px dashed var(--ink)}
-.riadky li>*{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem;width:100%;padding:.8rem 1rem;transition:background .12s}
-.riadky li>*:hover,.riadky li>*:focus-visible{background:var(--y);outline-offset:-4px}
-.riadky b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.3rem;line-height:1}
-.riadky small{display:block;font-size:.82rem;color:var(--muted);margin-top:.2rem}
-.riadky .c{font-family:var(--disp);font-weight:800;font-size:1.3rem;white-space:nowrap;text-align:right}
-.stitok{display:inline-block;font-family:var(--mono);font-weight:400;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;background:var(--r);color:var(--paper);border-radius:999px;padding:.16rem .5rem;margin-left:.4rem;vertical-align:middle}
-.pozn{font-size:.82rem;color:var(--muted)}
-.pozn a,.pozn b{color:var(--ink)}
-.pozn a{text-decoration:underline;text-underline-offset:3px}
-
-
-/* ---------- tablet / mobil ---------- */
-/* hamburger: na užšom displeji jediná položka v headeri — stránky, telefón a jazyk v jednom dropdowne */
-.menu{display:none;position:relative}
-.menu summary{list-style:none;display:flex;align-items:center;gap:.5rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:1rem;background:var(--ink);color:var(--paper);border:var(--ram);border-radius:50%;width:44px;height:44px;justify-content:center;cursor:pointer}
-.menu summary::-webkit-details-marker{display:none}
-.menu .ham{width:18px;height:14px;display:grid;align-content:space-between}
-.menu .ham i{height:2.5px;background:currentColor;border-radius:2px;transition:transform .2s,opacity .2s}
-.menu[open] .ham i:nth-child(1){transform:translateY(5.75px) rotate(45deg)}
-.menu[open] .ham i:nth-child(2){opacity:0}
-.menu[open] .ham i:nth-child(3){transform:translateY(-5.75px) rotate(-45deg)}
-/* v13: panel visí spoza žltého pásu (horný okraj schovaný pod ním) a vysunie sa nadol; stránka za ním stmavne */
-.menu{position:static}
-.menu-panel{position:absolute;right:.45rem;top:calc(var(--hb) - 22px);width:min(320px,calc(100vw - 40px));max-height:calc(100dvh - var(--hb) - 40px);overflow-y:auto;background:var(--paper);border:var(--ram);border-radius:0 0 var(--rad) var(--rad);box-shadow:var(--tien);padding:calc(22px + var(--zt) + .2rem) .5rem .5rem;z-index:-2;display:flex;flex-direction:column;gap:.1rem}
-.menu[open] .menu-panel{animation:vysun .32s cubic-bezier(.2,.8,.2,1) both}
-@keyframes vysun{from{transform:translateY(-100%);clip-path:inset(100% -12px -12px -12px)}to{transform:none;clip-path:inset(0 -12px -12px -12px)}}
-.menu[open]>summary::before{content:'';position:fixed;inset:0;z-index:-3;background:rgba(35,31,32,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:stmav .25s ease both;cursor:default}
-@keyframes stmav{from{opacity:0}}
-@media (prefers-reduced-motion:reduce){.menu[open] .menu-panel,.menu[open]>summary::before{animation:none}}
-
-/* v13: hustejšie položky, menu sa zmestí bez scrollu */
-.menu-panel>a{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:1.15rem;line-height:1.1;padding:.38rem .7rem;border-radius:10px}
-.menu-panel>a:hover{background:var(--y)}
-.menu-panel .m-tel{display:flex;justify-content:center;background:var(--ink);color:var(--paper);border-radius:999px;margin:.2rem 0}
-.menu-panel .m-tel:hover{background:var(--ink);color:var(--y)}
-.menu-panel details{border-top:1.5px dashed var(--ink);padding-top:.4rem}
-.menu-panel details summary{all:unset;display:flex;align-items:center;gap:.6rem;padding:.45rem .7rem;cursor:pointer;font-weight:500;border-radius:10px}
-.menu-panel details summary:hover{background:var(--y)}
-.menu-panel details summary .sip{margin-left:auto;width:12px;height:12px;fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
-.menu-panel details[open] summary .sip{transform:rotate(180deg)}
-/* v13: jazyky v menu v dvoch stĺpcoch */
-.menu-panel ul{list-style:none;padding:.2rem 0 0;display:grid;grid-template-columns:1fr 1fr;gap:.15rem}
-.menu-panel li a{display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:10px;font-weight:500;min-width:0}
-.menu-panel li a:hover{background:var(--y)}
-.menu-panel li a.akt{background:var(--ink);color:var(--paper)}
-.menu-panel li small{margin-left:auto;font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.menu-panel li a.akt small{color:var(--y)}
-@media (max-width:1100px){
-  .hl nav,.jazyk,.hl>.tel{display:none}
-  .menu{display:block;margin-left:auto}
-}
-@media (max-width:820px){
-  :root{--gap:12px}
-  /* 21. 10.: hero presne na výšku obrazovky (svh = s lištami prehliadača), zvyšok miesta dostane fotka */
-  .uvod{height:auto;min-height:100svh}
-  .tel{font-size:1rem;padding:.28rem .65rem}
-  .plocha{grid-template-columns:1fr;grid-template-rows:minmax(170px,1fr) auto;gap:16px;padding-bottom:6px}
-  /* v6 mobil: väčšia fotka, zapustená zľava aj sprava */
-  .foto{margin:calc(-1 * (var(--gap) + 10px) - 18px) 14px 0 14px;height:auto;min-height:170px;box-shadow:4px 4px 0 0 var(--ink)}
-  /* 21. 10.: nadpis výberu v 1 riadku */
-  .vyber-hl h2{white-space:nowrap;font-size:min(1.8rem,6.85vw)}
-  .foto figcaption{padding:.4rem .7rem;font-size:.62rem}
-  .hl{--hb:56px;--zt:30px;--zw:128px;--zs:24px;margin:10px 16px 0 10px;padding-right:.45rem}
-  /* logo sa musí zmestiť do zástavky — obmedziť šírkou, nie výškou */
-  .logo{left:8px;width:calc(var(--zw) + var(--zs) * .5 - 14px);top:.4rem;bottom:calc(-1 * var(--zt) + .4rem)}
-  .logo img{width:100%;height:100%;object-fit:contain}
-  .vyber{overflow:visible;margin:0;padding:0}
-  .blok{flex:none;min-height:0}
-  .ik span{font-size:.62rem}
-}
-
-/* =====================================================================
-   v7 — sekcie pod hero (Matej 20. 10.: max 5 sekcií vrátane hero a päty,
-   minimalisticky, animácie pri scrollovaní). Fakty zo stk-web/src/data.
-   ===================================================================== */
-/* v13: +50 px nad nadpismi sekcií */
-.sek{padding:calc(clamp(4rem,9vw,7.5rem) + 50px) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj));max-width:1520px;margin:0 auto}
-.sek-hl{display:flex;justify-content:space-between;align-items:end;gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.8rem,4vw,3rem)}
-.sek-hl .kick{display:block;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
-.sek-hl h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.2rem,4.2vw,4.2rem);line-height:.9;letter-spacing:.005em}
-.sek-hl p{max-width:34ch;color:var(--muted);font-size:1.02rem}
-.btn{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:1.05rem;padding:.6rem 1.1rem;border:var(--ram);border-radius:999px;background:var(--ink);color:var(--paper);box-shadow:4px 4px 0 0 var(--y)}
-.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 0 var(--y)}
-.btn.sv{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 0 var(--ink)}
-.btn.sv:hover{box-shadow:2px 2px 0 0 var(--ink)}
-
-/* --- animácie: .ani dostane .vid pri vstupe do obrazovky (IntersectionObserver), raz --- */
-.ani{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 90ms)}
-.ani.vid{opacity:1;transform:none}
-/* nálepka: dopadne zhora a tieň sa „vypáli“ z 0 na 6 px */
-.ani.nal{transform:translate(-6px,-22px) rotate(-1.2deg);box-shadow:0 0 0 0 var(--ink)}
-.ani.nal.vid{transform:none;box-shadow:var(--tien);transition:opacity .35s ease,transform .5s cubic-bezier(.3,1.5,.5,1),box-shadow .25s ease;transition-delay:calc(var(--i,0) * 110ms),calc(var(--i,0) * 110ms),calc(var(--i,0) * 110ms + .38s)}
-@media (prefers-reduced-motion:reduce){.ani,.ani.nal{opacity:1;transform:none;transition:none}.ani.nal{box-shadow:var(--tien)}}
-
-/* --- 2 · služby: 6 dlaždíc --- */
-/* v8: menšia medzera pod hero, nadpis v 1 riadku a popis pod ním */
-/* v13: 50 px pod CTA Nákladné aj na PC */
-#sluzby{padding-top:50px}
-#sluzby .sek-hl{flex-direction:column;align-items:center;text-align:center;gap:.8rem}
-.dlazdice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1.2rem,2.2vw,2rem)}
-/* v8: dlaždice vo farbách služieb (Matej: TK/EK červená, KO modrá, ADR oranžová, tacho ružová, prihlasovanie iná modrá, výzdvih tyrkys) */
-.dl{display:flex;flex-direction:column;gap:.55rem;padding:1.5rem 1.4rem 1.3rem;background:var(--f);color:var(--ink);transition:filter .15s}
-.dl.biely{color:var(--paper)}
-.dl:hover{filter:saturate(1.15) brightness(1.04)}
-.dl .zn{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:auto;padding-top:.4rem}
-.dl .zn span.far{color:var(--paper)}
-.dl .zn span{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.85rem;padding:.22rem .7rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);box-shadow:2px 2px 0 0 var(--ink)}
-.dl .ik3{height:64px;display:flex;align-items:flex-end;margin-bottom:.4rem}
-.dl .ik3 img,.dl .ik3 svg{height:100%;width:auto;max-width:100%;object-fit:contain;object-position:left bottom}
-.dl .ik3 svg{stroke:var(--ink);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.dl .ik3 svg .zl{fill:var(--y)}
-.dl h3{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.5rem,1.4vw + .8rem,2rem);line-height:.95;display:flex;justify-content:space-between;gap:.5rem}
-.dl h3 span{transition:transform .2s}
-.dl:hover h3 span{transform:translateX(5px)}
-/* v13: popis dlaždice = 2 riadky na každej šírke */
-.dl p{opacity:.85;font-size:.98rem;line-height:1.5;min-height:3em}
-@media (min-width:1001px) and (max-width:1200px){.dl p{font-size:.9rem}}
-
-/* --- 3 · ako to prebieha + ceny --- */
-.prebieha{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(2rem,5vw,5rem);align-items:start}
-.kroky{position:relative;list-style:none;padding-left:clamp(64px,6vw,84px)}
-.kroky .cesta{position:absolute;left:clamp(20px,2vw,28px);top:10px;height:var(--cesta-h,100%);width:24px;overflow:visible}
-.kroky .cesta line{stroke:var(--ink);stroke-width:4;stroke-linecap:round}
-.kroky .cesta .pod{stroke:#E4E0D6;stroke-dasharray:2 12}
-/* v8: bez auta; čiara končí pri krúžku 03 (výšku nastaví JS) */
-.kroky .moznosti{list-style:none;display:flex;flex-direction:column;gap:.55rem;color:var(--muted);max-width:44ch}
-.kroky .moznosti li{position:relative;padding-left:1.1rem}
-.kroky .moznosti li::before{content:'';position:absolute;left:0;top:.6em;width:7px;height:7px;border-radius:50%;background:var(--ink)}
-.kroky .moznosti strong{color:var(--ink)}
-/* vysvetlivka: len pri hover / focus / ťuknutí */
-.vysv{position:relative;display:inline-block}
-.vysv button{font:inherit;color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--y);cursor:help}
-.vysv .bub{position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,-6px);width:min(280px,80vw);padding:.7rem .9rem;background:var(--ink);color:var(--paper);border-radius:12px;box-shadow:4px 4px 0 0 var(--y);font-size:.9rem;line-height:1.35;opacity:0;visibility:hidden;transition:opacity .15s,transform .15s,visibility .15s;z-index:5}
-.vysv .bub::after{content:'';position:absolute;left:50%;bottom:100%;margin-left:-7px;border:7px solid transparent;border-bottom-color:var(--ink)}
-.vysv:hover .bub,.vysv:focus-within .bub,.vysv.otv .bub{opacity:1;visibility:visible;transform:translate(-50%,0)}
-.kroky>li{position:relative;padding-bottom:clamp(2.2rem,4.5vw,3.4rem)}
-.kroky>li:last-child{padding-bottom:0}
-.kroky .c{position:absolute;left:calc(-1 * clamp(64px,6vw,84px) + clamp(12px,1.2vw,20px));top:-.15rem;width:40px;height:40px;border-radius:50%;background:var(--paper);border:var(--ram);display:grid;place-items:center;font-family:var(--mono);font-size:.8rem;font-weight:500;transition:background .3s}
-.kroky>li.vid .c{background:var(--y)}
-.kroky b{display:block;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.5rem,1.3vw + .9rem,2.1rem);line-height:.95;margin-bottom:.4rem}
-.kroky p{color:var(--muted);max-width:40ch}
-/* v8: cenník žltý */
-.ceny{padding:1.6rem 1.5rem 1.4rem;background:var(--y)}
-.ceny h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:.8rem;color:#4A4436}
-.ceny ul{list-style:none}
-.ceny li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:1rem;padding:.75rem 0}
-.ceny li+li{border-top:1.5px dashed var(--ink)}
-.ceny li span{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.25rem}
-.ceny li small{display:block;font-family:var(--body);font-weight:400;text-transform:none;font-size:.82rem;color:#4A4436}
-.ceny li b{font-family:var(--disp);font-weight:900;font-size:clamp(2rem,2.2vw + .8rem,2.8rem);line-height:1;font-variant-numeric:tabular-nums}
-.ceny .od{font-size:.5em;margin-right:.2em;font-weight:700;color:#4A4436}
-.ceny .pata-c{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:var(--ram)}
-.ceny .pata-c p{font-size:.82rem;color:#4A4436}
-
-/* --- 4 · google recenzie: tabuľka vľavo, text vpravo nižšie (cik-cak k sekcii 03) --- */
-.rebricek{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(2rem,5vw,5rem);align-items:start}
-.tab{padding:1.6rem 1.4rem 1rem;position:relative}
-.glogo{width:1.6rem;height:1.6rem;flex-shrink:0}
-.tab-hl{display:flex;align-items:center;gap:.7rem;padding:0 .6rem 1rem}
-.tab-hl span{font-size:.82rem;color:var(--muted);line-height:1.25}
-.tab-hl b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.25rem;color:var(--ink);letter-spacing:.01em}
-/* pečať vpravo nad číslom */
-.pecat{position:relative;width:clamp(190px,17vw,240px);aspect-ratio:1;filter:drop-shadow(6px 6px 0 var(--ink));transform:rotate(-8deg)}
-.pecat-v{width:100%;height:100%;overflow:visible}
-.pecat .zub{fill:url(#zlato);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}
-.pecat .kr1{fill:url(#zlato2);stroke:var(--ink);stroke-width:1.5;stroke-dasharray:3 4}
-.pecat .kr2{fill:var(--paper);stroke:var(--ink);stroke-width:3}
-.pecat text{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;font-weight:700;fill:#3B2A08}
-.pecat .tocit{transform-origin:110px 110px;animation:tocit 26s linear infinite}
-.pecat .stred{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.pecat .stred .glogo{width:21%;height:auto;margin-bottom:.15rem}
-.pecat .stred b{font-family:var(--disp);font-weight:900;font-size:clamp(2.4rem,2.6vw,3.3rem);line-height:.85}
-.rec-text.vid .pecat{animation:pecat-in .7s cubic-bezier(.3,1.5,.5,1) both}
-@keyframes pecat-in{from{transform:scale(1.5) rotate(-30deg);opacity:0}}
-@keyframes tocit{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.pecat .tocit,.rec-text.vid .pecat{animation:none}}
-.tab ol{list-style:none}
-.tab li{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;align-items:center;gap:.25rem .8rem;padding:.6rem .6rem;border-radius:12px}
-.tab li+li{border-top:1.5px dashed #D9D4C6}
-.tab li.skryt{display:none}
-.tab.cela li.skryt{display:grid;animation:vyjst .35s ease both;animation-delay:calc((var(--i,0) - 5) * 50ms)}
-@keyframes vyjst{from{opacity:0;transform:translateY(-6px)}}
-.tab li .p{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
-.tab li .n{min-width:0}
-.tab li .n b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#4A4436}
-.tab li .n small{font-size:.76rem;color:var(--muted)}
-.tab li .h{font-family:var(--disp);font-weight:800;font-size:1rem;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;color:#4A4436}
-.tab li .h i{font-style:normal;color:#F2B400;margin-right:.25rem}
-/* v13: hodnotenie pri názve, počet recenzií samostatne vpravo */
-.tab li .n b em{font-style:normal;font-weight:700;font-size:.82em;margin-left:.5em;color:var(--muted);letter-spacing:.02em}
-.tab li .n b em i{font-style:normal;color:#F2B400;margin-right:.15em}
-.tab li.my .n b em{color:var(--ink)}
-.tab li.my .n b em i{color:var(--ink)}
-.tab li .h small{display:block;font-family:var(--body);font-weight:400;font-size:.7rem;color:var(--muted);text-align:right;line-height:1.1}
-.tab li.my .h small{color:var(--ink);opacity:.7}
-/* pruh = počet recenzií voči 1. miestu */
-.tab li .pruh{grid-column:2/-1;height:6px;border-radius:99px;background:#EEEAE0;overflow:hidden}
-.tab li .pruh i{display:block;height:100%;width:0;background:#B9B2A2;border-radius:inherit;transition:width 1.1s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 70ms + .3s)}
-.tab.vid li .pruh i{width:var(--w)}
-/* náš riadok: väčší, žltý, so zeleným štítkom „To sme my“ */
-.tab li.my{position:relative;background:var(--y);color:var(--ink);border:var(--ram);padding:1.1rem 1rem 1rem;margin:.3rem -.5rem .6rem;box-shadow:5px 5px 0 0 var(--ink);grid-template-columns:2.6rem minmax(0,1fr) auto}
-.tab li.my+li{border-top-color:transparent}
-.tab li.my .p{font-family:var(--disp);font-weight:900;font-size:1.9rem;color:var(--ink);line-height:1}
-.tab li.my .n b{color:var(--ink);font-size:clamp(1.6rem,1.6vw + .8rem,2.2rem);font-weight:900}
-.tab li.my .n small{color:var(--ink);opacity:.7;font-size:.85rem}
-.tab li.my .h{color:var(--ink);font-size:clamp(1.4rem,1.2vw + .8rem,1.9rem)}
-.tab li.my .h i{color:var(--ink)}
-.tab li.my .pruh{height:10px;background:rgba(35,31,32,.14)}
-.tab li.my .pruh i{background:var(--ink)}
-.tab li.my .sme{position:absolute;left:-12px;top:-15px;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;background:var(--g);color:var(--paper);border:2.5px solid var(--ink);border-radius:999px;padding:.15rem .6rem;transform:rotate(-6deg)}
-.viac{display:block;margin:.6rem auto 0;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:.4rem 1rem;border:2.5px solid var(--ink);border-radius:999px;box-shadow:3px 3px 0 0 var(--ink)}
-.viac:hover{background:var(--y)}
-.viac span{display:inline-block;transition:transform .2s}
-.tab.cela .viac span{transform:rotate(180deg)}
-.tab-zdroj{font-size:.72rem;color:var(--muted);padding:.8rem .6rem 0}
-.rec-text{margin-top:clamp(2rem,7vw,6rem);display:flex;flex-direction:column;gap:1.6rem;align-items:center;text-align:center}
-.velke-c{display:flex;align-items:center;gap:1rem;text-align:left}
-.velke-c b{font-family:var(--disp);font-weight:900;font-size:clamp(4.5rem,7vw,7.5rem);line-height:.85;font-variant-numeric:tabular-nums}
-.velke-c>span{font-size:1.05rem;line-height:1.4;white-space:nowrap}
-.velke-c .hv{color:#F2B400;letter-spacing:.08em}
-/* CTA v štýle Google tlačidla (biele, sivý obrys, G vľavo) */
-.gbtn{display:inline-flex;align-items:center;gap:.75rem;padding:.75rem 1.5rem .75rem 1.1rem;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:999px;font-family:Roboto,'Google Sans',Arial,sans-serif;font-weight:500;font-size:1.05rem;letter-spacing:.01em;box-shadow:0 1px 2px rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15);transition:box-shadow .2s,background .2s}
-.gbtn:hover{background:#f8faff;box-shadow:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15)}
-.gbtn:focus-visible{outline:2px solid #1a73e8;outline-offset:2px}
-.gbtn .gb-g{width:1.35rem;height:1.35rem}
-
-/* --- rotujúce recenzie --- */
-.karusel{margin-top:clamp(3rem,6vw,5rem)}
-.kar-hl{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.2rem}
-.kar-hl b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.6rem,1.6vw + .9rem,2.4rem);line-height:1}
-.rk-pas{overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;padding:6px 0 14px;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
-/* plynulý nekonečný pás: obsah je 2×, posun o polovicu */
-.rk-pas::-webkit-scrollbar{display:none}
-/* v13: pás posúva JS (scrollLeft), CSS animácia veľmi širokého pásu na iPhone stála */
-.rk-beh{display:flex;align-items:flex-start;width:max-content}
-.rk{--rk:var(--ink);flex:0 0 clamp(290px,27vw,390px);margin-right:clamp(1rem,2vw,1.6rem);display:flex;flex-direction:column;gap:.8rem;padding:1.3rem 1.3rem 1.1rem;background:var(--paper);border:3px solid var(--rk);border-radius:var(--rad);box-shadow:var(--tien)}
-.rk-o{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.8rem}
-.rk-o img{width:52px;height:52px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover;background:#eee}
-.rk-o b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rk-o small{font-size:.8rem;color:var(--muted)}
-.rk-g{width:1.5rem;height:1.5rem}
-.rk-hv{color:#E8A900;letter-spacing:.12em;font-size:1.05rem;line-height:1}
-.rk p{font-size:.96rem;line-height:1.5;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.rk.cela p{-webkit-line-clamp:unset;display:block}
-.rk-p{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding-top:.7rem;border-top:1.5px dashed #D9D4C6;font-size:.78rem;color:var(--muted)}
-.rk-p button{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:underline;text-underline-offset:3px;color:var(--ink)}
-@media (max-width:620px){.rk{flex-basis:80vw}}
-
-/* --- optimus pri vjazde --- */
-.optimus{position:relative;overflow:hidden;padding:0;height:clamp(300px,24vw,380px);background:var(--ink)}
-.optimus img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 35%;opacity:0;transition:opacity .6s ease}
-.optimus img.on{opacity:1}
-.optimus img:first-child{object-position:30% 30%}
-.op-ov{position:absolute;right:clamp(10px,1.4vw,16px);bottom:clamp(10px,1.4vw,16px);display:flex;align-items:center;gap:.5rem;background:var(--paper);border:2.5px solid var(--ink);border-radius:999px;padding:.25rem;box-shadow:3px 3px 0 0 var(--ink);z-index:2}
-.op-ov button{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:50%;font-weight:700;font-size:1.05rem;line-height:1}
-.op-ov button:hover{background:var(--y)}
-.op-ov span{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;min-width:3.4ch;text-align:center}
-.optimus figcaption{z-index:2;transition:opacity .3s,transform .3s}
-.optimus:not(.prvy) figcaption{opacity:0;transform:rotate(1.5deg) translateY(-8px);pointer-events:none}
-.optimus figcaption{position:absolute;right:clamp(12px,1.6vw,20px);top:clamp(12px,1.6vw,20px);max-width:min(250px,60%);background:var(--y);border:var(--ram);border-radius:12px;box-shadow:4px 4px 0 0 var(--ink);padding:.6rem .8rem;transform:rotate(1.5deg)}
-.optimus figcaption b{display:block;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.1rem,.8vw + .7rem,1.4rem);line-height:1}
-.optimus figcaption span{font-size:.8rem;line-height:1.3;display:block;margin-top:.2rem}
-/* v13: bublina ostáva aj na mobile, len menšia */
-@media (max-width:620px){.optimus{aspect-ratio:4/3;flex:none}.optimus figcaption{max-width:min(210px,68%);padding:.45rem .65rem;box-shadow:3px 3px 0 0 var(--ink)}.optimus figcaption span{font-size:.72rem}}
-
-/* --- 5 · kde nás nájdete --- */
-.kde-l{display:flex;flex-direction:column;gap:clamp(1.5rem,3vw,2.5rem);min-width:0}
-.faq h3{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.5rem,1.4vw + .8rem,2.1rem);line-height:1;margin-bottom:.9rem}
-.faq details{border:var(--ram);border-radius:14px;background:var(--paper);margin-bottom:.7rem;box-shadow:4px 4px 0 0 var(--ink);transition:background .15s}
-.faq details[open]{background:#FFF7C2}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.15rem;letter-spacing:.01em}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:'+';flex-shrink:0;display:grid;place-items:center;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--y);border:2.5px solid var(--ink);font-family:var(--body);font-size:1.2rem;line-height:1;transition:transform .2s}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq details p{padding:0 1.1rem 1rem;color:#4A4436;line-height:1.5;max-width:62ch}
-/* v12: mapa vlastnej výšky, pravý stĺpec začína nižšie a končí nižšie (cik-cak ako pri cenách) */
-.kde{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(1.5rem,3vw,2.5rem);align-items:start}
-.mapa{position:relative;overflow:hidden;height:var(--mapa-h,clamp(360px,30vw,460px));padding:0;background:#E9E5DA}
-.mapa iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(.85) contrast(1.05)}
-.mapa .pin{position:absolute;left:50%;top:calc(50% - 76px);width:54px;margin:-62px 0 0 -27px;filter:drop-shadow(3px 3px 0 var(--ink));pointer-events:none}
-.mapa.vid .pin{animation:pin .7s cubic-bezier(.3,1.6,.5,1) .3s both}
-@keyframes pin{from{transform:translateY(-140px);opacity:0}60%{opacity:1}}
-.mapa .na-mapu{position:absolute;left:14px;bottom:14px}
-.info{display:flex;flex-direction:column;gap:1.4rem;margin-top:clamp(2.5rem,8vw,7rem)}
-.adresa b{display:block;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.8rem,2vw + .8rem,2.6rem);line-height:.95}
-.adresa span{color:var(--muted)}
-.hodiny{list-style:none;font-size:1rem}
-.hodiny li{display:flex;justify-content:space-between;gap:1rem;padding:.45rem .7rem;border-radius:10px}
-.hodiny li.dnes{background:var(--g);color:var(--paper);border:2.5px solid var(--ink);box-shadow:3px 3px 0 0 var(--ink)}
-.hodiny li.dnes span:last-child{color:var(--paper);font-weight:700}
-.hodiny li span:last-child{font-family:var(--mono);font-size:.9rem}
-.stav{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
-.stav i{width:10px;height:10px;border-radius:50%;background:var(--g);box-shadow:0 0 0 3px rgba(91,186,71,.25)}
-.stav.zat i{background:var(--r);box-shadow:0 0 0 3px rgba(225,33,40,.25)}
-.preco{display:flex;flex-wrap:wrap;gap:.55rem}
-.preco span{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem;padding:.3rem .8rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper)}
-.preco span.ani{transform:translateX(30px)}
-.preco span.ani.vid{transform:none}
-
-/* --- 5 · päta --- */
-.pata{margin-top:clamp(4.5rem,10vw,8rem);background:var(--y);color:var(--ink);border-top:var(--ram);overflow:hidden}
-.pata-in{padding:clamp(2.5rem,5vw,4rem) calc(var(--gap) + 12px + var(--okraj)) 1.5rem;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:clamp(1.2rem,3vw,2.5rem);max-width:1520px;margin:0 auto}
-/* stĺpce ako karty na žltom */
-.pk{display:flex;flex-direction:column;align-items:flex-start;gap:.55rem;background:var(--paper);border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);padding:1.4rem 1.4rem 1.3rem}
-.pk .velke{font-family:var(--disp);font-weight:900;font-size:clamp(1.6rem,1.4vw + .9rem,2.2rem);line-height:1;letter-spacing:.01em}
-.pk .velke.m{font-size:clamp(1.3rem,1vw + .8rem,1.7rem)}
-.pk .velke small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;vertical-align:middle;margin-left:.3rem;color:var(--muted)}
-.pk>span{color:var(--muted);line-height:1.4}
-/* v13: symbol z loga (kruh + vozidlo, bez nápisu) priehľadne vpravo, aby karta nebola prázdna */
-.pk-kont{position:relative;overflow:hidden}
-.pk-kont>*:not(.pk-symbol){position:relative;z-index:1}
-/* v13: symbol na stred výšky, odseknutý pravým okrajom karty (posledný článok oblúka nevidno); veľkosť dorovná JS, aby bol ≥10 px od textu */
-.pk-symbol{position:absolute;right:0;top:50%;height:80%;width:auto;aspect-ratio:870 / 960;transform:translate(calc(19.5% + 45px),-50%);opacity:.22;pointer-events:none}
-@media (min-width:1001px){.pk-symbol{transform:translate(calc(19.5% + 55px),-50%)}}  /* PC: o 10 px ďalej (Matej) */
-.soc{display:flex;gap:.55rem;margin-top:auto;padding-top:.6rem}
-.soc a{display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:50%;background:var(--ink);color:var(--paper);transition:transform .15s,background .15s}
-.soc a:hover{background:var(--y);color:var(--ink);transform:translateY(-2px)}
-.soc svg{width:1.25rem;height:1.25rem;fill:currentColor}
-.ph{list-style:none;width:100%}
-.ph li{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0}
-.ph li+li{border-top:1.5px dashed #D9D4C6}
-.ph b{font-family:var(--mono);font-weight:500;font-size:.92rem}
-.pcta .btn,.pcta .gbtn,.pcta .stiah{width:100%;justify-content:center}
-.pcta .gbtn{padding-block:.65rem}
-.stiah{display:flex;align-items:center;gap:.7rem;padding:.55rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:var(--y);transition:transform .12s,box-shadow .12s;box-shadow:3px 3px 0 0 var(--ink)}
-.stiah:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}
-.stiah svg{width:1.3rem;height:1.3rem;flex-shrink:0}
-.stiah span{display:flex;flex-direction:column;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.03em;line-height:1.05;flex:1}
-.stiah small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.1em;color:#4A4436}
-.pata-spod nav{display:flex;gap:1.2rem;flex-wrap:wrap}
-.pata-spod nav a{text-decoration:underline;text-underline-offset:3px}
-.pata-spod i{font-style:normal;margin:0 .4rem;opacity:.5}
-/* logo cez celú šírku, vidno ho len po stred riadku STK (orez cez výšku boxu) */
-/* v12: logo o 25 % menšie (75 % šírky), na stred */
-/* v13: rez presne v strede výšky písmen STK */
-.pata-logo{aspect-ratio:2126 / 866;width:75%;margin:clamp(1rem,3vw,2.5rem) auto 0;overflow:hidden;position:relative}
-.pata-logo img{position:absolute;left:0;top:0;width:100%;height:auto;display:block}
-.pata-logo.vid img{animation:logo-vyjst 1s cubic-bezier(.2,.8,.2,1) both}
-@keyframes logo-vyjst{from{transform:translateY(25%);opacity:0}}
-@media (prefers-reduced-motion:reduce){.pata-logo.vid img{animation:none}}
-.pata-in h4{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#5C5320;margin-bottom:.8rem}
-.pata-spod{grid-column:1/-1;display:flex;justify-content:space-between;gap:.8rem 1.5rem;flex-wrap:wrap;border-top:1.5px solid rgba(35,31,32,.25);padding-top:1.2rem;margin-top:.6rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#3B3517}
-.tbd2{outline:1px dashed currentColor;outline-offset:3px;border-radius:4px}
-
-@media (max-width:1000px){
-  .dlazdice{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .prebieha,.kde,.rebricek{grid-template-columns:minmax(0,1fr)}
-  .info{margin-top:0}
-  .rec-text{margin-top:0}
-
-  .pata-in{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media (max-width:620px){
-  .dlazdice{grid-template-columns:1fr}
-  .pata-in{grid-template-columns:1fr}
-  .mapa{min-height:300px}
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://stk.digobraz.sk/">
+<meta name="theme-color" content="#FFE600">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="sk_SK">
+<meta property="og:site_name" content="Easy Check STK Trnava">
+<meta property="og:title" content="STK Trnava — technická a emisná kontrola | Easy Check">
+<meta property="og:description" content="STK, emisná kontrola a kontrola originality v Trnave. Po–Pia 07–20, So 07–13, termín online za pol minúty. Osobné, nákladné vozidlá aj flotily.">
+<meta property="og:url" content="https://stk.digobraz.sk/">
+<meta property="og:image" content="https://stk.digobraz.sk/foto/og-uvod.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" href="foto/img_7299.webp" fetchpriority="high" imagesrcset="foto/img_7299-360w.webp 360w, foto/img_7299-480w.webp 480w, foto/img_7299-640w.webp 640w, foto/img_7299-720w.webp 720w, foto/img_7299-960w.webp 960w, foto/img_7299.webp 1350w" imagesizes="(max-width: 900px) 92vw, 60vw">
+<link rel="preload" as="font" type="font/woff2" href="/zaklad/fonty/dm-sans-var.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/zaklad/fonty/saira-condensed-800.woff2" crossorigin>
+<!-- Search Console: overenie vlastníctva easycheck.sk, prenesené zo starého webu (neškodné aj na teste) -->
+<meta name="google-site-verification" content="J2XU1UsWBbqCW6kMBKFd5UAymDEH_gODdxzsQVySHKg">
+<title>STK Trnava — technická a emisná kontrola | Easy Check</title>
+<meta name="description" content="STK, emisná kontrola a kontrola originality v Trnave. Po–Pia 07–20, So 07–13, termín online za pol minúty. Osobné, nákladné vozidlá aj flotily.">
+<style>@font-face{font-family:Saira Condensed;font-style:normal;font-weight:600;font-display:swap;src:url(/zaklad/fonty/saira-condensed-600.woff2) format("woff2")}@font-face{font-family:Saira Condensed;font-style:normal;font-weight:700;font-display:swap;src:url(/zaklad/fonty/saira-condensed-700.woff2) format("woff2")}@font-face{font-family:Saira Condensed;font-style:normal;font-weight:800;font-display:swap;src:url(/zaklad/fonty/saira-condensed-800.woff2) format("woff2")}@font-face{font-family:Saira Condensed;font-style:normal;font-weight:900;font-display:swap;src:url(/zaklad/fonty/saira-condensed-900.woff2) format("woff2")}@font-face{font-family:DM Sans;font-style:normal;font-weight:400 700;font-display:swap;src:url(/zaklad/fonty/dm-sans-var.woff2) format("woff2")}@font-face{font-family:IBM Plex Mono;font-style:normal;font-weight:400;font-display:swap;src:url(/zaklad/fonty/ibm-plex-mono-400.woff2) format("woff2")}@font-face{font-family:IBM Plex Mono;font-style:normal;font-weight:500;font-display:swap;src:url(/zaklad/fonty/ibm-plex-mono-500.woff2) format("woff2")}</style>
+<style>:root{--y:#FFE600;--r:#E12128;--g:#5BBA47;--c:#18B6E4;--ink:#231F20;--paper:#FFFDF5;--muted:#6E6A63;--disp:"Saira Condensed","Arial Narrow",sans-serif;--body:"DM Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;--ram:3px solid var(--ink);--rad:16px;--tien:6px 6px 0 0 var(--ink);--gap:clamp(12px,1.4vw,20px);--okraj:clamp(0px,6vw - 30px,90px)}*{box-sizing:border-box;margin:0;padding:0}html{-webkit-text-size-adjust:100%}body{font-family:var(--body);color:var(--ink);background:var(--paper)}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}:focus-visible{outline:3px solid var(--c);outline-offset:3px}.slab{border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);position:relative;background:var(--paper)}.perf:before{content:"";position:absolute;inset:5px;border:1.5px dashed currentColor;border-radius:11px;pointer-events:none;opacity:.5}.zatlac{transition:transform .1s,box-shadow .1s}.zatlac:hover,.zatlac:focus-visible{transform:translate(3px,3px);box-shadow:3px 3px 0 0 var(--ink)}.zatlac:active{transform:translate(6px,6px);box-shadow:0 0 0 0 var(--ink)}html{touch-action:pan-x pan-y}html,body{overflow-x:clip}.uvod{height:100vh;height:100dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr);overflow:hidden}.bez{overflow:hidden;white-space:nowrap}.bez-in{display:inline-flex;animation:bez 42s linear infinite}.bez:hover .bez-in{animation-play-state:paused}@keyframes bez{to{transform:translate(-50%)}}@media (prefers-reduced-motion:reduce){.bez-in{animation:none}}.pas{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;height:37px}.pas-in{display:flex;align-items:center;width:max-content;padding:.4rem 0;animation:bez 52s linear infinite reverse}.pas-in>*{display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap}.pas-in>*{margin-right:2.4rem}.pas:hover .pas-in{animation-play-state:paused}.pas .tbd{outline:1px dashed var(--y);outline-offset:3px;border-radius:4px}.pas a:hover{color:var(--y)}.pas .bod{width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 0 3px #5bba4740}.pas .bod.zat{background:var(--r);box-shadow:0 0 0 3px #e1212840}.pas .y{color:var(--y)}.pas .dim{opacity:.55}.pas .pp{font-family:var(--disp);font-weight:700;font-size:.88rem;letter-spacing:.05em;background:var(--y);color:var(--ink);border-radius:999px;padding:.08rem .7rem}.pas a.pp:hover{background:var(--paper);color:var(--ink)}.hl{--hb:84px;--zt:54px;--zw:248px;--zs:40px;position:relative;z-index:5;height:var(--hb);display:flex;align-items:center;gap:var(--gap);padding:0 .7rem 0 calc(var(--zw) + var(--zs));margin:calc(var(--gap) - 2px) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}.hl-tvar{position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:-1}.hl-tvar .tien{fill:var(--ink)}.hl-tvar .plast{fill:var(--y);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}.logo{position:absolute;left:0;width:calc(var(--zw) + var(--zs) * .5);top:.55rem;bottom:calc(-1 * var(--zt) + .55rem);display:flex;align-items:center;justify-content:center}.logo img{height:100%;width:auto;display:block}.hl nav{display:flex;gap:.2rem;margin-left:auto}.hl nav a{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:1rem;padding:.45rem .95rem;border-radius:999px;border:2px solid transparent}.hl nav a:hover{border-color:var(--ink)}.jazyk{position:relative}.jazyk summary{list-style:none;display:flex;align-items:center;gap:.35rem;padding:.32rem .5rem .32rem .38rem;border:var(--ram);border-radius:999px;background:var(--paper);cursor:pointer;box-shadow:3px 3px 0 0 var(--ink)}.jazyk summary::-webkit-details-marker{display:none}.jazyk summary:hover{background:var(--ink)}.jazyk summary:hover .sip{stroke:var(--paper)}.jazyk .sip{width:12px;height:12px;fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}.jazyk[open] .sip{transform:rotate(180deg)}.vlajka{width:30px;height:20px;border-radius:5px;outline:1.5px solid var(--ink);display:block;flex-shrink:0;overflow:hidden}.jazyk ul{position:absolute;right:0;top:calc(100% + 12px);list-style:none;min-width:230px;background:var(--paper);border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);padding:.4rem;z-index:30}.jazyk li a{display:flex;align-items:center;gap:.65rem;padding:.5rem .6rem;border-radius:10px;font-weight:500}.jazyk li a:hover{background:var(--y)}.jazyk li a.akt{background:var(--ink);color:var(--paper)}.jazyk li small{margin-left:auto;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.jazyk li a.akt small{color:var(--y)}.tel{font-family:var(--disp);font-weight:800;font-size:1.15rem;letter-spacing:.02em;white-space:nowrap;background:var(--ink);color:var(--paper);border:var(--ram);border-radius:999px;padding:.3rem .8rem;box-shadow:3px 3px 0 0 var(--paper)}.plocha>*{min-width:0}.plocha{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,3fr);gap:calc(var(--gap) + 6px);min-height:0;padding:calc(var(--gap) + 10px) calc(var(--gap) + 6px + var(--okraj)) calc(var(--gap) + 8px) calc(var(--gap) + var(--okraj))}.foto{overflow:hidden;margin:calc(-1 * (var(--gap) + 10px) - 24px) 0 0 clamp(18px,2vw,34px);border-top-left-radius:0;border-top-right-radius:0;background:var(--ink);display:flex;flex-direction:column}.foto .obr{position:relative;flex:1;min-height:0}.foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease}.foto img.on{opacity:1}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.foto figcaption{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:.65rem 1rem;background:var(--ink);color:var(--paper)}.foto figcaption a{color:var(--y);text-decoration:underline;text-underline-offset:3px}.bodky{display:flex;gap:.35rem}.bodky i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--paper)}.bodky i.on{background:var(--paper)}.vyber{display:flex;flex-direction:column;gap:clamp(1.1rem,2.6vh,1.7rem);min-height:0;overflow:auto;padding:0 8px 8px 0;margin:0 -8px -8px 0}.vyber-hl{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}.vyber-hl h2{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:clamp(1.8rem,1.5vw + 1rem,3rem);line-height:.95}.vyber-hl h2 small{display:block;font-family:var(--body);font-weight:500;text-transform:none;font-size:clamp(1rem,.3vw + .85rem,1.25rem);color:var(--muted);margin-bottom:.4rem;letter-spacing:0}.spat{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:999px;padding:.28rem .75rem;white-space:nowrap}.spat:hover{background:var(--ink);color:var(--paper)}.blok{display:flex;flex-direction:column;justify-content:center;width:100%;padding:1.6rem 1.3rem 1.2rem;flex:1 1 0;min-height:130px;max-height:340px}.blok.do,.blok.nad{background:var(--ink);color:var(--paper)}.blok{--ts:var(--y);box-shadow:6px 6px 0 0 var(--ts)}.blok.zatlac:hover,.blok.zatlac:focus-visible{box-shadow:3px 3px 0 0 var(--ts)}.blok.zatlac:active{box-shadow:0 0 0 0 var(--ts)}.blok .k{position:absolute;top:-14px;left:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;background:var(--y);color:var(--ink);border:var(--ram);border-radius:999px;padding:.12rem .65rem}.blok b{display:flex;justify-content:space-between;align-items:center;gap:.9rem;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.8rem,1.4vw + .9rem,3rem);line-height:.95;letter-spacing:.01em;white-space:nowrap}.blok b .sip{flex-shrink:0;display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:var(--y);color:var(--ink);font-family:var(--body);font-weight:700;font-size:1.2rem;transition:transform .15s}.blok:hover b .sip,.blok:focus-visible b .sip{transform:translate(4px)}.blok b .tx{flex:1;min-width:0}.blok .ikc{height:clamp(34px,4.8vh,54px);width:clamp(90px,6.8vw,150px);object-fit:contain;object-position:left center;flex-shrink:0;transition:transform .25s;margin-block:-.6rem}.blok.nad .ikc{height:clamp(51px,7.2vh,81px)}.blok:hover .ikc,.blok:focus-visible .ikc{transform:translate(8px)}.blok:hover b,.blok:focus-visible b{color:var(--y)}.blok small{display:block;font-size:1rem;opacity:0;max-height:0;margin-top:0;overflow:hidden;transition:opacity .2s,max-height .2s,margin-top .2s}.blok:hover small,.blok:focus-visible small{opacity:.75;max-height:3em;margin-top:.45rem}@media (hover:none){.blok small{opacity:.75;max-height:none;margin-top:.45rem}}.ikony{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.9rem;flex-shrink:0;padding-top:4px}.ik{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;padding:1rem .4rem .8rem;min-width:0;text-align:center}.ik:hover,.ik:focus-visible{background:var(--y)}.ik svg{width:100%;max-width:70px;height:auto;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linejoin:round;stroke-linecap:round}.ik span{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.05rem;line-height:1}.riadky{list-style:none;overflow:hidden;flex-shrink:0}.riadky li+li>*{border-top:1.5px dashed var(--ink)}.riadky li>*{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem;width:100%;padding:.8rem 1rem;transition:background .12s}.riadky li>*:hover,.riadky li>*:focus-visible{background:var(--y);outline-offset:-4px}.riadky b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.3rem;line-height:1}.riadky small{display:block;font-size:.82rem;color:var(--muted);margin-top:.2rem}.riadky .c{font-family:var(--disp);font-weight:800;font-size:1.3rem;white-space:nowrap;text-align:right}.stitok{display:inline-block;font-family:var(--mono);font-weight:400;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;background:var(--r);color:var(--paper);border-radius:999px;padding:.16rem .5rem;margin-left:.4rem;vertical-align:middle}.pozn{font-size:.82rem;color:var(--muted)}.pozn a,.pozn b{color:var(--ink)}.pozn a{text-decoration:underline;text-underline-offset:3px}.menu{display:none;position:relative}.menu summary{list-style:none;display:flex;align-items:center;gap:.5rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:1rem;background:var(--ink);color:var(--paper);border:var(--ram);border-radius:50%;width:44px;height:44px;justify-content:center;cursor:pointer}.menu summary::-webkit-details-marker{display:none}.menu .ham{width:18px;height:14px;display:grid;align-content:space-between}.menu .ham i{height:2.5px;background:currentColor;border-radius:2px;transition:transform .2s,opacity .2s}.menu[open] .ham i:nth-child(1){transform:translateY(5.75px) rotate(45deg)}.menu[open] .ham i:nth-child(2){opacity:0}.menu[open] .ham i:nth-child(3){transform:translateY(-5.75px) rotate(-45deg)}.menu{position:static}.menu-panel{position:absolute;right:.45rem;top:calc(var(--hb) - 22px);width:min(320px,calc(100vw - 40px));max-height:calc(100dvh - var(--hb) - 40px);overflow-y:auto;background:var(--paper);border:var(--ram);border-radius:0 0 var(--rad) var(--rad);box-shadow:var(--tien);padding:calc(22px + var(--zt) + .2rem) .5rem .5rem;z-index:-2;display:flex;flex-direction:column;gap:.1rem}.menu[open] .menu-panel{animation:vysun .32s cubic-bezier(.2,.8,.2,1) both}@keyframes vysun{0%{transform:translateY(-100%);clip-path:inset(100% -12px -12px -12px)}to{transform:none;clip-path:inset(0 -12px -12px -12px)}}.menu[open]>summary:before{content:"";position:fixed;inset:0;z-index:-3;background:#231f2073;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:stmav .25s ease both;cursor:default}@keyframes stmav{0%{opacity:0}}@media (prefers-reduced-motion:reduce){.menu[open] .menu-panel,.menu[open]>summary:before{animation:none}}.menu-panel>a{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:1.15rem;line-height:1.1;padding:.38rem .7rem;border-radius:10px}.menu-panel>a:hover{background:var(--y)}.menu-panel .m-tel{display:flex;justify-content:center;background:var(--ink);color:var(--paper);border-radius:999px;margin:.2rem 0}.menu-panel .m-tel:hover{background:var(--ink);color:var(--y)}.menu-panel details{border-top:1.5px dashed var(--ink);padding-top:.4rem}.menu-panel details summary{all:unset;display:flex;align-items:center;gap:.6rem;padding:.45rem .7rem;cursor:pointer;font-weight:500;border-radius:10px}.menu-panel details summary:hover{background:var(--y)}.menu-panel details summary .sip{margin-left:auto;width:12px;height:12px;fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}.menu-panel details[open] summary .sip{transform:rotate(180deg)}.menu-panel ul{list-style:none;padding:.2rem 0 0;display:grid;grid-template-columns:1fr 1fr;gap:.15rem}.menu-panel li a{display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:10px;font-weight:500;min-width:0}.menu-panel li a:hover{background:var(--y)}.menu-panel li a.akt{background:var(--ink);color:var(--paper)}.menu-panel li small{margin-left:auto;font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.menu-panel li a.akt small{color:var(--y)}@media (max-width:1100px){.hl nav,.jazyk,.hl>.tel{display:none}.menu{display:block;margin-left:auto}}@media (max-width:820px){:root{--gap:12px}.uvod{height:auto;min-height:100svh}.tel{font-size:1rem;padding:.28rem .65rem}.plocha{grid-template-columns:1fr;grid-template-rows:minmax(170px,1fr) auto;gap:16px;padding-bottom:6px}.foto{margin:calc(-1 * (var(--gap) + 10px) - 18px) 14px 0 14px;height:auto;min-height:170px;box-shadow:4px 4px 0 0 var(--ink)}.vyber-hl h2{white-space:nowrap;font-size:min(1.8rem,6.85vw)}.foto figcaption{padding:.4rem .7rem;font-size:.62rem}.hl{--hb:56px;--zt:30px;--zw:128px;--zs:24px;margin:10px 16px 0 10px;padding-right:.45rem}.logo{left:8px;width:calc(var(--zw) + var(--zs) * .5 - 14px);top:.4rem;bottom:calc(-1 * var(--zt) + .4rem)}.logo img{width:100%;height:100%;object-fit:contain}.vyber{overflow:visible;margin:0;padding:0}.blok{flex:none;min-height:0}.ik span{font-size:.62rem}}.sek{padding:calc(clamp(4rem,9vw,7.5rem) + 50px) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj));max-width:1520px;margin:0 auto}.sek-hl{display:flex;justify-content:space-between;align-items:end;gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.8rem,4vw,3rem)}.sek-hl .kick{display:block;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}.sek-hl h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.2rem,4.2vw,4.2rem);line-height:.9;letter-spacing:.005em}.sek-hl p{max-width:34ch;color:var(--muted);font-size:1.02rem}.btn{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:1.05rem;padding:.6rem 1.1rem;border:var(--ram);border-radius:999px;background:var(--ink);color:var(--paper);box-shadow:4px 4px 0 0 var(--y)}.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 0 var(--y)}.btn.sv{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 0 var(--ink)}.btn.sv:hover{box-shadow:2px 2px 0 0 var(--ink)}.ani{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 90ms)}.ani.vid{opacity:1;transform:none}.ani.nal{transform:translate(-6px,-22px) rotate(-1.2deg);box-shadow:0 0 0 0 var(--ink)}.ani.nal.vid{transform:none;box-shadow:var(--tien);transition:opacity .35s ease,transform .5s cubic-bezier(.3,1.5,.5,1),box-shadow .25s ease;transition-delay:calc(var(--i,0) * .11s),calc(var(--i,0) * .11s),calc(var(--i,0) * .11s + .38s)}@media (prefers-reduced-motion:reduce){.ani,.ani.nal{opacity:1;transform:none;transition:none}.ani.nal{box-shadow:var(--tien)}}#sluzby{padding-top:50px}#sluzby .sek-hl{flex-direction:column;align-items:center;text-align:center;gap:.8rem}.dlazdice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1.2rem,2.2vw,2rem)}.dl{display:flex;flex-direction:column;gap:.55rem;padding:1.5rem 1.4rem 1.3rem;background:var(--f);color:var(--ink);transition:filter .15s}.dl.biely{color:var(--paper)}.dl:hover{filter:saturate(1.15) brightness(1.04)}.dl .zn{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:auto;padding-top:.4rem}.dl .zn span.far{color:var(--paper)}.dl .zn span{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.85rem;padding:.22rem .7rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);box-shadow:2px 2px 0 0 var(--ink)}.dl .ik3{height:64px;display:flex;align-items:flex-end;margin-bottom:.4rem}.dl .ik3 img,.dl .ik3 svg{height:100%;width:auto;max-width:100%;object-fit:contain;object-position:left bottom}.dl .ik3 svg{stroke:var(--ink);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round}.dl .ik3 svg .zl{fill:var(--y)}.dl h3{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.5rem,1.4vw + .8rem,2rem);line-height:.95;display:flex;justify-content:space-between;gap:.5rem}.dl h3 span{transition:transform .2s}.dl:hover h3 span{transform:translate(5px)}.dl p{opacity:.85;font-size:.98rem;line-height:1.5;min-height:3em}@media (min-width:1001px) and (max-width:1200px){.dl p{font-size:.9rem}}.prebieha{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(2rem,5vw,5rem);align-items:start}.kroky{position:relative;list-style:none;padding-left:clamp(64px,6vw,84px)}.kroky .cesta{position:absolute;left:clamp(20px,2vw,28px);top:10px;height:var(--cesta-h,100%);width:24px;overflow:visible}.kroky .cesta line{stroke:var(--ink);stroke-width:4;stroke-linecap:round}.kroky .cesta .pod{stroke:#e4e0d6;stroke-dasharray:2 12}.kroky .moznosti{list-style:none;display:flex;flex-direction:column;gap:.55rem;color:var(--muted);max-width:44ch}.kroky .moznosti li{position:relative;padding-left:1.1rem}.kroky .moznosti li:before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;border-radius:50%;background:var(--ink)}.kroky .moznosti strong{color:var(--ink)}.vysv{position:relative;display:inline-block}.vysv button{font:inherit;color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--y);cursor:help}.vysv .bub{position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,-6px);width:min(280px,80vw);padding:.7rem .9rem;background:var(--ink);color:var(--paper);border-radius:12px;box-shadow:4px 4px 0 0 var(--y);font-size:.9rem;line-height:1.35;opacity:0;visibility:hidden;transition:opacity .15s,transform .15s,visibility .15s;z-index:5}.vysv .bub:after{content:"";position:absolute;left:50%;bottom:100%;margin-left:-7px;border:7px solid transparent;border-bottom-color:var(--ink)}.vysv:hover .bub,.vysv:focus-within .bub,.vysv.otv .bub{opacity:1;visibility:visible;transform:translate(-50%)}.kroky>li{position:relative;padding-bottom:clamp(2.2rem,4.5vw,3.4rem)}.kroky>li:last-child{padding-bottom:0}.kroky .c{position:absolute;left:calc(-1*clamp(64px,6vw,84px) + clamp(12px,1.2vw,20px));top:-.15rem;width:40px;height:40px;border-radius:50%;background:var(--paper);border:var(--ram);display:grid;place-items:center;font-family:var(--mono);font-size:.8rem;font-weight:500;transition:background .3s}.kroky>li.vid .c{background:var(--y)}.kroky b{display:block;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.5rem,1.3vw + .9rem,2.1rem);line-height:.95;margin-bottom:.4rem}.kroky p{color:var(--muted);max-width:40ch}.ceny{padding:1.6rem 1.5rem 1.4rem;background:var(--y)}.ceny h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:.8rem;color:#4a4436}.ceny ul{list-style:none}.ceny li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:1rem;padding:.75rem 0}.ceny li+li{border-top:1.5px dashed var(--ink)}.ceny li span{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.25rem}.ceny li small{display:block;font-family:var(--body);font-weight:400;text-transform:none;font-size:.82rem;color:#4a4436}.ceny li b{font-family:var(--disp);font-weight:900;font-size:clamp(2rem,2.2vw + .8rem,2.8rem);line-height:1;font-variant-numeric:tabular-nums}.ceny .od{font-size:.5em;margin-right:.2em;font-weight:700;color:#4a4436}.ceny .pata-c{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:var(--ram)}.ceny .pata-c p{font-size:.82rem;color:#4a4436}.rebricek{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(2rem,5vw,5rem);align-items:start}.tab{padding:1.6rem 1.4rem 1rem;position:relative}.glogo{width:1.6rem;height:1.6rem;flex-shrink:0}.tab-hl{display:flex;align-items:center;gap:.7rem;padding:0 .6rem 1rem}.tab-hl span{font-size:.82rem;color:var(--muted);line-height:1.25}.tab-hl b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.25rem;color:var(--ink);letter-spacing:.01em}.pecat{position:relative;width:clamp(190px,17vw,240px);aspect-ratio:1;filter:drop-shadow(6px 6px 0 var(--ink));transform:rotate(-8deg)}.pecat-v{width:100%;height:100%;overflow:visible}.pecat .zub{fill:url(#zlato);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}.pecat .kr1{fill:url(#zlato2);stroke:var(--ink);stroke-width:1.5;stroke-dasharray:3 4}.pecat .kr2{fill:var(--paper);stroke:var(--ink);stroke-width:3}.pecat text{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;font-weight:700;fill:#3b2a08}.pecat .tocit{transform-origin:110px 110px;animation:tocit 26s linear infinite}.pecat .stred{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.pecat .stred .glogo{width:21%;height:auto;margin-bottom:.15rem}.pecat .stred b{font-family:var(--disp);font-weight:900;font-size:clamp(2.4rem,2.6vw,3.3rem);line-height:.85}.rec-text.vid .pecat{animation:pecat-in .7s cubic-bezier(.3,1.5,.5,1) both}@keyframes pecat-in{0%{transform:scale(1.5) rotate(-30deg);opacity:0}}@keyframes tocit{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.pecat .tocit,.rec-text.vid .pecat{animation:none}}.tab ol{list-style:none}.tab li{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;align-items:center;gap:.25rem .8rem;padding:.6rem;border-radius:12px}.tab li+li{border-top:1.5px dashed #D9D4C6}.tab li.skryt{display:none}.tab.cela li.skryt{display:grid;animation:vyjst .35s ease both;animation-delay:calc((var(--i,0) - 5) * 50ms)}@keyframes vyjst{0%{opacity:0;transform:translateY(-6px)}}.tab li .p{font-family:var(--mono);font-size:.8rem;color:var(--muted)}.tab li .n{min-width:0}.tab li .n b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#4a4436}.tab li .n small{font-size:.76rem;color:var(--muted)}.tab li .h{font-family:var(--disp);font-weight:800;font-size:1rem;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;color:#4a4436}.tab li .h i{font-style:normal;color:#f2b400;margin-right:.25rem}.tab li .n b em{font-style:normal;font-weight:700;font-size:.82em;margin-left:.5em;color:var(--muted);letter-spacing:.02em}.tab li .n b em i{font-style:normal;color:#f2b400;margin-right:.15em}.tab li.my .n b em,.tab li.my .n b em i{color:var(--ink)}.tab li .h small{display:block;font-family:var(--body);font-weight:400;font-size:.7rem;color:var(--muted);text-align:right;line-height:1.1}.tab li.my .h small{color:var(--ink);opacity:.7}.tab li .pruh{grid-column:2/-1;height:6px;border-radius:99px;background:#eeeae0;overflow:hidden}.tab li .pruh i{display:block;height:100%;width:0;background:#b9b2a2;border-radius:inherit;transition:width 1.1s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 70ms + .3s)}.tab.vid li .pruh i{width:var(--w)}.tab li.my{position:relative;background:var(--y);color:var(--ink);border:var(--ram);padding:1.1rem 1rem 1rem;margin:.3rem -.5rem .6rem;box-shadow:5px 5px 0 0 var(--ink);grid-template-columns:2.6rem minmax(0,1fr) auto}.tab li.my+li{border-top-color:transparent}.tab li.my .p{font-family:var(--disp);font-weight:900;font-size:1.9rem;color:var(--ink);line-height:1}.tab li.my .n b{color:var(--ink);font-size:clamp(1.6rem,1.6vw + .8rem,2.2rem);font-weight:900}.tab li.my .n small{color:var(--ink);opacity:.7;font-size:.85rem}.tab li.my .h{color:var(--ink);font-size:clamp(1.4rem,1.2vw + .8rem,1.9rem)}.tab li.my .h i{color:var(--ink)}.tab li.my .pruh{height:10px;background:#231f2024}.tab li.my .pruh i{background:var(--ink)}.tab li.my .sme{position:absolute;left:-12px;top:-15px;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;background:var(--g);color:var(--paper);border:2.5px solid var(--ink);border-radius:999px;padding:.15rem .6rem;transform:rotate(-6deg)}.viac{display:block;margin:.6rem auto 0;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:.4rem 1rem;border:2.5px solid var(--ink);border-radius:999px;box-shadow:3px 3px 0 0 var(--ink)}.viac:hover{background:var(--y)}.viac span{display:inline-block;transition:transform .2s}.tab.cela .viac span{transform:rotate(180deg)}.tab-zdroj{font-size:.72rem;color:var(--muted);padding:.8rem .6rem 0}.rec-text{margin-top:clamp(2rem,7vw,6rem);display:flex;flex-direction:column;gap:1.6rem;align-items:center;text-align:center}.velke-c{display:flex;align-items:center;gap:1rem;text-align:left}.velke-c b{font-family:var(--disp);font-weight:900;font-size:clamp(4.5rem,7vw,7.5rem);line-height:.85;font-variant-numeric:tabular-nums}.velke-c>span{font-size:1.05rem;line-height:1.4;white-space:nowrap}.velke-c .hv{color:#f2b400;letter-spacing:.08em}.gbtn{display:inline-flex;align-items:center;gap:.75rem;padding:.75rem 1.5rem .75rem 1.1rem;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:999px;font-family:Roboto,Google Sans,Arial,sans-serif;font-weight:500;font-size:1.05rem;letter-spacing:.01em;box-shadow:0 1px 2px #3c40434d,0 1px 3px 1px #3c404326;transition:box-shadow .2s,background .2s}.gbtn:hover{background:#f8faff;box-shadow:0 1px 3px #3c40434d,0 4px 8px 3px #3c404326}.gbtn:focus-visible{outline:2px solid #1a73e8;outline-offset:2px}.gbtn .gb-g{width:1.35rem;height:1.35rem}.karusel{margin-top:clamp(3rem,6vw,5rem)}.kar-hl{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.2rem}.kar-hl b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.6rem,1.6vw + .9rem,2.4rem);line-height:1}.rk-pas{overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;padding:6px 0 14px;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}.rk-pas::-webkit-scrollbar{display:none}.rk-beh{display:flex;align-items:flex-start;width:max-content}.rk{--rk:var(--ink);flex:0 0 clamp(290px,27vw,390px);margin-right:clamp(1rem,2vw,1.6rem);display:flex;flex-direction:column;gap:.8rem;padding:1.3rem 1.3rem 1.1rem;background:var(--paper);border:3px solid var(--rk);border-radius:var(--rad);box-shadow:var(--tien)}.rk-o{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.8rem}.rk-o img{width:52px;height:52px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover;background:#eee}.rk-o b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk-o small{font-size:.8rem;color:var(--muted)}.rk-g{width:1.5rem;height:1.5rem}.rk-hv{color:#e8a900;letter-spacing:.12em;font-size:1.05rem;line-height:1}.rk p{font-size:.96rem;line-height:1.5;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.rk.cela p{-webkit-line-clamp:unset;display:block}.rk-p{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding-top:.7rem;border-top:1.5px dashed #D9D4C6;font-size:.78rem;color:var(--muted)}.rk-p button{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:underline;text-underline-offset:3px;color:var(--ink)}@media (max-width:620px){.rk{flex-basis:80vw}}.optimus{position:relative;overflow:hidden;padding:0;height:clamp(300px,24vw,380px);background:var(--ink)}.optimus img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 35%;opacity:0;transition:opacity .6s ease}.optimus img.on{opacity:1}.optimus img:first-child{object-position:30% 30%}.op-ov{position:absolute;right:clamp(10px,1.4vw,16px);bottom:clamp(10px,1.4vw,16px);display:flex;align-items:center;gap:.5rem;background:var(--paper);border:2.5px solid var(--ink);border-radius:999px;padding:.25rem;box-shadow:3px 3px 0 0 var(--ink);z-index:2}.op-ov button{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:50%;font-weight:700;font-size:1.05rem;line-height:1}.op-ov button:hover{background:var(--y)}.op-ov span{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;min-width:3.4ch;text-align:center}.optimus figcaption{z-index:2;transition:opacity .3s,transform .3s}.optimus:not(.prvy) figcaption{opacity:0;transform:rotate(1.5deg) translateY(-8px);pointer-events:none}.optimus figcaption{position:absolute;right:clamp(12px,1.6vw,20px);top:clamp(12px,1.6vw,20px);max-width:min(250px,60%);background:var(--y);border:var(--ram);border-radius:12px;box-shadow:4px 4px 0 0 var(--ink);padding:.6rem .8rem;transform:rotate(1.5deg)}.optimus figcaption b{display:block;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.1rem,.8vw + .7rem,1.4rem);line-height:1}.optimus figcaption span{font-size:.8rem;line-height:1.3;display:block;margin-top:.2rem}@media (max-width:620px){.optimus{aspect-ratio:4/3;flex:none}.optimus figcaption{max-width:min(210px,68%);padding:.45rem .65rem;box-shadow:3px 3px 0 0 var(--ink)}.optimus figcaption span{font-size:.72rem}}.kde-l{display:flex;flex-direction:column;gap:clamp(1.5rem,3vw,2.5rem);min-width:0}.faq h3{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.5rem,1.4vw + .8rem,2.1rem);line-height:1;margin-bottom:.9rem}.faq details{border:var(--ram);border-radius:14px;background:var(--paper);margin-bottom:.7rem;box-shadow:4px 4px 0 0 var(--ink);transition:background .15s}.faq details[open]{background:#fff7c2}.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.15rem;letter-spacing:.01em}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";flex-shrink:0;display:grid;place-items:center;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--y);border:2.5px solid var(--ink);font-family:var(--body);font-size:1.2rem;line-height:1;transition:transform .2s}.faq details[open] summary:after{transform:rotate(45deg)}.faq details p{padding:0 1.1rem 1rem;color:#4a4436;line-height:1.5;max-width:62ch}.kde{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(1.5rem,3vw,2.5rem);align-items:start}.mapa{position:relative;overflow:hidden;height:var(--mapa-h,clamp(360px,30vw,460px));padding:0;background:#e9e5da}.mapa iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(.85) contrast(1.05)}.mapa .pin{position:absolute;left:50%;top:calc(50% - 76px);width:54px;margin:-62px 0 0 -27px;filter:drop-shadow(3px 3px 0 var(--ink));pointer-events:none}.mapa.vid .pin{animation:pin .7s cubic-bezier(.3,1.6,.5,1) .3s both}@keyframes pin{0%{transform:translateY(-140px);opacity:0}60%{opacity:1}}.mapa .na-mapu{position:absolute;left:14px;bottom:14px}.mapa-zap{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:flex-end;padding:14px;cursor:pointer;background:linear-gradient(115deg,transparent 47%,#fff 47% 49.5%,transparent 49.5%),linear-gradient(28deg,transparent 58%,#fff 58% 60.5%,transparent 60.5%),linear-gradient(172deg,transparent 31%,#F7F3E8 31% 33%,transparent 33%),repeating-linear-gradient(0deg,transparent 0 46px,rgba(35,31,32,.07) 46px 48px),repeating-linear-gradient(90deg,transparent 0 62px,rgba(35,31,32,.07) 62px 64px),#e9e5da}.mapa-zap .btn{pointer-events:none;background:var(--paper);color:var(--ink)}.info{display:flex;flex-direction:column;gap:1.4rem;margin-top:clamp(2.5rem,8vw,7rem)}.adresa b{display:block;font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.8rem,2vw + .8rem,2.6rem);line-height:.95}.adresa span{color:var(--muted)}.hodiny{list-style:none;font-size:1rem}.hodiny li{display:flex;justify-content:space-between;gap:1rem;padding:.45rem .7rem;border-radius:10px}.hodiny li.dnes{background:var(--g);color:var(--paper);border:2.5px solid var(--ink);box-shadow:3px 3px 0 0 var(--ink)}.hodiny li.dnes span:last-child{color:var(--paper);font-weight:700}.hodiny li span:last-child{font-family:var(--mono);font-size:.9rem}.stav{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}.stav i{width:10px;height:10px;border-radius:50%;background:var(--g);box-shadow:0 0 0 3px #5bba4740}.stav.zat i{background:var(--r);box-shadow:0 0 0 3px #e1212840}.preco{display:flex;flex-wrap:wrap;gap:.55rem}.preco span{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem;padding:.3rem .8rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper)}.preco span.ani{transform:translate(30px)}.preco span.ani.vid{transform:none}.pata{margin-top:clamp(4.5rem,10vw,8rem);background:var(--y);color:var(--ink);border-top:var(--ram);overflow:hidden}.pata-in{padding:clamp(2.5rem,5vw,4rem) calc(var(--gap) + 12px + var(--okraj)) 1.5rem;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:clamp(1.2rem,3vw,2.5rem);max-width:1520px;margin:0 auto}.pk{display:flex;flex-direction:column;align-items:flex-start;gap:.55rem;background:var(--paper);border:var(--ram);border-radius:var(--rad);box-shadow:var(--tien);padding:1.4rem 1.4rem 1.3rem}.pk .velke{font-family:var(--disp);font-weight:900;font-size:clamp(1.6rem,1.4vw + .9rem,2.2rem);line-height:1;letter-spacing:.01em}.pk .velke.m{font-size:clamp(1.3rem,1vw + .8rem,1.7rem)}.pk .velke small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;vertical-align:middle;margin-left:.3rem;color:var(--muted)}.pk>span{color:var(--muted);line-height:1.4}.pk-kont{position:relative;overflow:hidden}.pk-kont>*:not(.pk-symbol){position:relative;z-index:1}.pk-symbol{position:absolute;right:0;top:50%;height:80%;width:auto;aspect-ratio:870 / 960;transform:translate(calc(19.5% + 45px),-50%);opacity:.22;pointer-events:none}@media (min-width:1001px){.pk-symbol{transform:translate(calc(19.5% + 55px),-50%)}}.soc{display:flex;gap:.55rem;margin-top:auto;padding-top:.6rem}.soc a{display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:50%;background:var(--ink);color:var(--paper);transition:transform .15s,background .15s}.soc a:hover{background:var(--y);color:var(--ink);transform:translateY(-2px)}.soc svg{width:1.25rem;height:1.25rem;fill:currentColor}.ph{list-style:none;width:100%}.ph li{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0}.ph li+li{border-top:1.5px dashed #D9D4C6}.ph b{font-family:var(--mono);font-weight:500;font-size:.92rem}.pcta .btn,.pcta .gbtn,.pcta .stiah{width:100%;justify-content:center}.pcta .gbtn{padding-block:.65rem}.stiah{display:flex;align-items:center;gap:.7rem;padding:.55rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:var(--y);transition:transform .12s,box-shadow .12s;box-shadow:3px 3px 0 0 var(--ink)}.stiah:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}.stiah svg{width:1.3rem;height:1.3rem;flex-shrink:0}.stiah span{display:flex;flex-direction:column;font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.03em;line-height:1.05;flex:1}.stiah small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.1em;color:#4a4436}.pata-spod nav{display:flex;gap:1.2rem;flex-wrap:wrap}.pata-spod nav a{text-decoration:underline;text-underline-offset:3px}.pata-spod i{font-style:normal;margin:0 .4rem;opacity:.5}.pata-logo{aspect-ratio:2126 / 866;width:75%;margin:clamp(1rem,3vw,2.5rem) auto 0;overflow:hidden;position:relative}.pata-logo img{position:absolute;left:0;top:0;width:100%;height:auto;display:block}.pata-logo.vid img{animation:logo-vyjst 1s cubic-bezier(.2,.8,.2,1) both}@keyframes logo-vyjst{0%{transform:translateY(25%);opacity:0}}@media (prefers-reduced-motion:reduce){.pata-logo.vid img{animation:none}}.pata-in h3,.pata-in h4{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#5c5320;margin-bottom:.8rem}.pata-spod{grid-column:1/-1;display:flex;justify-content:space-between;gap:.8rem 1.5rem;flex-wrap:wrap;border-top:1.5px solid rgba(35,31,32,.25);padding-top:1.2rem;margin-top:.6rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#3b3517}.tbd2{outline:1px dashed currentColor;outline-offset:3px;border-radius:4px}@media (max-width:1000px){.dlazdice{grid-template-columns:repeat(2,minmax(0,1fr))}.prebieha,.kde,.rebricek{grid-template-columns:minmax(0,1fr)}.info,.rec-text{margin-top:0}.pata-in{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:620px){.dlazdice,.pata-in{grid-template-columns:1fr}.mapa{min-height:300px}}</style>
+<script src="/zaklad/meranie.d17b56a0.js" defer></script>
+<script src="/zaklad/subory.bd2135c2.js" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"AutoRepair","@id":"https://stk.digobraz.sk/#stanica","name":"Easy Check STK Trnava","alternateName":"Easy Check","description":"Stanica technickej kontroly v Trnave: technická a emisná kontrola, kontrola originality, flotily a nákladné vozidlá.","url":"https://stk.digobraz.sk/","logo":"https://stk.digobraz.sk/easycheck-logo.svg","image":"https://stk.digobraz.sk/foto/og-uvod.jpg","telephone":"+421332020211","email":"stk@easycheck.sk","address":{"@type":"PostalAddress","streetAddress":"Technická ulica","addressLocality":"Trnava","addressCountry":"SK"},"geo":{"@type":"GeoCoordinates","latitude":48.4174872,"longitude":17.5822691},"hasMap":"https://www.google.com/maps?cid=161974492916168468","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"07:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"07:00","closes":"13:00"}],"areaServed":"Trnava","sameAs":["https://www.facebook.com/easycheckstk","https://www.instagram.com/easycheck_tt/","https://www.youtube.com/@easycheck-stktrnava3471"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Easy Check STK Trnava","url":"https://stk.digobraz.sk/","inLanguage":"sk","publisher":{"@id":"https://stk.digobraz.sk/#stanica"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Čo si mám priniesť na STK?","acceptedAnswer":{"@type":"Answer","text":"Doklad vozidla — osvedčenie o evidencii (stačí „malý“ technický preukaz). Pri LPG/CNG aj protokol o montáži plynového zariadenia, po vážnej nehode certifikát o oprave. Pred príchodom si skontrolujte svetlá, pneumatiky (dezén aspoň 1,6 mm), čelné sklo a povinnú výbavu."}},{"@type":"Question","name":"Ako dlho to trvá?","acceptedAnswer":{"@type":"Answer","text":"Rezervujte si približne 60 minút. Počas kontroly môžete počkať v čakárni pri káve."}},{"@type":"Question","name":"Potrebujem termín vopred?","acceptedAnswer":{"@type":"Answer","text":"Online objednávka trvá pol minúty a termín garantujeme do 24 hodín. Stačí sa objednať alebo zavolať na 033 20 20 211."}},{"@type":"Question","name":"Čo ak auto neprejde?","acceptedAnswer":{"@type":"Answer","text":"Závady opravíte a prídete na opakovanú kontrolu. Pri osobnom aute do 3,5 t stojí v deň kontroly 20 €, do 60 dní 35 €. Drobné chyby často odstránime priamo na linke."}},{"@type":"Question","name":"Ako funguje Pickup servis?","acceptedAnswer":{"@type":"Answer","text":"Vozidlo vyzdvihneme na vašej adrese, skontrolujeme a vrátime. Zdarma do 15 km od stanice, platíte iba kontrolu. Platí pre kompletnú TK + EK osobných vozidiel, výzdvih od 07:00 do 16:00."}}]}</script>
 </head>
 <body>
 
@@ -551,9 +69,10 @@ html,body{overflow-x:clip}
   <main class="plocha">
     <figure class="foto slab">
       <div class="obr">
-        <img class="on" src="foto/img_7299.jpg" alt="Kontrolné linky Easy Check — osobné auto a motocykel">
-        <img src="foto/img_9365.jpg" alt="Firemné autá Easy Check v brandových farbách">
-        <img src="foto/img_4781.jpg" alt="Hala stanice technickej kontroly">
+        <!-- data-neskor = build (scripts/web-build.py) ich načíta až po načítaní stránky, aby nebrzdili prvú fotku -->
+        <img class="on" src="foto/img_7299.webp" alt="Kontrolné linky Easy Check — osobné auto a motocykel" srcset="foto/img_7299-360w.webp 360w, foto/img_7299-480w.webp 480w, foto/img_7299-640w.webp 640w, foto/img_7299-720w.webp 720w, foto/img_7299-960w.webp 960w, foto/img_7299.webp 1350w" sizes="(max-width: 900px) 92vw, 60vw" width="1350" height="1800" decoding="async" fetchpriority="high">
+        <img data-neskor="" alt="Firemné autá Easy Check v brandových farbách" sizes="(max-width: 900px) 92vw, 60vw" width="1600" height="1200" decoding="async" data-src="foto/img_9365.webp" data-srcset="foto/img_9365-360w.webp 360w, foto/img_9365-480w.webp 480w, foto/img_9365-640w.webp 640w, foto/img_9365-720w.webp 720w, foto/img_9365-960w.webp 960w, foto/img_9365-1280w.webp 1280w, foto/img_9365.webp 1600w">
+        <img data-neskor="" alt="Hala stanice technickej kontroly" sizes="(max-width: 900px) 92vw, 60vw" width="1350" height="1800" decoding="async" data-src="foto/img_4781.webp" data-srcset="foto/img_4781-360w.webp 360w, foto/img_4781-480w.webp 480w, foto/img_4781-640w.webp 640w, foto/img_4781-720w.webp 720w, foto/img_4781-960w.webp 960w, foto/img_4781.webp 1350w">
         <h1 class="sr">STK Trnava — Easy Check, technická a emisná kontrola</h1>
       </div>
       <figcaption>
@@ -654,7 +173,7 @@ html,body{overflow-x:clip}
   <div class="kde">
     <div class="kde-l">
       <div class="mapa slab ani nal">
-        <iframe src="https://maps.google.com/maps?ll=48.4000,17.5823&z=12&t=m&output=embed" title="Mapa — Easy Check STK Trnava" loading="lazy"></iframe>
+        <button type="button" class="mapa-zap" data-src="https://maps.google.com/maps?ll=48.4000,17.5823&amp;z=12&amp;t=m&amp;output=embed" aria-label="Zobraziť mapu Google — Easy Check STK Trnava"><span class="btn">Zobraziť mapu</span></button>
         <svg class="pin" viewBox="0 0 54 70" aria-hidden="true"><path d="M27 67C27 67 4 40 4 25a23 23 0 0146 0c0 15-23 42-23 42z" fill="#FFE600" stroke="#231F20" stroke-width="4" stroke-linejoin="round"/><circle cx="27" cy="25" r="8" fill="#231F20"/></svg>
         <a class="btn na-mapu" href="https://www.google.com/maps?cid=161974492916168468">Navigovať →</a>
       </div>
@@ -680,10 +199,10 @@ html,body{overflow-x:clip}
       <!-- vjazd do areálu — fotka zo súčasného easycheck.sk (wp-content/uploads/2023/11) -->
       <figure class="optimus slab ani nal prvy" id="optimus">
         <div class="op-sl" id="op-sl">
-      <img class="on" src="foto/optimus-vstup.jpg" alt="Vjazd do Easy Check STK Trnava so sochou Optimusa Prime" loading="lazy">
-      <img src="foto/optimus-2376.jpg" alt="Socha Optimusa Prime zblízka" loading="lazy" style="object-position:50% 12%">
-      <img src="foto/optimus-7328.jpg" alt="Optimus Prime pri Easy Check STK" loading="lazy" style="object-position:50% 28%">
-      <img src="foto/optimus-4128.jpg" alt="Optimus Prime nad tabuľou Easy Check STK" loading="lazy" style="object-position:50% 30%">
+      <img class="on" src="foto/optimus-vstup.webp" alt="Vjazd do Easy Check STK Trnava so sochou Optimusa Prime" loading="lazy" srcset="foto/optimus-vstup-360w.webp 360w, foto/optimus-vstup-480w.webp 480w, foto/optimus-vstup-640w.webp 640w, foto/optimus-vstup-720w.webp 720w, foto/optimus-vstup-960w.webp 960w, foto/optimus-vstup-1280w.webp 1280w, foto/optimus-vstup.webp 1600w" sizes="(max-width: 900px) 92vw, 60vw" width="1600" height="900" decoding="async">
+      <img src="foto/optimus-2376.webp" alt="Socha Optimusa Prime zblízka" loading="lazy" style="object-position:50% 12%" srcset="foto/optimus-2376-360w.webp 360w, foto/optimus-2376-480w.webp 480w, foto/optimus-2376-640w.webp 640w, foto/optimus-2376-720w.webp 720w, foto/optimus-2376.webp 1050w" sizes="(max-width: 900px) 92vw, 60vw" width="1050" height="1400" decoding="async">
+      <img src="foto/optimus-7328.webp" alt="Optimus Prime pri Easy Check STK" loading="lazy" style="object-position:50% 28%" srcset="foto/optimus-7328-360w.webp 360w, foto/optimus-7328-480w.webp 480w, foto/optimus-7328-640w.webp 640w, foto/optimus-7328-720w.webp 720w, foto/optimus-7328.webp 1050w" sizes="(max-width: 900px) 92vw, 60vw" width="1050" height="1400" decoding="async">
+      <img src="foto/optimus-4128.webp" alt="Optimus Prime nad tabuľou Easy Check STK" loading="lazy" style="object-position:50% 30%" srcset="foto/optimus-4128-360w.webp 360w, foto/optimus-4128-480w.webp 480w, foto/optimus-4128-640w.webp 640w, foto/optimus-4128-720w.webp 720w, foto/optimus-4128-960w.webp 960w, foto/optimus-4128.webp 1156w" sizes="(max-width: 900px) 92vw, 60vw" width="1156" height="1400" decoding="async">
     </div>
     <div class="op-ov"><button type="button" data-op="-1" aria-label="Predchádzajúca fotka">←</button><span id="op-c">1 / 4</span><button type="button" data-op="1" aria-label="Ďalšia fotka">→</button></div>
         <figcaption><b>Hľadajte Optimusa</b><span>Socha Optimusa Prime stojí priamo pri vjazde do areálu.</span></figcaption>
@@ -697,7 +216,7 @@ html,body{overflow-x:clip}
   <div class="pata-in ani" id="pata-in">
     <div class="pk pk-kont">
       <img class="pk-symbol" src="ikony/easycheck-symbol.svg" alt="" aria-hidden="true">
-      <h4>Kontakt</h4>
+      <h3>Kontakt</h3>
       <a class="velke" href="tel:+421332020211">033 20 20 211</a>
       <a class="velke m" href="tel:+421908731178">0908 731 178 <small>mobil</small></a>
       <a href="mailto:stk@easycheck.sk">stk@easycheck.sk</a>
@@ -709,7 +228,7 @@ html,body{overflow-x:clip}
       </div>
     </div>
     <div class="pk">
-      <h4>Hodiny</h4>
+      <h3>Hodiny</h3>
       <ul class="ph">
         <li><span>Po – Pia</span><b>07:00 – 20:00</b></li>
         <li><span>Sobota</span><b>07:00 – 13:00</b></li>
@@ -718,7 +237,7 @@ html,body{overflow-x:clip}
       </ul>
     </div>
     <div class="pk pcta">
-      <h4>Rýchle odkazy</h4>
+      <h3>Rýchle odkazy</h3>
       <a class="btn" href="/rezervacia/">Rezervovať termín <span aria-hidden="true">→</span></a>
       <a class="gbtn" href="https://g.page/EASYCheckStkEkKo/review?rc" target="_blank" rel="noopener"><svg class="glogo gb-g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Pridať Google hodnotenie</span></a>
       <!-- súbory zo súčasného easycheck.sk (wp-content/uploads/2026/10) — pri prechode presunúť na nový web -->
@@ -727,7 +246,7 @@ html,body{overflow-x:clip}
     </div>
     <div class="pata-spod">
       <span>© <span id="rok"></span> Easy Check, s.r.o. · IČO 44 466 587 <i>/</i> Global Partner Service s.r.o. · IČO 50 267 361</span>
-      <nav aria-label="Právne informácie"><a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov (GDPR)</a><a href="/ochrana-osobnych-udajov/#cookies" class="tbd2">Cookies</a></nav>
+      <nav aria-label="Právne informácie"><a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov (GDPR)</a><a href="/ochrana-osobnych-udajov/#cookies" data-cookies>Cookies</a></nav>
     </div>
   </div>
   <!-- obrovské logo dole, odseknuté v polovici „STK“ (vzor birne.sk) -->
@@ -735,452 +254,60 @@ html,body{overflow-x:clip}
 </footer>
 
 
-<script>
-/* ===================== DÁTA =====================
-   Acuity odkazy 1:1 z stk-web/src/data/rezervacia.ts (znak po znaku, aj Klasik/klasik).
-   Ceny z stk-web/src/data/cennik.ts. Kde cenník cenu nemá, cena sa neukazuje. */
-const A = 'https://Klasik.as.me/';
-const KO_AUTO = A+'KLASIK-OSOBNY-AUTOMOBIL-Kontrola-originality';
-
-const SVG = {
-  auto:'<path d="M5 30h54M9 30v-7l7-11h25l11 11h5v7"/><circle cx="19" cy="31" r="5"/><circle cx="46" cy="31" r="5"/>',
-  dodavka:'<path d="M4 30V9h34l11 9h9v12M4 30h54M38 9v9h11"/><circle cx="16" cy="31" r="5"/><circle cx="47" cy="31" r="5"/>',
-  moto:'<circle cx="14" cy="29" r="7"/><circle cx="50" cy="29" r="7"/><path d="M14 29l11-13h11l14 13M25 16l-3-6h-7M36 16h9"/>',
-  stvorkolka:'<circle cx="15" cy="29" r="7"/><circle cx="49" cy="29" r="7"/><path d="M8 22h48l-6-8H20zM30 14l-4-7h-7M22 29h20"/>',
-  vozik:'<path d="M8 11h32v15H8zM40 22h16"/><circle cx="24" cy="30" r="5"/>',
-  kamion:'<path d="M2 7h36v19H2zM40 31V13h10l7 8v10M2 31h56"/><circle cx="10" cy="32" r="4"/><circle cx="20" cy="32" r="4"/><circle cx="49" cy="32" r="4"/>',
-  naves:'<path d="M4 8h44v19H4zM48 22h10"/><circle cx="30" cy="31" r="4"/><circle cx="40" cy="31" r="4"/>',
-  autobus:'<path d="M4 7h52v23H4zM4 17h52M14 7v10M26 7v10M38 7v10"/><circle cx="15" cy="31" r="4"/><circle cx="46" cy="31" r="4"/>',
-  traktor:'<circle cx="18" cy="26" r="10"/><circle cx="50" cy="30" r="6"/><path d="M18 16V5h14l5 15h15v6M28 5v15"/>',
-  zeriav:'<path d="M4 31V20h40v11M44 20h8l6 7v4M4 31h54M12 20L50 3M50 3v12"/><circle cx="12" cy="32" r="4"/><circle cx="24" cy="32" r="4"/><circle cx="50" cy="32" r="4"/>',
-};
-
-const BLOKY = [
-  { id:'do', ik:'ikony/auto-biela.png', t:'Osobné', k:'do 3,5 t', p:'auto, dodávka, motorka, štvorkolka, vozík', voz:[
-    { id:'auto', t:'Auto', pohon:1 }, { id:'dodavka', t:'Dodávka', pohon:1 }, { id:'moto', t:'Motorka' },
-    { id:'stvorkolka', t:'Štvorkolka' }, { id:'vozik', t:'Vozík' } ]},
-  { id:'nad', ik:'ikony/nakladne-biela.png', t:'Nákladné', k:'nad 3,5 t', p:'kamión, náves, autobus, traktor, žeriav', voz:[
-    { id:'kamion', t:'Kamión' }, { id:'naves', t:'Náves' }, { id:'autobus', t:'Autobus' },
-    { id:'traktor', t:'Traktor' }, { id:'zeriav', t:'Žeriav' } ]},
-];
-
-const POHON = [
-  { id:'bd',  t:'Benzín / diesel', p:'bežné auto' },
-  { id:'alt', t:'LPG, CNG, hybrid, elektro', p:'alternatívny pohon' },
-  { id:'kat', t:'NKAT / BKAT', p:'staršie benzínové ročníky' },
-];
-
-const MOTO = [
-  { t:'Kompletná STK', p:'L3, L4, L6', top:1, u:'https://klasik.as.me/motocykel-L3-L4-L6' },
-  { t:'Kompletná STK', p:'L5, L7', u:'https://klasik.as.me/motocykel-L5-L7' },
-  { t:'Technická kontrola', p:'motocykel, trojkolka, štvorkolka', c:'45 €', u:A+'Technicka-kontrola-motocykel-trojkolka-stvorkolka' },
-  { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'25 / 30 €', u:A+'Opakovana-technicka-kontrola-motocykel-trojkolka-stvorkolka' },
-];
-const NAKL_TK  = { t:'Technická kontrola', p:'pravidelná', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-kontrola' };
-const NAKL_EK  = { t:'Emisná kontrola', p:'pravidelná', u:A+'KLASIK-NAKLADNE-VOZIDLA-Emisna-kontrola' };
-const NAKL_OTK = { t:'Opakovaná technická', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-opakovana-Technicka-kontrola' };
-const NAKL_OEK = { t:'Opakovaná emisná', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-opakovana-Emisna-kontrola' };
-
-const KONTROLY = {
-  'auto:bd': [
-    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola' },
-    { t:'Technická kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola' },
-    { t:'Emisná kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-Benzin-Diesel' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'20 / 35 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Opakovana-Technicka-kontrola' },
-    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'20 / 30 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-Benzin-Diesel' },
-    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
-  ],
-  'auto:alt': [
-    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-HYBRID' },
-    { t:'Technická kontrola', p:'pravidelná', c:'65 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA' },
-    { t:'Emisná kontrola', p:'pravidelná', c:'75 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-LPG-CNG-HYBRID' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'20 / 35 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA' },
-    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'35 / 50 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-LPG-CNG-HYBRID' },
-    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
-  ],
-  'auto:kat': [
-    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-BKAT-NKAT' },
-    { t:'Technická kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola' },
-    { t:'Emisná kontrola', p:'pravidelná', c:'75 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-NKAT-BKAT' },
-    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'30 / 45 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-NKAT-BKAT' },
-    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
-  ],
-  moto: [ ...MOTO,
-    { t:'Kontrola originality', p:'malý motocykel', u:A+'KLASIK-MALY-MOTOCYKEL-Kontrola-originality' },
-    { t:'Kontrola originality', p:'veľký motocykel', u:A+'KLASIK-VELKY-MOTOCYKEL-Kontrola-originality' } ],
-  stvorkolka: MOTO,
-  vozik: [
-    { t:'Technická kontrola', p:'O1, O2 · pravidelná', top:1, c:'35 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola' },
-    { t:'Opakovaná technická', p:'do 60 dní', c:'20 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola' },
-  ],
-  kamion: [
-    { t:'Kompletná STK — ťahač', p:'technická + emisná', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-TAHAC-NAVESOV-Technicka-Emisna-kontrola' },
-    { t:'Kompletná STK — súprava', p:'ťahač + náves', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola' },
-    { t:'Kompletná STK — sólo', p:'technická + emisná', u:A+'KLASIK-NAKLADNE-VOZIDLA-SOLO-Technicka-Emisna-kontrola' },
-    { ...NAKL_TK, c:'85 €' }, { ...NAKL_EK, c:'75 €' }, { ...NAKL_OTK, c:'30 / 50 €' }, { ...NAKL_OEK, c:'30 / 42 €' },
-  ],
-  naves: [
-    { t:'Technická kontrola', p:'O3, O4 · pravidelná', top:1, c:'75 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola' },
-    { t:'Opakovaná technická', p:'do 60 dní', c:'40 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola' },
-    { t:'Kompletná STK — súprava', p:'ťahač + náves', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola' },
-  ],
-  autobus: [ { ...NAKL_TK, top:1 }, NAKL_EK, NAKL_OTK, NAKL_OEK ],
-  traktor: [
-    { t:'Kompletná STK', p:'traktor, pracovný stroj', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Technicka-Emisna-kontrola' },
-    { t:'Traktorová súprava', p:'traktor + prípojné vozidlo', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOROVA-SUPRAVA-Technicka-Emisna-kontrola' },
-    { t:'Technická kontrola', p:'pravidelná', c:'90 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PS-technicka-kontrola' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Opakovana-technicka-kontrola' },
-  ],
-  zeriav: [
-    { t:'Kompletná STK', p:'špeciálne, terénne vozidlo', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-SPECIALNE-Technicka-Emisna-kontrola' },
-    { t:'Technická kontrola', p:'N2G, N3G · pravidelná', c:'120 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TERENNE-Technicka-kontrola' },
-    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'45 / 70 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TERENNE-opakovana-Technicka-kontrola' },
-  ],
-};
-const POZN = {
-  kamion:'ADR a CEMT majú vlastné termíny → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',
-  naves:'ADR a CEMT náves → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',
-};
-
-/* naše služby — farby dlaždíc zo súčasného easycheck.sk (zmerané zo screenshotu 20. 10. 2026).
-   Ružová pri kolese šťastia = odhad (na starom webe je to farebný obrázok). 2 riadky: kontroly (skratky) · vybavíme za vás (+ koleso šťastia).
-   ⚠️ Vyrazenie VIN a evidencia vozidiel zatiaľ nemajú vlastnú stránku → /sluzby/. */
-const F = { tk:'#E2212A', ek:'#5BBA47', ko:'#13B4E2', tacho:'#CC6DE8', adr:'#FF914B', prihl:'#5271FF', vin:'#957221', ink:'#231F20', ruz:'#F27BB4', bie:'#FFFDF5', tyrk:'#14B8A6' };
-// v6: „Bez čakania na termín“ a „Víkendy aj sviatky“ sú v topbare
-
-/* ===================== STAV + VYKRESLENIE ===================== */
-const st = { sk:null, voz:null, pohon:null };
-const $ = id => document.getElementById(id);
-const vsetkyVoz = BLOKY.flatMap(b => b.voz);
-const najdi = id => vsetkyVoz.find(v => v.id === id);
-const spat = '<button class="spat" data-spat>← Späť</button>';
-
-function render(){
-  const el = $('vyber');
-
-  if(!st.sk){
-    el.innerHTML = `<div class="vyber-hl"><h2><small>Dobrý deň,</small>aké vozidlo vám skontrolujeme?</h2></div>
-      ${BLOKY.map(b => `
-        <a class="blok slab perf zatlac ${b.id}" href="/rezervacia/?v=${b.id === 'do' ? 'osobne' : 'nakladne'}">
-          <span class="k">${b.k}</span>
-          <b><img class="ikc" src="${b.ik}" alt=""><span class="tx">${b.t}</span><span class="sip" aria-hidden="true">→</span></b>
-          <small>${b.p}</small>
-        </a>`).join('')}`;
-    return;
-  }
-
-  if(!st.voz){
-    const b = BLOKY.find(x => x.id === st.sk);
-    el.innerHTML = `<div class="vyber-hl"><h2><small>${b.t}</small>Aké vozidlo?</h2>${spat}</div>
-      <div class="ikony">${b.voz.map(v => `
-        <button class="ik slab zatlac" data-voz="${v.id}"><svg viewBox="0 0 64 40" aria-hidden="true">${SVG[v.id]}</svg><span>${v.t}</span></button>`).join('')}
-      </div>`;
-    return;
-  }
-
-  const v = najdi(st.voz);
-  if(v.pohon && !st.pohon){
-    el.innerHTML = `<div class="vyber-hl"><h2><small>${v.t}</small>Aký má pohon?</h2>${spat}</div>
-      <ul class="riadky slab">${POHON.map(p => `
-        <li><button data-pohon="${p.id}"><span><b>${p.t}</b><small>${p.p}</small></span><span class="c">→</span></button></li>`).join('')}</ul>`;
-    return;
-  }
-
-  const kluc = v.pohon ? `auto:${st.pohon}` : v.id;
-  const pod = st.pohon ? POHON.find(p => p.id === st.pohon).t : '';
-  el.innerHTML = `<div class="vyber-hl"><h2><small>${v.t}</small>Akú službu potrebujete?</h2>${spat}</div>
-    ${pod ? `<p class="pozn">${pod}</p>` : ''}
-    <ul class="riadky slab">${KONTROLY[kluc].map(k => `
-      <li><a href="${k.u}"><span><b>${k.t}${k.top ? '<span class="stitok">najčastejšie</span>' : ''}</b><small>${k.p}</small></span>
-        <span class="c">${k.c || '→'}</span></a></li>`).join('')}</ul>
-    ${POZN[v.id] ? `<p class="pozn">${POZN[v.id]}</p>` : ''}
-    <p class="pozn">Termín vyberiete v rezervačnom systéme. Celý <a href="/cennik/">cenník</a>.</p>`;
-}
-
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-sk],[data-voz],[data-pohon],[data-spat]');
-  if(!b) return;
-  if(b.dataset.sk) st.sk = b.dataset.sk;
-  else if(b.dataset.voz) st.voz = b.dataset.voz;
-  else if(b.dataset.pohon) st.pohon = b.dataset.pohon;
-  else if(st.pohon) st.pohon = null; else if(st.voz) st.voz = null; else st.sk = null;
-  render();
-  $('vyber').scrollTop = 0;
-  if(b.hasAttribute('data-hore')) scrollTo({ top:0, behavior:'smooth' });
-});
-
-/* ===================== TOPBAR =====================
-   Hodiny: Po–Pia 7–20 (Matej 20. 10. 2026; firma.ts má ešte 19) · So 7–13 · Ne zatvorené · sviatky 7–15.
-   Sviatky JS nepozná (dnes by ukázal bežný deň) — doplniť zoznam dátumov, keď pôjde naostro.
-   ⚠️ TBD (žltý prerušovaný rámik): „voľná linka“ (zatiaľ natvrdo, nemá zdroj). Mobil 0908 731 178 = súčasný easycheck.sk. */
-const HOD = {1:[7,20],2:[7,20],3:[7,20],4:[7,20],5:[7,20],6:[7,13],0:null};
-const DNI = ['nedeľu','pondelok','utorok','stredu','štvrtok','piatok','sobotu'];
-function stav(){
-  const d = new Date(), den = d.getDay(), h = d.getHours() + d.getMinutes()/60, dnes = HOD[den];
-  if(dnes && h >= dnes[0] && h < dnes[1]) return `<span><i class="bod"></i>Teraz otvorené <span class="dim">· do ${dnes[1]}:00 ·</span> <span class="y tbd">voľná linka</span></span>`;
-  if(dnes && h < dnes[0]) return `<span><i class="bod zat"></i>Zatvorené <span class="dim">· otvárame o 07:00</span></span>`;
-  let n = (den + 1) % 7; while(!HOD[n]) n = (n + 1) % 7;
-  return `<span><i class="bod zat"></i>Zatvorené <span class="dim">· otvárame ${n === (den+1)%7 ? 'zajtra' : 'v ' + DNI[n]} 07:00</span></span>`;
-}
-// poradie: je otvorené? → kedy → výhody → kde → ako sa ozvať
-const info = stav() + `
+<script>var k;const A="https://Klasik.as.me/",KO_AUTO=A+"KLASIK-OSOBNY-AUTOMOBIL-Kontrola-originality",SVG={auto:'<path d="M5 30h54M9 30v-7l7-11h25l11 11h5v7"/><circle cx="19" cy="31" r="5"/><circle cx="46" cy="31" r="5"/>',dodavka:'<path d="M4 30V9h34l11 9h9v12M4 30h54M38 9v9h11"/><circle cx="16" cy="31" r="5"/><circle cx="47" cy="31" r="5"/>',moto:'<circle cx="14" cy="29" r="7"/><circle cx="50" cy="29" r="7"/><path d="M14 29l11-13h11l14 13M25 16l-3-6h-7M36 16h9"/>',stvorkolka:'<circle cx="15" cy="29" r="7"/><circle cx="49" cy="29" r="7"/><path d="M8 22h48l-6-8H20zM30 14l-4-7h-7M22 29h20"/>',vozik:'<path d="M8 11h32v15H8zM40 22h16"/><circle cx="24" cy="30" r="5"/>',kamion:'<path d="M2 7h36v19H2zM40 31V13h10l7 8v10M2 31h56"/><circle cx="10" cy="32" r="4"/><circle cx="20" cy="32" r="4"/><circle cx="49" cy="32" r="4"/>',naves:'<path d="M4 8h44v19H4zM48 22h10"/><circle cx="30" cy="31" r="4"/><circle cx="40" cy="31" r="4"/>',autobus:'<path d="M4 7h52v23H4zM4 17h52M14 7v10M26 7v10M38 7v10"/><circle cx="15" cy="31" r="4"/><circle cx="46" cy="31" r="4"/>',traktor:'<circle cx="18" cy="26" r="10"/><circle cx="50" cy="30" r="6"/><path d="M18 16V5h14l5 15h15v6M28 5v15"/>',zeriav:'<path d="M4 31V20h40v11M44 20h8l6 7v4M4 31h54M12 20L50 3M50 3v12"/><circle cx="12" cy="32" r="4"/><circle cx="24" cy="32" r="4"/><circle cx="50" cy="32" r="4"/>'},BLOKY=[{id:"do",ik:"ikony/auto-biela.webp",t:"Osobné",k:"do 3,5 t",p:"auto, dodávka, motorka, štvorkolka, vozík",voz:[{id:"auto",t:"Auto",pohon:1},{id:"dodavka",t:"Dodávka",pohon:1},{id:"moto",t:"Motorka"},{id:"stvorkolka",t:"Štvorkolka"},{id:"vozik",t:"Vozík"}]},{id:"nad",ik:"ikony/nakladne-biela.webp",t:"Nákladné",k:"nad 3,5 t",p:"kamión, náves, autobus, traktor, žeriav",voz:[{id:"kamion",t:"Kamión"},{id:"naves",t:"Náves"},{id:"autobus",t:"Autobus"},{id:"traktor",t:"Traktor"},{id:"zeriav",t:"Žeriav"}]}],POHON=[{id:"bd",t:"Benzín / diesel",p:"bežné auto"},{id:"alt",t:"LPG, CNG, hybrid, elektro",p:"alternatívny pohon"},{id:"kat",t:"NKAT / BKAT",p:"staršie benzínové ročníky"}],MOTO=[{t:"Kompletná STK",p:"L3, L4, L6",top:1,u:"https://klasik.as.me/motocykel-L3-L4-L6"},{t:"Kompletná STK",p:"L5, L7",u:"https://klasik.as.me/motocykel-L5-L7"},{t:"Technická kontrola",p:"motocykel, trojkolka, štvorkolka",c:"45 €",u:A+"Technicka-kontrola-motocykel-trojkolka-stvorkolka"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"25 / 30 €",u:A+"Opakovana-technicka-kontrola-motocykel-trojkolka-stvorkolka"}],NAKL_TK={t:"Technická kontrola",p:"pravidelná",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-kontrola"},NAKL_EK={t:"Emisná kontrola",p:"pravidelná",u:A+"KLASIK-NAKLADNE-VOZIDLA-Emisna-kontrola"},NAKL_OTK={t:"Opakovaná technická",p:"v deň / do 60 dní",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-opakovana-Technicka-kontrola"},NAKL_OEK={t:"Opakovaná emisná",p:"v deň / do 60 dní",u:A+"KLASIK-NAKLADNE-VOZIDLA-opakovana-Emisna-kontrola"},KONTROLY={"auto:bd":[{t:"Technická + emisná",p:"kompletná STK naraz",top:1,u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola"},{t:"Technická kontrola",p:"pravidelná",c:"60 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola"},{t:"Emisná kontrola",p:"pravidelná",c:"60 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-Benzin-Diesel"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"20 / 35 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Opakovana-Technicka-kontrola"},{t:"Opakovaná emisná",p:"v deň / do 60 dní",c:"20 / 30 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-Benzin-Diesel"},{t:"Kontrola originality",p:"automobil M1",c:"120 €",u:KO_AUTO}],"auto:alt":[{t:"Technická + emisná",p:"kompletná STK naraz",top:1,u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-HYBRID"},{t:"Technická kontrola",p:"pravidelná",c:"65 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA"},{t:"Emisná kontrola",p:"pravidelná",c:"75 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-LPG-CNG-HYBRID"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"20 / 35 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA"},{t:"Opakovaná emisná",p:"v deň / do 60 dní",c:"35 / 50 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-LPG-CNG-HYBRID"},{t:"Kontrola originality",p:"automobil M1",c:"120 €",u:KO_AUTO}],"auto:kat":[{t:"Technická + emisná",p:"kompletná STK naraz",top:1,u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-BKAT-NKAT"},{t:"Technická kontrola",p:"pravidelná",c:"60 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola"},{t:"Emisná kontrola",p:"pravidelná",c:"75 €",u:A+"KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-NKAT-BKAT"},{t:"Opakovaná emisná",p:"v deň / do 60 dní",c:"30 / 45 €",u:A+"KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-NKAT-BKAT"},{t:"Kontrola originality",p:"automobil M1",c:"120 €",u:KO_AUTO}],moto:[...MOTO,{t:"Kontrola originality",p:"malý motocykel",u:A+"KLASIK-MALY-MOTOCYKEL-Kontrola-originality"},{t:"Kontrola originality",p:"veľký motocykel",u:A+"KLASIK-VELKY-MOTOCYKEL-Kontrola-originality"}],stvorkolka:MOTO,vozik:[{t:"Technická kontrola",p:"O1, O2 · pravidelná",top:1,c:"35 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola"},{t:"Opakovaná technická",p:"do 60 dní",c:"20 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola"}],kamion:[{t:"Kompletná STK — ťahač",p:"technická + emisná",top:1,u:A+"KLASIK-NAKLADNE-VOZIDLA-TAHAC-NAVESOV-Technicka-Emisna-kontrola"},{t:"Kompletná STK — súprava",p:"ťahač + náves",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola"},{t:"Kompletná STK — sólo",p:"technická + emisná",u:A+"KLASIK-NAKLADNE-VOZIDLA-SOLO-Technicka-Emisna-kontrola"},{...NAKL_TK,c:"85 €"},{...NAKL_EK,c:"75 €"},{...NAKL_OTK,c:"30 / 50 €"},{...NAKL_OEK,c:"30 / 42 €"}],naves:[{t:"Technická kontrola",p:"O3, O4 · pravidelná",top:1,c:"75 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola"},{t:"Opakovaná technická",p:"do 60 dní",c:"40 €",u:A+"KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola"},{t:"Kompletná STK — súprava",p:"ťahač + náves",u:A+"KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola"}],autobus:[{...NAKL_TK,top:1},NAKL_EK,NAKL_OTK,NAKL_OEK],traktor:[{t:"Kompletná STK",p:"traktor, pracovný stroj",top:1,u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Technicka-Emisna-kontrola"},{t:"Traktorová súprava",p:"traktor + prípojné vozidlo",u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOROVA-SUPRAVA-Technicka-Emisna-kontrola"},{t:"Technická kontrola",p:"pravidelná",c:"90 €",u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PS-technicka-kontrola"},{t:"Opakovaná technická",p:"v deň / do 60 dní",u:A+"KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Opakovana-technicka-kontrola"}],zeriav:[{t:"Kompletná STK",p:"špeciálne, terénne vozidlo",top:1,u:A+"KLASIK-NAKLADNE-VOZIDLA-SPECIALNE-Technicka-Emisna-kontrola"},{t:"Technická kontrola",p:"N2G, N3G · pravidelná",c:"120 €",u:A+"KLASIK-NAKLADNE-VOZIDLA-TERENNE-Technicka-kontrola"},{t:"Opakovaná technická",p:"v deň / do 60 dní",c:"45 / 70 €",u:A+"KLASIK-NAKLADNE-VOZIDLA-TERENNE-opakovana-Technicka-kontrola"}]},POZN={kamion:'ADR a CEMT majú vlastné termíny → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',naves:'ADR a CEMT náves → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>'},F={tk:"#E2212A",ek:"#5BBA47",ko:"#13B4E2",tacho:"#CC6DE8",adr:"#FF914B",prihl:"#5271FF",vin:"#957221",ink:"#231F20",ruz:"#F27BB4",bie:"#FFFDF5",tyrk:"#14B8A6"},st={sk:null,voz:null,pohon:null},$=e=>document.getElementById(e),vsetkyVoz=BLOKY.flatMap(e=>e.voz),najdi=e=>vsetkyVoz.find(t=>t.id===e),spat='<button class="spat" data-spat>← Späť</button>';function render(){const e=$("vyber");if(!st.sk){e.innerHTML=`<div class="vyber-hl"><h2><small>Dobrý deň,</small>aké vozidlo vám skontrolujeme?</h2></div>
+      ${BLOKY.map(o=>`
+        <a class="blok slab perf zatlac ${o.id}" href="/rezervacia/?v=${o.id==="do"?"osobne":"nakladne"}">
+          <span class="k">${o.k}</span>
+          <b><img class="ikc" src="${o.ik}" alt=""><span class="tx">${o.t}</span><span class="sip" aria-hidden="true">→</span></b>
+          <small>${o.p}</small>
+        </a>`).join("")}`;return}if(!st.voz){const o=BLOKY.find(r=>r.id===st.sk);e.innerHTML=`<div class="vyber-hl"><h2><small>${o.t}</small>Aké vozidlo?</h2>${spat}</div>
+      <div class="ikony">${o.voz.map(r=>`
+        <button class="ik slab zatlac" data-voz="${r.id}"><svg viewBox="0 0 64 40" aria-hidden="true">${SVG[r.id]}</svg><span>${r.t}</span></button>`).join("")}
+      </div>`;return}const t=najdi(st.voz);if(t.pohon&&!st.pohon){e.innerHTML=`<div class="vyber-hl"><h2><small>${t.t}</small>Aký má pohon?</h2>${spat}</div>
+      <ul class="riadky slab">${POHON.map(o=>`
+        <li><button data-pohon="${o.id}"><span><b>${o.t}</b><small>${o.p}</small></span><span class="c">→</span></button></li>`).join("")}</ul>`;return}const a=t.pohon?`auto:${st.pohon}`:t.id,n=st.pohon?POHON.find(o=>o.id===st.pohon).t:"";e.innerHTML=`<div class="vyber-hl"><h2><small>${t.t}</small>Akú službu potrebujete?</h2>${spat}</div>
+    ${n?`<p class="pozn">${n}</p>`:""}
+    <ul class="riadky slab">${KONTROLY[a].map(o=>`
+      <li><a href="${o.u}"><span><b>${o.t}${o.top?'<span class="stitok">najčastejšie</span>':""}</b><small>${o.p}</small></span>
+        <span class="c">${o.c||"→"}</span></a></li>`).join("")}</ul>
+    ${POZN[t.id]?`<p class="pozn">${POZN[t.id]}</p>`:""}
+    <p class="pozn">Termín vyberiete v rezervačnom systéme. Celý <a href="/cennik/">cenník</a>.</p>`}document.addEventListener("click",e=>{const t=e.target.closest("[data-sk],[data-voz],[data-pohon],[data-spat]");t&&(t.dataset.sk?st.sk=t.dataset.sk:t.dataset.voz?st.voz=t.dataset.voz:t.dataset.pohon?st.pohon=t.dataset.pohon:st.pohon?st.pohon=null:st.voz?st.voz=null:st.sk=null,render(),$("vyber").scrollTop=0,t.hasAttribute("data-hore")&&scrollTo({top:0,behavior:"smooth"}))});const HOD={1:[7,20],2:[7,20],3:[7,20],4:[7,20],5:[7,20],6:[7,13],0:null},DNI=["nedeľu","pondelok","utorok","stredu","štvrtok","piatok","sobotu"];function stav(){const e=new Date,t=e.getDay(),a=e.getHours()+e.getMinutes()/60,n=HOD[t];if(n&&a>=n[0]&&a<n[1])return`<span><i class="bod"></i>Teraz otvorené <span class="dim">· do ${n[1]}:00 ·</span> <span class="y tbd">voľná linka</span></span>`;if(n&&a<n[0])return'<span><i class="bod zat"></i>Zatvorené <span class="dim">· otvárame o 07:00</span></span>';let o=(t+1)%7;for(;!HOD[o];)o=(o+1)%7;return`<span><i class="bod zat"></i>Zatvorené <span class="dim">· otvárame ${o===(t+1)%7?"zajtra":"v "+DNI[o]} 07:00</span></span>`}const info=stav()+`
   <span>Po – Pia 07 – 20 <span class="dim">·</span> So 07 – 13 <span class="dim">·</span> Sviatky 07 – 15</span>
   <a class="pp" href="/#kontakt">Víkendy aj sviatky</a>
   <a class="pp" href="/rezervacia/">Termín bez čakania</a>
   <a href="https://www.google.com/maps?cid=161974492916168468">Technická ulica, Trnava <span class="dim">· smer Dolná Krupá</span> <span class="y">→</span></a>
-  <span><a href="tel:+421908731178">0908 731 178</a><span class="dim">·</span><a href="mailto:stk@easycheck.sk">stk@easycheck.sk</a></span>`;
-// 2× kvôli plynulej slučke (posun o -50 %)
-$('pas').innerHTML = info;
-const kopia = [...$('pas').children].map(e => e.outerHTML.replace(/^<(\w+)/, '<$1 aria-hidden="true"')).join('');
-$('pas').insertAdjacentHTML('beforeend', kopia);
-$('pas').querySelectorAll('[aria-hidden] a, a[aria-hidden]').forEach(a => a.tabIndex = -1);
-
-
-/* ===================== FOTKY ===================== */
-const fotky = [...document.querySelectorAll('.foto img')], bodky = [...document.querySelectorAll('.bodky i')];
-let fi = 0;
-if(!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => {
-  fotky[fi].classList.remove('on'); bodky[fi].classList.remove('on');
-  fi = (fi + 1) % fotky.length;
-  fotky[fi].classList.add('on'); bodky[fi].classList.add('on');
-}, 6000);
-
-/* ===================== JAZYKY =====================
-   SK + susedia + angličtina. Preklady zatiaľ nie sú — položky okrem SK sú „pripravujeme“. */
-const VLAJKY = {
-  sk:'<rect width="30" height="20" fill="#fff"/><rect y="6.67" width="30" height="6.67" fill="#0B4EA2"/><rect y="13.33" width="30" height="6.67" fill="#EE1C25"/><path d="M5.5 4.5h9v6.2c0 3-2.2 4.6-4.5 5.6-2.3-1-4.5-2.6-4.5-5.6z" fill="#EE1C25" stroke="#fff" stroke-width=".9"/><path d="M10 6v7.4M7.8 8h4.4M8.4 10.2h3.2" stroke="#fff" stroke-width="1.1"/><path d="M6.6 13c1-1 2.2-1 3.4 0 1.2-1 2.4-1 3.4 0v.6c-.9 1.2-2 1.9-3.4 2.4-1.4-.5-2.5-1.2-3.4-2.4z" fill="#0B4EA2"/>',
-  cz:'<rect width="30" height="10" fill="#fff"/><rect y="10" width="30" height="10" fill="#D7141A"/><path d="M0 0l15 10L0 20z" fill="#11457E"/>',
-  pl:'<rect width="30" height="10" fill="#fff"/><rect y="10" width="30" height="10" fill="#DC143C"/>',
-  hu:'<rect width="30" height="6.67" fill="#CD2A3E"/><rect y="6.67" width="30" height="6.67" fill="#fff"/><rect y="13.33" width="30" height="6.67" fill="#436F4D"/>',
-  de:'<rect width="30" height="6.67" fill="#000"/><rect y="6.67" width="30" height="6.67" fill="#DD0000"/><rect y="13.33" width="30" height="6.67" fill="#FFCE00"/>',
-  es:'<rect width="30" height="20" fill="#AA151B"/><rect y="5" width="30" height="10" fill="#F1BF00"/>',
-  ua:'<rect width="30" height="10" fill="#0057B7"/><rect y="10" width="30" height="10" fill="#FFD700"/>',
-  gb:'<rect width="30" height="20" fill="#012169"/><path d="M0 0l30 20M30 0L0 20" stroke="#fff" stroke-width="4"/><path d="M0 0l30 20M30 0L0 20" stroke="#C8102E" stroke-width="1.5"/><path d="M15 0v20M0 10h30" stroke="#fff" stroke-width="6"/><path d="M15 0v20M0 10h30" stroke="#C8102E" stroke-width="3.4"/>',
-};
-const JAZYKY = [
-  ['sk','Slovenčina','SK'], ['cz','Čeština','CZ'], ['pl','Polski','PL'], ['hu','Magyar','HU'],
-  ['de','Deutsch','DE'], ['ua','Українська','UA'], ['gb','English','EN'], ['es','Español','ES'],
-];
-const vlajka = k => `<svg class="vlajka" viewBox="0 0 30 20" aria-hidden="true">${VLAJKY[k]}</svg>`;
-$('vlajka-akt').outerHTML = vlajka('sk');
-const jazykyLi = JAZYKY.map(([k,n,c]) => `<li><a href="#" lang="${c.toLowerCase()}" class="${k==='sk'?'akt':''}">${vlajka(k)}<span>${n}</span>${k==='sk'?`<small>${c}</small>`:''}</a></li>`).join('');
-$('jazyky').innerHTML = $('jazyky-menu').innerHTML = jazykyLi;
-$('vlajka-menu').outerHTML = vlajka('sk');
-const jz = document.querySelector('.jazyk');
-const mn = document.querySelector('.menu');
-document.addEventListener('click', e => {
-  if(jz.open && !jz.contains(e.target)) jz.open = false;
-  if(mn.open && !mn.contains(e.target)) mn.open = false;
-  if(mn.open && e.target.closest('.menu-panel a[href^="#"]')) mn.open = false;
-});
-
-/* ===================== TVAR HEADERU ===================== */
-const hl = document.querySelector('.hl'), tvar = hl.querySelector('.hl-tvar');
-function kresli(){
-  const cs = getComputedStyle(hl), px = n => parseFloat(cs.getPropertyValue(n));
-  const w = hl.clientWidth, H = px('--hb'), T = px('--zt'), W = px('--zw'), S = px('--zs'), r = 16, k = 10, o = 1.5;
-  const d = [
-    `M${r},${o}`, `H${w-r}`, `Q${w-o},${o} ${w-o},${r}`, `V${H-r}`, `Q${w-o},${H-o} ${w-r},${H-o}`,
-    `H${W+S+k}`, `Q${W+S},${H-o} ${W+S-k*.7},${H+k*.7}`,          // vnútorný oblúk na začiatku šikminy
-    `L${W+k*.7},${H+T-k*.7-o}`, `Q${W},${H+T-o} ${W-k},${H+T-o}`, // šikmina dole k zástavke
-    `H${r}`, `Q${o},${H+T-o} ${o},${H+T-r}`, `V${r}`, `Q${o},${o} ${r},${o}`, 'Z'
-  ].join(' ');
-  tvar.setAttribute('width', w + 8); tvar.setAttribute('height', H + T + 8);
-  tvar.querySelector('.plast').setAttribute('d', d);
-  const t = tvar.querySelector('.tien'); t.setAttribute('d', d); t.setAttribute('transform', 'translate(6 6)');
-}
-new ResizeObserver(kresli).observe(hl);
-kresli();
-
-/* ===================== v7 · SEKCIE POD HERO ===================== */
-// dlaždice služieb — texty zo stk-web/src/data/sluzby.ts a obsah.ts (skrátené, bez nových faktov)
-const IK = {
-  lupa:'<svg viewBox="0 0 64 64"><circle class="zl" cx="26" cy="26" r="15"/><circle cx="26" cy="26" r="15"/><path d="M37 37l17 17"/><path d="M19 26l5 5 9-10"/></svg>',
-  tacho:'<svg viewBox="0 0 64 64"><path class="zl" d="M10 44a22 22 0 0144 0z"/><path d="M8 46a24 24 0 0148 0"/><path d="M32 46l10-14"/><circle cx="32" cy="46" r="3.5"/><path d="M8 54h48M14 34l4 2.5M50 34l-4 2.5M32 22v5"/></svg>',
-  doklad:'<svg viewBox="0 0 64 64"><path d="M14 6h26l12 12v40H14z"/><path d="M40 6v12h12"/><rect class="zl" x="20" y="40" width="26" height="10" rx="2"/><rect x="20" y="40" width="26" height="10" rx="2"/><path d="M20 26h22M20 33h16"/></svg>',
-  // v13: výzdvih = kľúč v kruhu zo šípok (vyzdvihneme → skontrolujeme → vrátime)
-  kluc:'<svg viewBox="0 0 64 64"><path d="M52 22A23 23 0 0013 18"/><path d="M12 9v9h9"/><path d="M12 42a23 23 0 0039 4"/><path d="M52 55v-9h-9"/><circle class="zl" cx="24" cy="32" r="7"/><circle cx="24" cy="32" r="7"/><path d="M31 32h17M42 32v6M47 32v4"/></svg>',
-};
-// v8: farby + značky prevzaté z bývalých pills v hero (TK/EK, ADR/CEMT, VIN, evidencia); tyrkys pri výzdvihu je nová farba
-const DLAZDICE = [
-  { t:'STK + KO', p:'Všetky druhy a veľkosti vozidiel. Originalitu overíme na počkanie.', img:'ikony/auto-cierna.png', h:'/rezervacia/', f:'var(--y)', zn:[['TK',F.tk],['EK',F.ek],['KO',F.ko]] },
-  { t:'ADR a CEMT', p:'Kontroly pre prepravné povolenia. V nákladných vozidlách sa vyznáme.', img:'ikony/cisterna-cierna.png', h:'/rezervacia/#adr-cemt', f:F.adr, zn:['ADR','CEMT'] },
-  { t:'Tachografy', p:'Tachograf aj STK v jeden deň. Najvýhodnejšie pre dopravcov.', svg:IK.tacho, h:'/sluzby/#tachografy', f:F.ruz, zn:['Montáž','Servis','Overenie'] },
-  { t:'Prihlasovanie vozidiel', p:'Nestresujte sa s byrokraciou. Stačí podpis, zvyšok vybavíme my.', svg:IK.doklad, h:'/sluzby/#prihlasovanie', f:F.prihl, b:1, zn:['Úrady','Preklady','Polícia'] },
-  { t:'Výzdvih vozidla', p:'Na STK nemusíte ísť. Vyzdvihneme, skontrolujeme, vrátime.', svg:IK.kluc, h:'/sluzby/#vyzdvihnutie', f:F.tyrk, zn:['Do 15 km','0 min na STK'] },
-  // v8: „pomôž mi“ — čokoľvek okolo vozidla; VIN a evidencia zatiaľ bez vlastnej stránky
-  { t:'Ďalšie služby', p:'Zastrešíme o mnoho viac, než si myslíte. Stačí sa opýtať.', svg:IK.lupa, h:'/sluzby/', f:F.ek, zn:['Vyrazenie VIN','Evidencia vozidiel'] },
-];
-$('dlazdice').innerHTML = DLAZDICE.map((d, i) => `
-  <a class="dl slab perf ani nal${d.b ? ' biely' : ''}" style="--i:${i};--f:${d.f}" href="${d.h}">
-    <span class="ik3">${d.img ? `<img src="${d.img}" alt="">` : d.svg}</span>
-    <h3>${d.t}<span aria-hidden="true">→</span></h3>
-    <p>${d.p}</p>
-    ${d.zn ? `<span class="zn">${d.zn.map(z => Array.isArray(z) ? `<span class="far" style="background:${z[1]}">${z[0]}</span>` : `<span>${z}</span>`).join('')}</span>` : ''}
-  </a>`).join('');
-
-// rebríček STK podľa počtu Google recenzií. Živé čísla: data/google-recenzie.json
-// (obnovuje scripts/google-recenzie.py cez Places API). Ak súbor nejde načítať (file://, výpadok), ostane záloha nižšie.
-const REC_ZALOHA = { datum:'2026-10-20', zdroj:'Google Mapy, 363 staníc STK na Slovensku', stanice:[
-  {nazov:'Easy Check',mesto:'Trnava',my:true,hodnotenie:4.9,recenzie:5719}, {nazov:'STK Control',mesto:'Prešov',hodnotenie:4.9,recenzie:2780},
-  {nazov:'STK Robson',mesto:'Nitra',hodnotenie:4.8,recenzie:981}, {nazov:'Biga STK',mesto:'Bratislava',hodnotenie:4.5,recenzie:952},
-  {nazov:'STK Fotes',mesto:'Dunajská Lužná',hodnotenie:4.6,recenzie:839}, {nazov:'TÜV SÜD',mesto:'Žilina',hodnotenie:5.0,recenzie:823},
-  {nazov:'JP Control',mesto:'Pezinok',hodnotenie:4.8,recenzie:786}, {nazov:'DEKRA Petržalka',mesto:'Bratislava',hodnotenie:4.3,recenzie:784},
-  {nazov:'TÜV SÜD Bory',mesto:'Bratislava',hodnotenie:4.9,recenzie:758}, {nazov:'STK Pri prachárni',mesto:'Košice',hodnotenie:4.6,recenzie:736},
-]};
-const cislo = n => n.toLocaleString('sk-SK');
-const desat = h => h.toFixed(1).replace('.', ',');
-function rebricek(d){
-  const top = d.stanice.slice().sort((a,b) => b.recenzie - a.recenzie).slice(0, 10);
-  const max = top[0].recenzie, my = top.find(s => s.my);
-  $('top10').innerHTML = top.map((s, i) => `
-    <li class="${s.my?'my':''}${i>=5?' skryt':''}" style="--i:${i};--w:${(s.recenzie / max * 100).toFixed(1)}%">
-      ${s.my ? '<span class="sme">To sme my</span>' : ''}
-      <span class="p">${s.my ? '#' + (i+1) : String(i+1).padStart(2,'0')}</span>
+  <span><a href="tel:+421908731178">0908 731 178</a><span class="dim">·</span><a href="mailto:stk@easycheck.sk">stk@easycheck.sk</a></span>`;$("pas").innerHTML=info;const kopia=[...$("pas").children].map(e=>e.outerHTML.replace(/^<(\w+)/,'<$1 aria-hidden="true"')).join("");$("pas").insertAdjacentHTML("beforeend",kopia),$("pas").querySelectorAll("[aria-hidden] a, a[aria-hidden]").forEach(e=>e.tabIndex=-1);const fotky=[...document.querySelectorAll(".foto img")],bodky=[...document.querySelectorAll(".bodky i")];let fi=0;matchMedia("(prefers-reduced-motion: reduce)").matches||setInterval(()=>{fotky[fi].classList.remove("on"),bodky[fi].classList.remove("on"),fi=(fi+1)%fotky.length,fotky[fi].classList.add("on"),bodky[fi].classList.add("on")},6e3);const VLAJKY={sk:'<rect width="30" height="20" fill="#fff"/><rect y="6.67" width="30" height="6.67" fill="#0B4EA2"/><rect y="13.33" width="30" height="6.67" fill="#EE1C25"/><path d="M5.5 4.5h9v6.2c0 3-2.2 4.6-4.5 5.6-2.3-1-4.5-2.6-4.5-5.6z" fill="#EE1C25" stroke="#fff" stroke-width=".9"/><path d="M10 6v7.4M7.8 8h4.4M8.4 10.2h3.2" stroke="#fff" stroke-width="1.1"/><path d="M6.6 13c1-1 2.2-1 3.4 0 1.2-1 2.4-1 3.4 0v.6c-.9 1.2-2 1.9-3.4 2.4-1.4-.5-2.5-1.2-3.4-2.4z" fill="#0B4EA2"/>',cz:'<rect width="30" height="10" fill="#fff"/><rect y="10" width="30" height="10" fill="#D7141A"/><path d="M0 0l15 10L0 20z" fill="#11457E"/>',pl:'<rect width="30" height="10" fill="#fff"/><rect y="10" width="30" height="10" fill="#DC143C"/>',hu:'<rect width="30" height="6.67" fill="#CD2A3E"/><rect y="6.67" width="30" height="6.67" fill="#fff"/><rect y="13.33" width="30" height="6.67" fill="#436F4D"/>',de:'<rect width="30" height="6.67" fill="#000"/><rect y="6.67" width="30" height="6.67" fill="#DD0000"/><rect y="13.33" width="30" height="6.67" fill="#FFCE00"/>',es:'<rect width="30" height="20" fill="#AA151B"/><rect y="5" width="30" height="10" fill="#F1BF00"/>',ua:'<rect width="30" height="10" fill="#0057B7"/><rect y="10" width="30" height="10" fill="#FFD700"/>',gb:'<rect width="30" height="20" fill="#012169"/><path d="M0 0l30 20M30 0L0 20" stroke="#fff" stroke-width="4"/><path d="M0 0l30 20M30 0L0 20" stroke="#C8102E" stroke-width="1.5"/><path d="M15 0v20M0 10h30" stroke="#fff" stroke-width="6"/><path d="M15 0v20M0 10h30" stroke="#C8102E" stroke-width="3.4"/>'},JAZYKY=[["sk","Slovenčina","SK"],["cz","Čeština","CZ"],["pl","Polski","PL"],["hu","Magyar","HU"],["de","Deutsch","DE"],["ua","Українська","UA"],["gb","English","EN"],["es","Español","ES"]],vlajka=e=>`<svg class="vlajka" viewBox="0 0 30 20" aria-hidden="true">${VLAJKY[e]}</svg>`;$("vlajka-akt").outerHTML=vlajka("sk");const jazykyLi=JAZYKY.map(([e,t,a])=>`<li><a href="#" lang="${a.toLowerCase()}" class="${e==="sk"?"akt":""}">${vlajka(e)}<span>${t}</span>${e==="sk"?`<small>${a}</small>`:""}</a></li>`).join("");$("jazyky").innerHTML=$("jazyky-menu").innerHTML=jazykyLi,$("vlajka-menu").outerHTML=vlajka("sk");const jz=document.querySelector(".jazyk"),mn=document.querySelector(".menu");document.addEventListener("click",e=>{jz.open&&!jz.contains(e.target)&&(jz.open=!1),mn.open&&!mn.contains(e.target)&&(mn.open=!1),mn.open&&e.target.closest('.menu-panel a[href^="#"]')&&(mn.open=!1)});const hl=document.querySelector(".hl"),tvar=hl.querySelector(".hl-tvar");function kresli(){const e=getComputedStyle(hl),t=h=>parseFloat(e.getPropertyValue(h)),a=hl.clientWidth,n=t("--hb"),o=t("--zt"),r=t("--zw"),l=t("--zs"),s=16,c=10,i=1.5,d=[`M${s},${i}`,`H${a-s}`,`Q${a-i},${i} ${a-i},${s}`,`V${n-s}`,`Q${a-i},${n-i} ${a-s},${n-i}`,`H${r+l+c}`,`Q${r+l},${n-i} ${r+l-c*.7},${n+c*.7}`,`L${r+c*.7},${n+o-c*.7-i}`,`Q${r},${n+o-i} ${r-c},${n+o-i}`,`H${s}`,`Q${i},${n+o-i} ${i},${n+o-s}`,`V${s}`,`Q${i},${i} ${s},${i}`,"Z"].join(" ");tvar.setAttribute("width",a+8),tvar.setAttribute("height",n+o+8),tvar.querySelector(".plast").setAttribute("d",d);const p=tvar.querySelector(".tien");p.setAttribute("d",d),p.setAttribute("transform","translate(6 6)")}new ResizeObserver(kresli).observe(hl),kresli();const IK={lupa:'<svg viewBox="0 0 64 64"><circle class="zl" cx="26" cy="26" r="15"/><circle cx="26" cy="26" r="15"/><path d="M37 37l17 17"/><path d="M19 26l5 5 9-10"/></svg>',tacho:'<svg viewBox="0 0 64 64"><path class="zl" d="M10 44a22 22 0 0144 0z"/><path d="M8 46a24 24 0 0148 0"/><path d="M32 46l10-14"/><circle cx="32" cy="46" r="3.5"/><path d="M8 54h48M14 34l4 2.5M50 34l-4 2.5M32 22v5"/></svg>',doklad:'<svg viewBox="0 0 64 64"><path d="M14 6h26l12 12v40H14z"/><path d="M40 6v12h12"/><rect class="zl" x="20" y="40" width="26" height="10" rx="2"/><rect x="20" y="40" width="26" height="10" rx="2"/><path d="M20 26h22M20 33h16"/></svg>',kluc:'<svg viewBox="0 0 64 64"><path d="M52 22A23 23 0 0013 18"/><path d="M12 9v9h9"/><path d="M12 42a23 23 0 0039 4"/><path d="M52 55v-9h-9"/><circle class="zl" cx="24" cy="32" r="7"/><circle cx="24" cy="32" r="7"/><path d="M31 32h17M42 32v6M47 32v4"/></svg>'},DLAZDICE=[{t:"STK + KO",p:"Všetky druhy a veľkosti vozidiel. Originalitu overíme na počkanie.",img:"ikony/auto-cierna.webp",h:"/rezervacia/",f:"var(--y)",zn:[["TK",F.tk],["EK",F.ek],["KO",F.ko]]},{t:"ADR a CEMT",p:"Kontroly pre prepravné povolenia. V nákladných vozidlách sa vyznáme.",img:"ikony/cisterna-cierna.webp",h:"/rezervacia/#adr-cemt",f:F.adr,zn:["ADR","CEMT"]},{t:"Tachografy",p:"Tachograf aj STK v jeden deň. Najvýhodnejšie pre dopravcov.",svg:IK.tacho,h:"/sluzby/#tachografy",f:F.ruz,zn:["Montáž","Servis","Overenie"]},{t:"Prihlasovanie vozidiel",p:"Nestresujte sa s byrokraciou. Stačí podpis, zvyšok vybavíme my.",svg:IK.doklad,h:"/sluzby/#prihlasovanie",f:F.prihl,b:1,zn:["Úrady","Preklady","Polícia"]},{t:"Výzdvih vozidla",p:"Na STK nemusíte ísť. Vyzdvihneme, skontrolujeme, vrátime.",svg:IK.kluc,h:"/sluzby/#vyzdvihnutie",f:F.tyrk,zn:["Do 15 km","0 min na STK"]},{t:"Ďalšie služby",p:"Zastrešíme o mnoho viac, než si myslíte. Stačí sa opýtať.",svg:IK.lupa,h:"/sluzby/",f:F.ek,zn:["Vyrazenie VIN","Evidencia vozidiel"]}];$("dlazdice").innerHTML=DLAZDICE.map((e,t)=>`
+  <a class="dl slab perf ani nal${e.b?" biely":""}" style="--i:${t};--f:${e.f}" href="${e.h}">
+    <span class="ik3">${e.img?`<img src="${e.img}" alt="">`:e.svg}</span>
+    <h3>${e.t}<span aria-hidden="true">→</span></h3>
+    <p>${e.p}</p>
+    ${e.zn?`<span class="zn">${e.zn.map(a=>Array.isArray(a)?`<span class="far" style="background:${a[1]}">${a[0]}</span>`:`<span>${a}</span>`).join("")}</span>`:""}
+  </a>`).join("");const REC_ZALOHA={datum:"2026-10-20",zdroj:"Google Mapy, 363 staníc STK na Slovensku",stanice:[{nazov:"Easy Check",mesto:"Trnava",my:!0,hodnotenie:4.9,recenzie:5719},{nazov:"STK Control",mesto:"Prešov",hodnotenie:4.9,recenzie:2780},{nazov:"STK Robson",mesto:"Nitra",hodnotenie:4.8,recenzie:981},{nazov:"Biga STK",mesto:"Bratislava",hodnotenie:4.5,recenzie:952},{nazov:"STK Fotes",mesto:"Dunajská Lužná",hodnotenie:4.6,recenzie:839},{nazov:"TÜV SÜD",mesto:"Žilina",hodnotenie:5,recenzie:823},{nazov:"JP Control",mesto:"Pezinok",hodnotenie:4.8,recenzie:786},{nazov:"DEKRA Petržalka",mesto:"Bratislava",hodnotenie:4.3,recenzie:784},{nazov:"TÜV SÜD Bory",mesto:"Bratislava",hodnotenie:4.9,recenzie:758},{nazov:"STK Pri prachárni",mesto:"Košice",hodnotenie:4.6,recenzie:736}]},cislo=e=>e.toLocaleString("sk-SK"),desat=e=>e.toFixed(1).replace(".",",");function rebricek(e){const t=e.stanice.slice().sort((s,c)=>c.recenzie-s.recenzie).slice(0,10),a=t[0].recenzie,n=t.find(s=>s.my);$("top10").innerHTML=t.map((s,c)=>`
+    <li class="${s.my?"my":""}${c>=5?" skryt":""}" style="--i:${c};--w:${(s.recenzie/a*100).toFixed(1)}%">
+      ${s.my?'<span class="sme">To sme my</span>':""}
+      <span class="p">${s.my?"#"+(c+1):String(c+1).padStart(2,"0")}</span>
       <span class="n"><b>${s.nazov}<em><i>★</i>${desat(s.hodnotenie)}</em></b><small>${s.mesto}</small></span>
       <span class="h">${cislo(s.recenzie)}<small>recenzií</small></span>
       <span class="pruh"><i></i></span>
-    </li>`).join('');
-  const [r,m,dd] = d.datum.split('-');
-  $('zdroj').textContent = `Zdroj: ${d.zdroj} · stav k ${+dd}. ${+m}. ${r}`;
-  if(!my) return;
-  $('rec-pocet').dataset.cena = my.recenzie;
-  if($('rec-pocet').textContent !== '0') $('rec-pocet').textContent = cislo(my.recenzie);
-  $('rec-hv').textContent = desat(my.hodnotenie);
-}
-rebricek(REC_ZALOHA);
-fetch('data/google-recenzie.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null)
-  .then(d => d?.stanice?.length && rebricek({ zdroj:'Google', ...d })).catch(() => {});
-$('viac').addEventListener('click', e => {
-  const t = e.currentTarget, o = t.closest('.tab').classList.toggle('cela');
-  t.setAttribute('aria-expanded', o);
-  t.firstChild.textContent = o ? 'Zobraziť len TOP 5 ' : 'Zobraziť celú TOP 10 ';
-});
+    </li>`).join("");const[o,r,l]=e.datum.split("-");$("zdroj").textContent=`Zdroj: ${e.zdroj} · stav k ${+l}. ${+r}. ${o}`,n&&($("rec-pocet").dataset.cena=n.recenzie,$("rec-pocet").textContent!=="0"&&($("rec-pocet").textContent=cislo(n.recenzie)),$("rec-hv").textContent=desat(n.hodnotenie))}rebricek(REC_ZALOHA),fetch("data/google-recenzie.json",{cache:"no-store"}).then(e=>e.ok?e.json():null).then(e=>{var t;return((t=e==null?void 0:e.stanice)==null?void 0:t.length)&&rebricek({zdroj:"Google",...e})}).catch(()=>{}),$("viac").addEventListener("click",e=>{const t=e.currentTarget,a=t.closest(".tab").classList.toggle("cela");t.setAttribute("aria-expanded",a),t.firstChild.textContent=a?"Zobraziť len TOP 5 ":"Zobraziť celú TOP 10 "});const RK_ZALOHA=[{meno:"Marek Reichwalder",foto:"foto/recenzie/marek.webp",datum:"2026-10",hviezdy:5,text:`Veľmi ochotný a príjemný personál, konkrétne p. Kralik ktorý vykonával kontrolu môjho auta. Bol som veľmi spokojný s prístupom aj s priebehom ceelj STK.
+Odporúčam každému a ja osobne sa rozhodne vrátim tiež.
+Ďakujem`},{meno:"Ján Masár",foto:"foto/recenzie/jan.webp",datum:"2026-08",hviezdy:5,text:"Výborný a zodpovedný prístup technika.Veľka spokojnosť to sa už dnes tak často nevidi .A výborné aj ostatné služby ako napr.kompletné prihlásenie a vybavenie všetkých formalít dovezeného vozidla."},{meno:"Edita Cernak",foto:"foto/recenzie/edita.webp",datum:"2026-06",hviezdy:5,text:"Personál bol veľmi slušný, ústretový a ochotný. Bez rezervácie a čakania mi hneď auto prešlo kontrolou. 100% profesionalita. Každopádne odporúčam všetkým."},{meno:"Zuzana Urbanovska",foto:"foto/recenzie/zuzana.webp",datum:"2026-05",hviezdy:5,text:`Moje hodnotenie 10/10
+Perfektný servis, nestratíte ani chvíľku svojho pracovného času, ak nerátam odovzdanie auta,  kľúčov a dokladov ☺️
+Zamestnanci, mili, ústretoví a hlavne ochotní 👌
+Kým vy pracujete, STK a EK  je v procese vybavovania.
+Vrelo odporúčam a ďakujem ☺️🍀👌👍
+Prajem veľa pracovných úspechov a spokojných klientov 🌺`},{meno:"Simon",foto:"foto/recenzie/simon.webp",datum:"2026-03",hviezdy:5,text:"Skvelá skúsenosť s EASY CHECK STK. Objednanie bolo rýchle a jednoduché, personál bol veľmi ochotný a profesionálny. Celý proces kontroly prebehol bez zbytočného čakania a všetko mi bolo jasne vysvetlené. Oceňujem prístup k zákazníkovi aj rýchlosť vybavenia. Určite odporúčam každému, kto potrebuje STK bez stresu a komplikácií."},{meno:"Ivana Bohunová",foto:"foto/recenzie/ivana.webp",datum:"2025-12",hviezdy:5,text:`Easy Check navštevujeme už dlhé roky. Pokaždé sme sa stretli s pochopením, maximálnou ústretovosťou a ochotným prístupom zo strany zamestnancov. Technici nám všetko ochotne, zrozumiteľne vysvetlili a snažili sa nájsť riešenie daného problému, ak nejaký bol. Dnes sme tu boli znova a potvrdilo sa nám, že aj po toľkých rokoch si Easy Check drží veľmi vysokú úroveň služieb. Majú pekné moderné priestory. Tejto stanici nemám vôbec čo vytknúť.
+P.S. kocúr v čakárni ako bonus, upokojoval počas čakania 🙂`},{meno:"Silvia Stepitova",foto:"foto/recenzie/silvias.webp",datum:"2025-12",hviezdy:5,text:"Na STK do Easy Check chodím opakovane a som vždy veľmi spokojná. Personál je milý, rýchly a profesionálny, všetko prebehne bez stresu a zbytočného čakania. Oceňujem férový prístup a jasné vysvetlenie výsledkov. Určite odporúčam každému, kto chce mať STK vybavenú rýchlo a bez problémov."},{meno:"Henrich Proksa",foto:"foto/recenzie/henrich.webp",datum:"2025",hviezdy:5,text:`práve som prišiel zo STK EasyCHeck, personál mal profesionálny a ľudský prístup, priestory "čakárne" udržované, čisté, estetické, útulné, hrala tichá hudba ako podmaz, technici sú rýchli ako blesk, nečakal som ani 20 minút, objednávanie skrze WEBformulár rýche, jednoduché a praktické, skutočne odporúčam, nič lepšie si ani nemôže  zákazník želať. Ja som ich dlhoročný a spokojný zákazník, bodaj by všetky STkáčky boli takéto, ako "táto naša" :-)   Z desiatich bodov udeľujem 11. A ešte malý bonus, privíta Vás krásna domáca mačka (alebo kocúr?) sediaca takmer vždy na tom istom mieste - okne ...
 
-// rotujúce recenzie — data/recenzie.json; záloha nižšie (file://, výpadok)
-const RK_ZALOHA = [{"meno": "Marek Reichwalder", "foto": "foto/recenzie/marek.png", "datum": "2026-10", "hviezdy": 5, "text": "Veľmi ochotný a príjemný personál, konkrétne p. Kralik ktorý vykonával kontrolu môjho auta. Bol som veľmi spokojný s prístupom aj s priebehom ceelj STK.\nOdporúčam každému a ja osobne sa rozhodne vrátim tiež.\nĎakujem"}, {"meno": "Ján Masár", "foto": "foto/recenzie/jan.png", "datum": "2026-08", "hviezdy": 5, "text": "Výborný a zodpovedný prístup technika.Veľka spokojnosť to sa už dnes tak často nevidi .A výborné aj ostatné služby ako napr.kompletné prihlásenie a vybavenie všetkých formalít dovezeného vozidla."}, {"meno": "Edita Cernak", "foto": "foto/recenzie/edita.png", "datum": "2026-06", "hviezdy": 5, "text": "Personál bol veľmi slušný, ústretový a ochotný. Bez rezervácie a čakania mi hneď auto prešlo kontrolou. 100% profesionalita. Každopádne odporúčam všetkým."}, {"meno": "Zuzana Urbanovska", "foto": "foto/recenzie/zuzana.png", "datum": "2026-05", "hviezdy": 5, "text": "Moje hodnotenie 10/10\nPerfektný servis, nestratíte ani chvíľku svojho pracovného času, ak nerátam odovzdanie auta,  kľúčov a dokladov ☺️\nZamestnanci, mili, ústretoví a hlavne ochotní 👌\nKým vy pracujete, STK a EK  je v procese vybavovania.\nVrelo odporúčam a ďakujem ☺️🍀👌👍\nPrajem veľa pracovných úspechov a spokojných klientov 🌺"}, {"meno": "Simon", "foto": "foto/recenzie/simon.png", "datum": "2026-03", "hviezdy": 5, "text": "Skvelá skúsenosť s EASY CHECK STK. Objednanie bolo rýchle a jednoduché, personál bol veľmi ochotný a profesionálny. Celý proces kontroly prebehol bez zbytočného čakania a všetko mi bolo jasne vysvetlené. Oceňujem prístup k zákazníkovi aj rýchlosť vybavenia. Určite odporúčam každému, kto potrebuje STK bez stresu a komplikácií."}, {"meno": "Ivana Bohunová", "foto": "foto/recenzie/ivana.png", "datum": "2025-12", "hviezdy": 5, "text": "Easy Check navštevujeme už dlhé roky. Pokaždé sme sa stretli s pochopením, maximálnou ústretovosťou a ochotným prístupom zo strany zamestnancov. Technici nám všetko ochotne, zrozumiteľne vysvetlili a snažili sa nájsť riešenie daného problému, ak nejaký bol. Dnes sme tu boli znova a potvrdilo sa nám, že aj po toľkých rokoch si Easy Check drží veľmi vysokú úroveň služieb. Majú pekné moderné priestory. Tejto stanici nemám vôbec čo vytknúť.\nP.S. kocúr v čakárni ako bonus, upokojoval počas čakania 🙂"}, {"meno": "Silvia Stepitova", "foto": "foto/recenzie/silvias.png", "datum": "2025-12", "hviezdy": 5, "text": "Na STK do Easy Check chodím opakovane a som vždy veľmi spokojná. Personál je milý, rýchly a profesionálny, všetko prebehne bez stresu a zbytočného čakania. Oceňujem férový prístup a jasné vysvetlenie výsledkov. Určite odporúčam každému, kto chce mať STK vybavenú rýchlo a bez problémov."}, {"meno": "Henrich Proksa", "foto": "foto/recenzie/henrich.png", "datum": "2025", "hviezdy": 5, "text": "práve som prišiel zo STK EasyCHeck, personál mal profesionálny a ľudský prístup, priestory \"čakárne\" udržované, čisté, estetické, útulné, hrala tichá hudba ako podmaz, technici sú rýchli ako blesk, nečakal som ani 20 minút, objednávanie skrze WEBformulár rýche, jednoduché a praktické, skutočne odporúčam, nič lepšie si ani nemôže  zákazník želať. Ja som ich dlhoročný a spokojný zákazník, bodaj by všetky STkáčky boli takéto, ako \"táto naša\" :-)   Z desiatich bodov udeľujem 11. A ešte malý bonus, privíta Vás krásna domáca mačka (alebo kocúr?) sediaca takmer vždy na tom istom mieste - okne ...\n\nHenrich Proksa..."}, {"meno": "Peter Bartos", "foto": "foto/recenzie/peterb.png", "datum": "2025", "hviezdy": 5, "text": "Môžem vrelo odporučiť. Išiel som som tam \"na blind\" s motorkou a s malou dušičkou, či ma neotočia kvôli plnému plánu, ale našťastie sa im podarilo ma tam vtesnať...;) Personál bol veľmi ochotný a profesionálny, dokonca som sa niečomu novému aj priučil. Ešte raz veľmi pekne ĎAKUJEM za ochotu a prístup. Zostaňte najlepší...;)"}, {"meno": "Marek Miskov", "foto": "foto/recenzie/marekm.png", "datum": "2025", "hviezdy": 5, "text": "Tento týždeň som absolvoval opakovanú STK / EK s osobným autom.\nOceňujem možnosť objednať sa na podvečerný termín (ja som bol o 18:20h).\nPriebeh STK bol rýchly a profesionálny a vo veľmi príjemnej atmosfére (profesionálny prístup zamestnancov a nechýbal ani usmev). Určite sa v budúcnosti vrátim 👍"}];
-const MES = ['január','február','marec','apríl','máj','jún','júl','august','september','október','november','december'];
-const rkDatum = d => { const [r,m] = d.split('-'); return m ? `${MES[+m-1]} ${r}` : r; };
-const esc = t => t.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function recenzie(zoz){
-  // v13: obrys kariet striedavo vo farbách Googlu (naše odtiene loga): modrá · červená · žltá · zelená
-  const RK_F = ['#18B6E4', '#E2212A', 'var(--y)', '#5BBA47'];
-  const html = zoz.filter(x => x.hviezdy === 5).map((x, i) => `
-    <article class="rk" style="--rk:${RK_F[i % 4]}">
-      <div class="rk-o"><img src="${x.foto}" alt="" loading="lazy"><span><b>${esc(x.meno)}</b><small>${rkDatum(x.datum)}</small></span><svg class="glogo rk-g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></div>
+Henrich Proksa...`},{meno:"Peter Bartos",foto:"foto/recenzie/peterb.webp",datum:"2025",hviezdy:5,text:'Môžem vrelo odporučiť. Išiel som som tam "na blind" s motorkou a s malou dušičkou, či ma neotočia kvôli plnému plánu, ale našťastie sa im podarilo ma tam vtesnať...;) Personál bol veľmi ochotný a profesionálny, dokonca som sa niečomu novému aj priučil. Ešte raz veľmi pekne ĎAKUJEM za ochotu a prístup. Zostaňte najlepší...;)'},{meno:"Marek Miskov",foto:"foto/recenzie/marekm.webp",datum:"2025",hviezdy:5,text:`Tento týždeň som absolvoval opakovanú STK / EK s osobným autom.
+Oceňujem možnosť objednať sa na podvečerný termín (ja som bol o 18:20h).
+Priebeh STK bol rýchly a profesionálny a vo veľmi príjemnej atmosfére (profesionálny prístup zamestnancov a nechýbal ani usmev). Určite sa v budúcnosti vrátim 👍`}],MES=["január","február","marec","apríl","máj","jún","júl","august","september","október","november","december"],rkDatum=e=>{const[t,a]=e.split("-");return a?`${MES[+a-1]} ${t}`:t},esc=e=>e.replace(/[&<>"]/g,t=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[t]);function recenzie(e){const t=["#18B6E4","#E2212A","var(--y)","#5BBA47"],a=e.filter(n=>n.hviezdy===5).map((n,o)=>`
+    <article class="rk" style="--rk:${t[o%4]}">
+      <div class="rk-o"><img src="${n.foto}" alt="" loading="lazy"><span><b>${esc(n.meno)}</b><small>${rkDatum(n.datum)}</small></span><svg class="glogo rk-g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></div>
       <div class="rk-hv" aria-label="5 z 5 hviezdičiek">★★★★★</div>
-      <p>${esc(x.text.trim())}</p>
+      <p>${esc(n.text.trim())}</p>
       <div class="rk-p"><span>Recenzia z Google</span><button type="button" class="rk-viac">Čítať viac</button></div>
-    </article>`).join('');
-  // 2× za sebou → nekonečná slučka; rýchlosť podľa počtu kariet (~9 s na kartu)
-  $('rk-pas').innerHTML = html + html.replace(/<article class="rk" /g, '<article class="rk" aria-hidden="true" ');
-  // „Čítať celé“ len tam, kde text naozaj presahuje
-  $('rk-pas').querySelectorAll('.rk').forEach(k => { const p = k.querySelector('p'); if(p.scrollHeight <= p.clientHeight + 2) k.querySelector('.rk-viac').hidden = true; });
-}
-recenzie(RK_ZALOHA);
-fetch('data/recenzie.json', { cache:'no-store' }).then(r => r.ok ? r.json() : null).then(d => d?.recenzie?.length && recenzie(d.recenzie)).catch(() => {});
-// v13: plynulý posun ~35 px/s; pauza pri myši, dotyku a otvorenej recenzii; po dotyku pokračuje o 2 s
-(() => {
-  const pas = $('rk-pas').parentElement, beh = $('rk-pas');
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  let stoj = false, pokracuj = 0, x = pas.scrollLeft, t0 = 0;
-  const pauza = () => { stoj = true; clearTimeout(pokracuj); };
-  const znova = (ms) => { clearTimeout(pokracuj); pokracuj = setTimeout(() => { stoj = false; x = pas.scrollLeft; }, ms); };
-  pas.addEventListener('mouseenter', pauza); pas.addEventListener('mouseleave', () => znova(0));
-  pas.addEventListener('touchstart', pauza, { passive:true }); pas.addEventListener('touchend', () => znova(2000), { passive:true });
-  const krok = t => {
-    const dt = t0 ? Math.min(t - t0, 64) : 0; t0 = t;
-    const pol = beh.scrollWidth / 2;
-    if(!stoj && !beh.querySelector('.rk.cela')){ x += dt * .035; if(x >= pol) x -= pol; pas.scrollLeft = x; }
-    else if(pol && pas.scrollLeft >= pol) pas.scrollLeft -= pol;
-    requestAnimationFrame(krok);
-  };
-  requestAnimationFrame(krok);
-})();
-// v13: symbol v karte Kontakt — výška 80 % karty, ale ľavá hrana min. 10 px od najširšieho riadku obsahu
-(() => {
-  const k = document.querySelector('.pk-kont'), sym = k && k.querySelector('.pk-symbol');
-  if(!sym) return;
-  const VID = .805, POM = 870 / 960;   // viditeľná časť šírky (rez za oblúkom vozidla) · pomer strán symbolu
-  const uprav = () => {
-    const kr = k.getBoundingClientRect();
-    let prava = 0;
-    k.querySelectorAll(':scope > :not(.pk-symbol)').forEach(el => {
-      const r = document.createRange(); r.selectNodeContents(el);
-      prava = Math.max(prava, r.getBoundingClientRect().right - kr.left);
-    });
-    const volne = kr.width - prava - 10;                  // miesto vpravo od textu
-    const h = Math.max(0, Math.min(kr.height * .8, volne / (VID * POM)));
-    sym.style.height = h + 'px';
-  };
-  new ResizeObserver(uprav).observe(k);
-  document.fonts?.ready.then(uprav);
-})();
-$('rk-pas').addEventListener('click', e => { const b = e.target.closest('.rk-viac'); if(!b) return; const k = b.closest('.rk'), o = k.classList.toggle('cela'); b.textContent = o ? 'Skryť' : 'Čítať viac'; });
-
-// mapa končí v 20 % výšky fotky Optimusa (cik-cak, Matej 21. 10.)
-const mapa = document.querySelector('.mapa'), opt = $('optimus');
-const vyskaMapy = () => { if(innerWidth <= 1000){ mapa.style.removeProperty('--mapa-h'); return; }
-  const m = mapa.getBoundingClientRect(), o = opt.getBoundingClientRect();
-  mapa.style.setProperty('--mapa-h', Math.max(360, o.top + o.height * .2 - m.top) + 'px'); };
-new ResizeObserver(vyskaMapy).observe(document.querySelector('.kde')); addEventListener('load', vyskaMapy);
-
-// slider Optimusa — šípky, počítadlo
-(() => { const im = [...document.querySelectorAll('#op-sl img')]; let i = 0;
-  document.querySelectorAll('[data-op]').forEach(b => b.onclick = () => {
-    im[i].classList.remove('on'); i = (i + +b.dataset.op + im.length) % im.length; im[i].classList.add('on');
-    $('op-c').textContent = `${i + 1} / ${im.length}`; $('optimus').classList.toggle('prvy', i === 0); }); })();
-
-// hodiny + stav (rovnaké HOD ako topbar)
-const RIADKY = [ ['Pondelok – Piatok','07:00 – 20:00',[1,2,3,4,5]], ['Sobota','07:00 – 13:00',[6]], ['Sviatky','07:00 – 15:00',[]], ['Nedeľa','zatvorené',[0]] ];
-const dnes = new Date().getDay();
-$('hodiny').innerHTML = RIADKY.map(([d,c,dni]) => `<li class="${dni.includes(dnes)?'dnes':''}"><span>${d}</span><span>${c}</span></li>`).join('');
-const s2 = $('stav2'), sTxt = stav().replace(/<[^>]+>/g,'').trim();
-s2.querySelector('span').textContent = sTxt;
-if(sTxt.startsWith('Zatvorené')) s2.classList.add('zat');
-$('rok').textContent = new Date().getFullYear();
-
-// odhalenie pri scrollovaní — raz, potom sa už nič nehýbe
-const tichy = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const io = new IntersectionObserver(zaznamy => zaznamy.forEach(z => {
-  if(!z.isIntersecting) return;
-  z.target.classList.add('vid'); io.unobserve(z.target);
-  z.target.querySelectorAll?.('[data-cena]').forEach(napocitaj);
-}), { threshold:.18, rootMargin:'0px 0px -6% 0px' });
-document.querySelectorAll('.ani, .mapa, .kroky > li').forEach(el => io.observe(el));
-
-function napocitaj(el){
-  const ciel = +el.dataset.cena, bez = 'bez' in el.dataset, suf = el.tagName === 'I' || bez ? '' : ' €';
-  const f = v => bez ? cislo(v) : v; // počet recenzií s medzerou v tisícoch
-  if(tichy){ el.textContent = f(ciel) + suf; return; }
-  const t0 = performance.now(), dlzka = 900;
-  (function krok(t){
-    const k = Math.min(1, (t - t0) / dlzka), e = 1 - Math.pow(1 - k, 3);
-    el.textContent = f(Math.round(ciel * e)) + suf;
-    if(k < 1) requestAnimationFrame(krok);
-  })(t0);
-}
-
-// cesta medzi krokmi: kreslí sa podľa scrollu a auto ide po nej
-// vysvetlivka Pickup servis: ťuknutie prepína (dotyk), klik mimo zatvára
-document.querySelectorAll('.vysv button').forEach(b => b.addEventListener('click', e => {
-  e.stopPropagation(); const v = b.parentNode.classList.toggle('otv'); b.setAttribute('aria-expanded', v);
-}));
-document.addEventListener('click', () => document.querySelectorAll('.vysv.otv').forEach(v => { v.classList.remove('otv'); v.firstElementChild.setAttribute('aria-expanded', false); }));
-
-// v8: bez auta, čiara sa kreslí len po krúžok 03
-const kroky = $('kroky'), cela = kroky.querySelector('.cela');
-function cesta(){
-  const r = kroky.getBoundingClientRect(), vh = innerHeight;
-  const h = kroky.querySelector(':scope > li:last-of-type').offsetTop + 10; // stred krúžku 03 (top 10 px svg)
-  kroky.style.setProperty('--cesta-h', h + 'px');
-  const p = Math.min(1, Math.max(0, (vh * .62 - r.top) / h));
-  cela.setAttribute('y2', h * (tichy ? 1 : p));
-}
-addEventListener('scroll', () => requestAnimationFrame(cesta), { passive:true });
-addEventListener('resize', cesta); cesta();
-
-render();
-</script>
+    </article>`).join("");$("rk-pas").innerHTML=a+a.replace(/<article class="rk" /g,'<article class="rk" aria-hidden="true" '),$("rk-pas").querySelectorAll(".rk").forEach(n=>{const o=n.querySelector("p");o.scrollHeight<=o.clientHeight+2&&(n.querySelector(".rk-viac").hidden=!0)})}recenzie(RK_ZALOHA),fetch("data/recenzie.json",{cache:"no-store"}).then(e=>e.ok?e.json():null).then(e=>{var t;return((t=e==null?void 0:e.recenzie)==null?void 0:t.length)&&recenzie(e.recenzie)}).catch(()=>{}),(()=>{const e=$("rk-pas").parentElement,t=$("rk-pas");if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;let a=!1,n=0,o=e.scrollLeft,r=0;const l=()=>{a=!0,clearTimeout(n)},s=i=>{clearTimeout(n),n=setTimeout(()=>{a=!1,o=e.scrollLeft},i)};e.addEventListener("mouseenter",l),e.addEventListener("mouseleave",()=>s(0)),e.addEventListener("touchstart",l,{passive:!0}),e.addEventListener("touchend",()=>s(2e3),{passive:!0});const c=i=>{const d=r?Math.min(i-r,64):0;r=i;const p=t.scrollWidth/2;!a&&!t.querySelector(".rk.cela")?(o+=d*.035,o>=p&&(o-=p),e.scrollLeft=o):p&&e.scrollLeft>=p&&(e.scrollLeft-=p),requestAnimationFrame(c)};requestAnimationFrame(c)})(),(()=>{var r;const e=document.querySelector(".pk-kont"),t=e&&e.querySelector(".pk-symbol");if(!t)return;const a=.805,n=870/960,o=()=>{const l=e.getBoundingClientRect();let s=0;e.querySelectorAll(":scope > :not(.pk-symbol)").forEach(d=>{const p=document.createRange();p.selectNodeContents(d),s=Math.max(s,p.getBoundingClientRect().right-l.left)});const c=l.width-s-10,i=Math.max(0,Math.min(l.height*.8,c/(a*n)));t.style.height=i+"px"};new ResizeObserver(o).observe(e),(r=document.fonts)==null||r.ready.then(o)})(),$("rk-pas").addEventListener("click",e=>{const t=e.target.closest(".rk-viac");if(!t)return;const a=t.closest(".rk"),n=a.classList.toggle("cela");t.textContent=n?"Skryť":"Čítať viac"});const mapa=document.querySelector(".mapa"),opt=$("optimus"),vyskaMapy=()=>{if(innerWidth<=1e3){mapa.style.removeProperty("--mapa-h");return}const e=mapa.getBoundingClientRect(),t=opt.getBoundingClientRect();mapa.style.setProperty("--mapa-h",Math.max(360,t.top+t.height*.2-e.top)+"px")};new ResizeObserver(vyskaMapy).observe(document.querySelector(".kde")),addEventListener("load",vyskaMapy),(k=mapa.querySelector(".mapa-zap"))==null||k.addEventListener("click",e=>{const t=e.currentTarget,a=document.createElement("iframe");a.src=t.dataset.src,a.title="Mapa — Easy Check STK Trnava",a.setAttribute("allowfullscreen",""),t.replaceWith(a)}),(()=>{const e=[...document.querySelectorAll("#op-sl img")];let t=0;document.querySelectorAll("[data-op]").forEach(a=>a.onclick=()=>{e[t].classList.remove("on"),t=(t+ +a.dataset.op+e.length)%e.length,e[t].classList.add("on"),$("op-c").textContent=`${t+1} / ${e.length}`,$("optimus").classList.toggle("prvy",t===0)})})();const RIADKY=[["Pondelok – Piatok","07:00 – 20:00",[1,2,3,4,5]],["Sobota","07:00 – 13:00",[6]],["Sviatky","07:00 – 15:00",[]],["Nedeľa","zatvorené",[0]]],dnes=new Date().getDay();$("hodiny").innerHTML=RIADKY.map(([e,t,a])=>`<li class="${a.includes(dnes)?"dnes":""}"><span>${e}</span><span>${t}</span></li>`).join("");const s2=$("stav2"),sTxt=stav().replace(/<[^>]+>/g,"").trim();s2.querySelector("span").textContent=sTxt,sTxt.startsWith("Zatvorené")&&s2.classList.add("zat"),$("rok").textContent=new Date().getFullYear();const tichy=matchMedia("(prefers-reduced-motion: reduce)").matches,io=new IntersectionObserver(e=>e.forEach(t=>{var a,n;t.isIntersecting&&(t.target.classList.add("vid"),io.unobserve(t.target),(n=(a=t.target).querySelectorAll)==null||n.call(a,"[data-cena]").forEach(napocitaj))}),{threshold:.18,rootMargin:"0px 0px -6% 0px"});document.querySelectorAll(".ani, .mapa, .kroky > li").forEach(e=>io.observe(e));function napocitaj(e){const t=+e.dataset.cena,a="bez"in e.dataset,n=e.tagName==="I"||a?"":" €",o=s=>a?cislo(s):s;if(tichy){e.textContent=o(t)+n;return}const r=performance.now(),l=900;(function s(c){const i=Math.min(1,(c-r)/l),d=1-Math.pow(1-i,3);e.textContent=o(Math.round(t*d))+n,i<1&&requestAnimationFrame(s)})(r)}document.querySelectorAll(".vysv button").forEach(e=>e.addEventListener("click",t=>{t.stopPropagation();const a=e.parentNode.classList.toggle("otv");e.setAttribute("aria-expanded",a)})),document.addEventListener("click",()=>document.querySelectorAll(".vysv.otv").forEach(e=>{e.classList.remove("otv"),e.firstElementChild.setAttribute("aria-expanded",!1)}));const kroky=$("kroky"),cela=kroky.querySelector(".cela");function cesta(){const e=kroky.getBoundingClientRect(),t=innerHeight,a=kroky.querySelector(":scope > li:last-of-type").offsetTop+10;kroky.style.setProperty("--cesta-h",a+"px");const n=Math.min(1,Math.max(0,(t*.62-e.top)/a));cela.setAttribute("y2",a*(tichy?1:n))}addEventListener("scroll",()=>requestAnimationFrame(cesta),{passive:!0}),addEventListener("resize",cesta),cesta(),render();</script>
+<script>addEventListener("load",()=>setTimeout(()=>document.querySelectorAll("img[data-src]").forEach(t=>{t.dataset.srcset&&(t.srcset=t.dataset.srcset),t.src=t.dataset.src}),200));</script>
 </body>
 </html>

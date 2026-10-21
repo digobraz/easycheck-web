@@ -1,0 +1,6 @@
+# Lokálny test Pages Functions (npx wrangler@4 pages dev). Skopíruj na .dev.vars (je v .gitignore).
+# Hash hesla vyrobí: node scripts/admin-heslo.mjs 'tvoje-heslo'
+ADMIN_HESLO_HASH=pbkdf2$100000$...$...
+# Voliteľne, ak chceš lokálne skúšať Access (inak nechaj prázdne):
+# ACCESS_TEAM_DOMAIN=easycheck.cloudflareaccess.com
+# ACCESS_AUD=

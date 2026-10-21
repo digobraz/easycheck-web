@@ -1,2 +1,3 @@
+# testovacia kópia — ostrý web je easycheck.sk
 User-agent: *
 Disallow: /

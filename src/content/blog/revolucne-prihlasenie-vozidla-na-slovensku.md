@@ -34,8 +34,6 @@ Zastupujeme vás na úradoch, na polícii aj na pošte. Celý proces vybaví ná
 
 ## Prečo si vybrať Easy Check pre prihlásenie vášho vozidla
 
-![](/blog/2023/rada-1024x574.png)
-
 ### Ušetrite čas a peniaze
 
 S našimi službami nebudete potrebovať čerpať dovolenku ani míňať peniaze na cestovanie.

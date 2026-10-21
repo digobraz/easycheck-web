@@ -1,0 +1,43 @@
+# Cloudflare Pages — presmerovania starých adries easycheck.sk (generuje scripts/web-build.py)
+# zdroj: web-brutal/sitemap.html (mapa webu v2), sitemap-stary-web.csv, MAPA vo web-blog.py
+# spamové kategórie /blog/category/online-casino/ … → 404 (Pages _redirects nevie 410)
+/easy-check/ / 301
+/prihlasovanie-vozidiel/ /sluzby/#prihlasovanie 301
+/vyzdvihnutie-vozidla-na-stk/ /sluzby/#vyzdvihnutie 301
+/overovanie-tachografov/ /sluzby/#tachografy 301
+/stk-s-vyhodami/ /sluzby/#vyhody 301
+/kontakt/ /#kontakt 301
+/koleso-stastia/ /sluzby/#koleso 301
+/vyhraj-auto-sutaz-stk/ /sluzby/#koleso 301
+/chat/ / 301
+/uzitocne-informacie/ /clanky/ 301
+/rezervacia-vip/ /rezervacia/ 302
+/dakujeme/ / 301
+/brand-manual/ / 302
+/lehoty-tk-ek/ /lehoty-stk/ 301
+/kategorie-vozidiel/ /kategorie-vozidiel-stk/ 301
+/prehlad-platnych-predpisov/ /platne-predpisy-stk/ 301
+/pick-up-servis-vyzdvihnutie-vozidla/ /sluzby/#vyzdvihnutie 301
+/vyzdvihnutie-vozidla/ /sluzby/#vyzdvihnutie 301
+/blog/ /clanky/ 301
+/blog/category/oznamy/ /clanky/ 301
+/blog/category/tipy-triky-rady/ /clanky/ 301
+/blog/category/uzitocne-info-a-upozornenia/ /clanky/ 301
+/blog/category/zaujimavosti/ /clanky/ 301
+/blog/page/* /clanky/ 301
+/feed/ /clanky/ 301
+/blog/feed/ /clanky/ 301
+/comments/feed/ /clanky/ 301
+/sitemap_index.xml /sitemap.xml 301
+/post-sitemap.xml /sitemap.xml 301
+/page-sitemap.xml /sitemap.xml 301
+/category-sitemap.xml /sitemap.xml 301
+/oceanwp_library-sitemap.xml /sitemap.xml 301
+/wp-sitemap.xml /sitemap.xml 301
+/wp-content/uploads/2026/10/Splnomocnenie-fyzicka-osoba102026.docx /subory/splnomocnenie-fyzicka-osoba.docx 301
+/wp-content/uploads/2026/10/Generalne-plnomocenstvo-spolocnost102026.docx /subory/splnomocnenie-spolocnost.docx 301
+/wp-content/uploads/2026/01/Splnomocnenie-fyzicka-osoba.docx.pdf /subory/splnomocnenie-fyzicka-osoba.docx 301
+/wp-content/uploads/2026/01/Generalne-plnomocenstvo-vseobecne.docx.pdf /subory/splnomocnenie-spolocnost.docx 301
+/wp-content/uploads/2023/09/PLNOMOCENSTVO-FYZICKA-OSOBA2023.pdf /subory/splnomocnenie-fyzicka-osoba.docx 301
+/wp-content/uploads/2023/09/PLNOMOCENSTVO-SPOLOCNOST2023.pdf /subory/splnomocnenie-spolocnost.docx 301
+/wp-content/* / 301
