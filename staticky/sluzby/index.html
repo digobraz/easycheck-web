@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Služby — STK, flotily, ADR, tachografy | Easy Check STK Trnava</title>
+<meta name="description" content="STK a emisná kontrola pre všetky druhy vozidiel, nákladné vozidlá a flotily v jeden deň, ADR a CEMT, kontrola originality, tachografy, prihlásenie vozidla a výzdvih na STK zdarma do 15 km. Trnava.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/zaklad/zaklad.css">
+<style>
+/* /sluzby/ — štýly len pre túto stránku (21. 10. 2026).
+   Zdroje textov: stk-web/src/data/{sluzby,obsah,cennik,rezervacia}.ts, plan/wp-texty/*.md, ACUITY-TAXONOMIA.md.
+   Ceny výhradne z cennik.ts. Neisté údaje = .tbd2. */
+/* 3 bloky: v základe auto-fit 200 px → na PC 2 + 1 (sirota). Tu: 3 vedľa seba, užšie 2 + tretí na celú šírku, mobil pod sebou */
+.sl-obs{container-type:inline-size}
+.sl-bloky{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sl-bloky>.sl-blok:nth-child(3){grid-column:1/-1}
+@container (min-width:560px){.sl-bloky{grid-template-columns:repeat(3,minmax(0,1fr))}.sl-bloky>.sl-blok:nth-child(3){grid-column:auto}}
+@container (max-width:359px){.sl-bloky{grid-template-columns:1fr}}
+.sl-zoz.dva{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem 1.4rem}
+#koleso .sl-zoz.dva{grid-auto-flow:column;grid-template-rows:repeat(4,auto)}
+@media (max-width:520px){.sl-zoz.dva,#koleso .sl-zoz.dva{grid-template-columns:1fr;grid-auto-flow:row;grid-template-rows:none}}
+.sl-zoz b{font-weight:700}
+.sl-zoz a,.sl-pozn a,.sl-lead a{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--f,var(--y))}
+.sl-zoz-tit{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:-.5rem}
+/* žltá sekcia: podčiarknutie by na žltej nebolo vidno */
+.sl[style*="--y"] .sl-zoz a,.sl[style*="--y"] .sl-pozn a{text-decoration-color:var(--ink)}
+/* ikona v placeholderi: vyplnené plochy z ikon úvodu tu netreba */
+.sl-foto.bez svg .zl{display:none}
+
+/* FAQ: nadpis vľavo, otázky vpravo */
+.faq-w{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:clamp(1.5rem,4vw,4rem);align-items:start;margin-top:clamp(4rem,8vw,6.5rem)}
+.faq-w .sek-hl{margin:0;flex-direction:column;align-items:start}
+.faq-w .faq h3{display:none}
+@media (max-width:900px){.faq-w{grid-template-columns:1fr}}
+.cta-pas .btn+.btn{background:transparent;color:var(--paper);border-color:var(--paper);box-shadow:4px 4px 0 0 var(--y)}
+.cta-pas .tl{display:flex;flex-wrap:wrap;gap:.8rem}
+</style>
+</head>
+<body>
+<div id="z-hore"></div>
+
+<main>
+  <section class="str">
+    <figure class="str-foto slab"><img src="/foto/img_7299.jpg" alt="Hala stanice technickej kontroly Easy Check s linkami pre osobné aj nákladné vozidlá"></figure>
+    <div class="str-tit">
+      <nav class="drobky" aria-label="Omrvinky"><a href="/">Domov</a><span aria-hidden="true">/</span><span>Služby</span></nav>
+      <h1>Služby pre vodičov aj firmy</h1>
+      <p class="lead">STK, emisná kontrola a originalita pre všetky druhy vozidiel. Dopravcom k tomu vybavíme ADR, CEMT aj tachograf — celú flotilu v jeden deň.</p>
+      <div class="str-cta">
+        <a class="btn" href="/rezervacia/">Rezervovať termín <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="tel:+421332020211">033 20 20 211</a>
+      </div>
+      <p class="str-meta">Po&nbsp;–&nbsp;Pia&nbsp;07&nbsp;–&nbsp;20 · So&nbsp;07&nbsp;–&nbsp;13 · sviatky&nbsp;07&nbsp;–&nbsp;15</p>
+    </div>
+  </section>
+
+  <nav class="kotvy" aria-label="Na tejto stránke"><div class="kotvy-in">
+    <a href="#stk" style="--f:#E2212A"><i></i>STK</a>
+    <a href="#flotily" style="--f:var(--y)"><i></i>Flotily</a>
+    <a href="#adr-cemt" style="--f:#FF914B"><i></i>ADR · CEMT</a>
+    <a href="#originalita" style="--f:#13B4E2"><i></i>Originalita</a>
+    <a href="#tachografy" style="--f:#F27BB4"><i></i>Tachografy</a>
+    <a href="#prihlasovanie" style="--f:#5271FF"><i></i>Prihlásenie</a>
+    <a href="#vyzdvihnutie" style="--f:#14B8A6"><i></i>Výzdvih</a>
+    <a href="#merania" style="--f:#CC6DE8"><i></i>Merania</a>
+    <a href="#dalsie" style="--f:#5BBA47"><i></i>Ďalšie</a>
+    <a href="#vyhody" style="--f:var(--y)"><i></i>Výhody</a>
+    <a href="#koleso" style="--f:#E2212A"><i></i>Koleso</a>
+  </div></nav>
+
+  <!-- 1 · STK osobné — cennik.ts (TK/EK/opakovaná/administratívna), obsah.ts (DOSTUPNOST, PONUKA), stk-s-vyhodami.md -->
+  <section class="sl" id="stk" style="--f:#E2212A">
+    <figure class="sl-foto slab ani nal"><img src="/foto/img_7424.jpg" alt="Osobné auto na linke technickej kontroly" loading="lazy"><span class="chip biely">TK · EK</span></figure>
+    <div class="sl-obs">
+      <span class="chip biely ani">Osobné vozidlá</span>
+      <h2 class="ani">STK a emisná kontrola</h2>
+      <p class="sl-lead ani">Technickú aj emisnú kontrolu urobíme pri jednej návšteve, pre všetky druhy vozidiel. Objednávka trvá pol minúty.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>TK 60&nbsp;€ · EK 60&nbsp;€</b><span>Osobné auto, benzín alebo diesel. Hybrid a elektro TK 65&nbsp;€.</span></div>
+        <div class="sl-blok f biely ani" style="--i:2"><b>Termín do 24 h</b><span>Stačí sa objednať alebo zavolať — na linke môžete byť ešte dnes.</span></div>
+        <div class="sl-blok ani" style="--i:3"><b>Drobnosti na linke</b><span>Drobné chyby odstránime priamo pri kontrole.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>EK pri LPG, CNG, plug-in hybride a NKAT/BKAT 75&nbsp;€</li>
+        <li>Motocykel 45&nbsp;€ · prívesný vozík O1, O2 35&nbsp;€ · historické vozidlo 60&nbsp;€</li>
+        <li>Opakovaná kontrola osobného auta: v deň pravidelnej 20&nbsp;€, do 60 dní 35&nbsp;€</li>
+        <li>Administratívna kontrola: po našej stanici 16&nbsp;€, po inej 26&nbsp;€</li>
+        <li>Zvláštna kontrola v plnom aj čiastkovom rozsahu</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/?v=osobne">Rezervovať osobné <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="/cennik/#tk">Celý cenník</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · Nákladné a flotily — overovanie-tachografov.md („všetko pre vašu flotilu…“), sluzby.ts TACHOGRAFY.polozky,
+       rezervacia.ts NAKLADNE (konfigurácie + bezOdkazu doplnky), cennik.ts TK_PRAVIDELNA/EK_PRAVIDELNA, obsah.ts VYHODY_FIRMY -->
+  <section class="sl" id="flotily" style="--f:var(--y)">
+    <figure class="sl-foto slab ani nal"><img src="/foto/img_4781.jpg" alt="Nákladné vozidlo a osobné autá v hale Easy Check" loading="lazy"><span class="chip">Nad 3,5 t</span></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Pre firmy a dopravcov</span>
+      <h2 class="ani">Nákladné vozidlá a flotily</h2>
+      <p class="sl-lead ani">Všetko pre vašu flotilu na jednom mieste a v jeden deň: STK, emisná kontrola, originalita, ADR, CEMT aj tachograf.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>3 nákladné linky</b><span>Viac priestoru — kamióny majú u nás prednosť.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Hydraulický prízdvih</b><span>Kontrola aj bez nákladu. Šetrí vozidlo a skracuje čas kontroly.</span></div>
+        <div class="sl-blok f ani" style="--i:3"><b>Nákladný servis</b><span>Dlhoročné skúsenosti s nákladnou dopravou — vyriešime 90 % technických problémov.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Sólo, ťahač návesov, nákladná súprava, náves aj príves</li>
+        <li>Autobusy, traktory, pracovné stroje, terénne a špeciálne vozidlá, vozidlá vyrobené do roku 1995</li>
+        <li>TK nákladného vozidla nad 3,5 t 85&nbsp;€ · EK 75&nbsp;€ · náves/príves O3, O4 75&nbsp;€</li>
+        <li>Meranie ďalších náprav, váženie náprav, kontrola bŕzd, hydraulické priťaženie</li>
+        <li>Pri STK u nás máte <a href="#tachografy">overenie tachografu za polovicu</a></li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/?v=nakladne">Rezervovať nákladné <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="tel:+421332020211">033 20 20 211</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · ADR a CEMT — rezervacia.ts ADR_CEMT (úvod + súpravy/ťahač/náves), cennik.ts (ADR 175, CEMT 155, opak. 45), easy-check.md -->
+  <section class="sl" id="adr-cemt" style="--f:#FF914B">
+    <figure class="sl-foto slab bez ani nal"><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M3 30h58"/><path d="M5 30V12h28v18"/><path d="M33 30V16h12l7 8h5v6"/><path d="M38 16v8h14"/><circle cx="14" cy="31" r="4.5"/><circle cx="25" cy="31" r="4.5"/><circle cx="48" cy="31" r="4.5"/><path d="M13 19l3 3 3-3-3-3z"/></svg><span class="chip">ADR · CEMT</span><figcaption>fotka TBD</figcaption></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Prepravné povolenia</span>
+      <h2 class="ani">ADR a CEMT</h2>
+      <p class="sl-lead ani">Kontroly pre prepravu nebezpečných vecí (ADR) a medzinárodnú cestnú dopravu (CEMT). V nákladných vozidlách sa naši technici dokonale vyznajú.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>ADR 175&nbsp;€</b><span>Technická kontrola nákladného vozidla aj návesu či prívesu.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>CEMT 155&nbsp;€</b><span>Technická kontrola nákladného vozidla aj návesu či prívesu.</span></div>
+        <div class="sl-blok f ani" style="--i:3"><b>Opakovaná 45&nbsp;€</b><span>ADR aj CEMT, v deň pravidelnej aj do 60 dní.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Celá súprava naraz: ťahač TK + EK a prípojné vozidlo TK</li>
+        <li>Samotný ťahač: TK + EK alebo len TK</li>
+        <li>Náves: pravidelná aj opakovaná TK</li>
+        <li>Pri jednej návšteve vybavíte aj <a href="#tachografy">overenie tachografu</a></li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/#adr-cemt">Rezervovať ADR / CEMT <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="/cennik/#tk">Cenník</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Kontrola originality — kontrola-originality.md, cennik.ts KO + ODOPASS, rezervacia.ts, ACUITY (prihlásenie ZDARMA ako cross-sell), cennik.md (nálepky zvlášť) -->
+  <section class="sl" id="originalita" style="--f:#13B4E2">
+    <figure class="sl-foto slab ani nal"><img src="/foto/hala.jpg" alt="Auto Easy Check na linke v hale stanice" loading="lazy"><span class="chip">KO</span></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Na počkanie</span>
+      <h2 class="ani">Kontrola originality</h2>
+      <p class="sl-lead ani">Overíme pravosť vozidla a jeho dokladov. Potrebujete ju pri dovoze zo zahraničia, vývoze alebo pri zmene údajov v evidencii — pre všetky druhy vozidiel.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>Približne 60 minút</b><span>Toľko trvá samotná kontrola. Počkať môžete v čakárni.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Auto 120&nbsp;€</b><span>Motocykel od 100&nbsp;€, nákladné od 130&nbsp;€. Nálepky a ODOPASS sa platia zvlášť.</span></div>
+        <div class="sl-blok f ani" style="--i:3"><b>Prihlásenie zdarma</b><span>Po KO vybavíme za vás aj prihlásenie vozidla do evidencie.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Overenie identifikátorov vozidla vrátane merania a nedeštruktívneho skúmania</li>
+        <li>Porovnanie údajov na vozidle s dokladmi a dostupnými databázami</li>
+        <li>Kontrola v evidencii: či vozidlo nie je odcudzené a nemá falošné tabuľky</li>
+        <li>Osobné, motocykle, nákladné, autobusy, traktory, pracovné stroje aj prípojné vozidlá</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/?v=ko">Rezervovať KO <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="/kontrola-originality/">Aké doklady priniesť</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Tachografy — overovanie-tachografov.md, obsah.ts VYHODY_FIRMY + PONUKA („STK a TACHOGRAF za jeden deň“), rezervacia.ts TACHOGRAF; InoBase = CLAUDE.md/Acuity, na starom webe nebol → tbd2 -->
+  <section class="sl" id="tachografy" style="--f:#F27BB4">
+    <figure class="sl-foto slab bez ani nal"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 46a24 24 0 0148 0"/><path d="M32 46l10-14"/><circle cx="32" cy="46" r="3.5"/><path d="M8 54h48M14 34l4 2.5M50 34l-4 2.5M32 22v5"/></svg><span class="chip">Tacho</span><figcaption>fotka TBD</figcaption></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Overenie · montáž · servis</span>
+      <h2 class="ani">Tachografy</h2>
+      <p class="sl-lead ani">Overenie, montáž, servis aj podpora tachografov. STK a tachograf vybavíte u nás za jeden deň. <span class="tbd2">Tachografy zabezpečuje InoBase.</span></p>
+      <div class="sl-bloky">
+        <div class="sl-blok f ani" style="--i:1"><b>Tachograf za polovicu</b><span>Absolvujte u nás s vozidlom STK a na overenie tachografu máte automaticky 50 % zľavu.</span></div>
+        <div class="sl-blok f ani" style="--i:2"><b>STK zdarma</b><span>Objednajte si u nás montáž tachografu a kompletnú STK máte zdarma.</span></div>
+        <div class="sl-blok ani" style="--i:3"><b>Jeden deň</b><span>Tachograf aj STK pri jednej návšteve, bez ďalšej cesty.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Overenie tachografu I. generácie</li>
+        <li>Overenie tachografu II. generácie aj Gen. V2</li>
+        <li>Výmena a overenie tachografu II. generácie (Gen. V2)</li>
+        <li>Montáž, servis a podpora</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/?v=nakladne">Rezervovať overenie <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="tel:+421332020211">033 20 20 211</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Prihlasovanie — prihlasovanie-vozidiel.md (3 kroky, doklady, čomu sa vyhnete), obsah.ts PONUKA („stačí jeden podpis“), kontrola-originality.md („prihlásenia či prehlásenia“);
+       splnomocnenia = tie isté súbory ako v päte (zaklad.js) -->
+  <section class="sl" id="prihlasovanie" style="--f:#5271FF">
+    <figure class="sl-foto slab ani nal"><img src="/foto/img_7703.jpg" alt="Vchod do budovy Easy Check STK" loading="lazy"><span class="chip biely">Evidencia</span></figure>
+    <div class="sl-obs">
+      <span class="chip biely ani">Vybavíme za vás</span>
+      <h2 class="ani">Prihlasovanie vozidiel</h2>
+      <p class="sl-lead ani">Nové alebo dovezené auto prihlásime či prehlásime za vás. Stačí jeden podpis — úrady a papiere sú naša starosť.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>1 · Originalita</b><span>Prídete s vozidlom a dokladmi na kontrolu originality.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>2 · Splnomocnenie</b><span>Overené — za fyzickú osobu alebo generálne plnomocenstvo za spoločnosť.</span></div>
+        <div class="sl-blok f biely ani" style="--i:3"><b>3 · Hotovo</b><span>Celý proces prihlásenia dokončíme bez toho, aby ste pohli prstom.</span></div>
+      </div>
+      <p class="sl-zoz-tit ani">Čomu sa vyhnete</p>
+      <ul class="sl-zoz dva ani">
+        <li>Dovolenke kvôli úradom</li>
+        <li>Behaniu po úradoch a poštách</li>
+        <li>Parkovaniu v plnom meste</li>
+        <li>Návšteve polície</li>
+        <li>Komunikácii s úradmi</li>
+        <li>Úradným prekladom</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/?v=ko">Rezervovať KO + prihlásenie <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="sl-pozn ani">Doklady na KO: doklad o nadobudnutí, OP osoby zodpovednej za dovoz, malý aj veľký technický preukaz, pri novom vozidle COC.<br>Tlačivá: <a href="https://easycheck.sk/wp-content/uploads/2026/10/Splnomocnenie-fyzicka-osoba102026.docx" download>splnomocnenie — fyzická osoba</a> · <a href="https://easycheck.sk/wp-content/uploads/2026/10/Generalne-plnomocenstvo-spolocnost102026.docx" download>plnomocenstvo — spoločnosť</a></p>
+    </div>
+  </section>
+
+  <!-- 7 · Výzdvih / Pickup — vyzdvihnutie-vozidla-na-stk.md, sluzby.ts VYZDVIHNUTIE (kroky + podmienky), brief (zdarma do 15 km) -->
+  <section class="sl" id="vyzdvihnutie" style="--f:#14B8A6">
+    <figure class="sl-foto slab ani nal"><img src="/foto/img_5020.jpg" alt="Auto Easy Check s telefónnym číslom stanice" loading="lazy"><span class="chip">Pickup</span></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Pickup servis</span>
+      <h2 class="ani">Výzdvih vozidla na STK</h2>
+      <p class="sl-lead ani">Na STK nemusíte chodiť. Vozidlo vyzdvihneme na vašej adrese, skontrolujeme a vrátime. Platíte iba kontrolu.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok f ani" style="--i:1"><b>Zdarma do 15 km</b><span>Od našej stanice. Ďalej na základe dohody.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>07:00 – 16:00</b><span>V tomto čase pre vozidlo prídeme.</span></div>
+        <div class="sl-blok ani" style="--i:3"><b>Kompletná STK</b><span>Pre TK + EK osobných vozidiel. Nákladné po dohode.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Rezervujete si termín</li>
+        <li>Výzdvih potvrdíte telefonicky</li>
+        <li>Pre vozidlo prídeme na zvolenú adresu</li>
+        <li>Skontrolujeme ho na stanici a odovzdáme na mieste určenia</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/?v=osobne">Rezervovať s výzdvihom <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="tel:+421332020211">033 20 20 211</a>
+      </div>
+      <p class="sl-pozn ani">Podmienka: vozidlo nesmie mať skryté závady.</p>
+    </div>
+  </section>
+
+  <!-- 8 · Doplnkové merania — ACUITY-TAXONOMIA.md EXTRA SERVIS (add-ony k hlavnej kontrole), cennik.md (nastavenie svetiel, diagnostika = mazanie chýb, 3. opakované meranie);
+       ceny NIE sú v cennik.ts → bez cien -->
+  <section class="sl" id="merania" style="--f:#CC6DE8">
+    <figure class="sl-foto slab ani nal"><img src="/foto/img_2140.jpg" alt="Technik meria svetlomety auta na linke" loading="lazy"><span class="chip">Extra servis</span></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Doplnkové merania</span>
+      <h2 class="ani">Merania navyše</h2>
+      <p class="sl-lead ani">K hlavnej kontrole si pri rezervácii pridáte meranie navyše. Urobíme ho pri tej istej návšteve.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>Podvozok</b><span>Test tlmičov, kontrola bŕzd, test geometrie, kontrola dezénu.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Svetlá a emisie</b><span>Meranie svietivosti, nastavenie svetiel, meranie emisií.</span></div>
+        <div class="sl-blok f ani" style="--i:3"><b>Diagnostika</b><span>Kontrola diagnostiky a mazanie chýb, pre osobné aj nákladné vozidlá.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Europlaketa pre Nemecko (DE)</li>
+        <li>3. opakované meranie emisií na vaše želanie</li>
+        <li>Cenu doplnku vidíte pri rezervácii</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/">Rezervovať s doplnkom <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · Ďalšie služby — easy-check.md + kontrola-originality.md (vyrazenie VIN, evidencia), rezervacia.ts ADMINISTRATIVNA,
+       cennik.ts ADMINISTRATIVNA + ODOPASS, cennik.md (opis protokolu, doplnenie údajov), ACUITY (KO: prepis, zmena farby, SK TP) -->
+  <section class="sl" id="dalsie" style="--f:#5BBA47">
+    <figure class="sl-foto slab bez ani nal"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="26" cy="26" r="15"/><path d="M37 37l17 17"/><path d="M19 26l5 5 9-10"/></svg><span class="chip">VIN · Evidencia</span><figcaption>fotka TBD</figcaption></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Ďalšie služby</span>
+      <h2 class="ani">Čo ešte vybavíte</h2>
+      <p class="sl-lead ani">Zastrešíme viac, než by ste od STK čakali. Ak riešite čokoľvek okolo vozidla, opýtajte sa.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>Vyrazenie VIN</b><span>Náhradné identifikačné čísla vozidla pre všetky kategórie vozidiel.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Evidencia vozidiel</b><span>Prepis, zmena farby či nový technický preukaz — začína kontrolou originality.</span></div>
+        <div class="sl-blok f ani" style="--i:3"><b>Administratívna kontrola</b><span>Na základe platného protokolu o TK alebo EK. 16&nbsp;€ po našej stanici, 26&nbsp;€ po inej.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Opis protokolu o TK alebo EK</li>
+        <li>ODOPASS 5 – 10&nbsp;€ podľa typu</li>
+        <li>Bezpečnostné nálepky KO: MSA 3 ks 10&nbsp;€, SK-KO 12 ks 20&nbsp;€, QR 5&nbsp;€</li>
+        <li>Doplnenie údajov pri jednotlivo dovezenom vozidle</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="tel:+421332020211">Opýtať sa · 033 20 20 211</a>
+        <a class="btn sv" href="/cennik/#administrativna">Cenník</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · STK s výhodami — stk-s-vyhodami.md, sluzby.ts VYHODY, obsah.ts DOSTUPNOST, brief (hodiny, recenzie), index FAQ (čakáreň pri káve) -->
+  <section class="sl" id="vyhody" style="--f:var(--y)">
+    <figure class="sl-foto slab ani nal"><img src="/foto/img_9260.jpg" alt="Rad áut Easy Check v hale" loading="lazy"><span class="chip">Easy Check</span></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Prečo k nám</span>
+      <h2 class="ani">STK s výhodami</h2>
+      <p class="sl-lead ani">Nie sme bežná STK. Spomedzi staníc na Slovensku máme najviac recenzií na Google: 5 719 s hodnotením 4,9.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>Otvorené dlho</b><span>Po – Pia 07 – 20, sobota 07 – 13 a aj cez sviatky 07 – 15.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Termín ihneď</b><span>Garancia termínu do 24 hodín, objednávka za 30 sekúnd.</span></div>
+        <div class="sl-blok f ani" style="--i:3"><b>Pod jednou strechou</b><span>STK, KO, ADR, CEMT, tachografy, prihlásenie aj servis.</span></div>
+      </div>
+      <ul class="sl-zoz ani">
+        <li>Bez stresu — urobíme za vás všetko nevyhnutné</li>
+        <li>Ľudský prístup — drobné chyby odstránime priamo na linke</li>
+        <li>Počas kontroly počkáte v čakárni pri káve</li>
+        <li><span class="tbd2">Voňavka ku každej kontrole</span></li>
+        <li>Každý zákazník môže točiť <a href="#koleso">kolesom šťastia</a></li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/">Rezervovať termín <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="https://g.page/EASYCheckStkEkKo/review?rc" target="_blank" rel="noopener">Pridať recenziu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · Koleso šťastia — koleso-stastia.md + koleso-stastia.astro (10 cien v pôvodnom poradí, bez starých hodnôt v €); fotku dodá Matej -->
+  <section class="sl" id="koleso" style="--f:#E2212A">
+    <figure class="sl-foto slab bez ani nal"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="34" r="22"/><circle cx="32" cy="34" r="4"/><path d="M32 12v18M32 38v18M10 34h18M36 34h18M16.4 18.4l12.8 12.8M34.8 36.8l12.8 12.8M47.6 18.4L34.8 31.2M29.2 36.8L16.4 49.6"/><path d="M27 4h10l-5 8z"/></svg><span class="chip biely">Každý vyhráva</span><figcaption>fotka TBD</figcaption></figure>
+    <div class="sl-obs">
+      <span class="chip biely ani">Koleso šťastia</span>
+      <h2 class="ani">Koleso šťastia</h2>
+      <p class="sl-lead ani">Koleso sa točí priamo na pobočke. Po kontrole pridajte recenziu na Google a zatočte — hráte až o 10 cien.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>1 · Kontrola</b><span>Prídete s vozidlom na pravidelnú STK.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>2 · Recenzia</b><span>Napíšete nám pár slov na Google.</span></div>
+        <div class="sl-blok f biely ani" style="--i:3"><b>3 · Zatočíte</b><span>Každý vyhráva — od pera po kompletnú STK.</span></div>
+      </div>
+      <p class="sl-zoz-tit ani">Čo si môžete vytočiť</p>
+      <ul class="sl-zoz dva ani">
+        <li>Komplet STK do 3,5 t</li>
+        <li>Akčná kamera</li>
+        <li>Technická kontrola do 3,5 t</li>
+        <li>Predkontrola</li>
+        <li>Emisná kontrola do 3,5 t</li>
+        <li>Test tlmičov</li>
+        <li>Kontrola originality do 3,5 t</li>
+        <li>Škrabka na ľad, reflexná páska, pero</li>
+      </ul>
+      <div class="sl-cta ani">
+        <a class="btn" href="/rezervacia/">Rezervovať termín <span aria-hidden="true">→</span></a>
+        <a class="btn sv" href="https://g.page/EASYCheckStkEkKo/review?rc" target="_blank" rel="noopener">Pridať recenziu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ — len otázky s odpoveďou v zdrojoch (prihlasovanie-vozidiel.md, kontrola-originality.md, sluzby.ts, cennik.ts, rezervacia.ts) -->
+  <div class="obal faq-w">
+    <div class="sek-hl ani">
+      <span class="kick">Otázky k službám</span>
+      <h2>Čo sa pýtate najčastejšie</h2>
+      <p>Nenašli ste odpoveď? Zavolajte na <a href="tel:+421332020211"><b>033 20 20 211</b></a> alebo napíšte na <a href="mailto:stk@easycheck.sk"><b>stk@easycheck.sk</b></a>.</p>
+    </div>
+    <div class="faq ani">
+      <h3>Otázky</h3>
+      <details><summary>Čo potrebujem na prihlásenie vozidla?</summary>
+        <p>Vozidlo na kontrolu originality, doklad o nadobudnutí, OP osoby zodpovednej za dovoz, malý aj veľký technický preukaz, pri novom vozidle COC — a overené splnomocnenie. Zvyšok vybavíme za vás.</p></details>
+      <details><summary>Koľko trvá kontrola originality?</summary>
+        <p>Približne 60 minút. Doklady podľa toho, či je vozidlo prihlásené na Slovensku, v zahraničí alebo ešte nikde, nájdete na stránke <a href="/kontrola-originality/"><b>Kontrola originality</b></a>.</p></details>
+      <details><summary>Robíte aj súpravy, návesy a traktory?</summary>
+        <p>Áno. Sólo, ťahač návesov, celú súpravu, náves aj príves, traktory, pracovné stroje, terénne vozidlá aj vozidlá vyrobené do roku 1995. Máme 3 nákladné linky a hydraulický prízdvih.</p></details>
+      <details><summary>Ako získam zľavu na tachograf?</summary>
+        <p>Stačí, ak u nás s vozidlom absolvujete STK — na overenie tachografu máte automaticky 50 % zľavu. Pri montáži tachografu máte kompletnú STK zdarma.</p></details>
+      <details><summary>Koľko stojí výzdvih vozidla?</summary>
+        <p>Do 15 km od stanice nič, platíte iba kontrolu. Nad 15 km na základe dohody. Platí pre kompletnú TK + EK osobných vozidiel.</p></details>
+      <details><summary>Čo je administratívna kontrola?</summary>
+        <p>Kontrola bez fyzickej prehliadky vozidla, na základe platného protokolu o TK alebo EK. Po našej stanici stojí 16&nbsp;€, po inej 26&nbsp;€.</p></details>
+    </div>
+  </div>
+
+  <div class="cta-pas ani"><div>
+    <div><h2>Osobné auto aj celá flotila</h2><p>Termín garantujeme do 24 hodín. Objednávka trvá pol minúty.</p></div>
+    <div class="tl"><a class="btn" href="/rezervacia/">Rezervovať <span aria-hidden="true">→</span></a><a class="btn" href="tel:+421332020211">033 20 20 211</a></div>
+  </div></div>
+</main>
+
+<div id="z-pata"></div>
+<script src="/zaklad/zaklad.js"></script>
+</body>
+</html>

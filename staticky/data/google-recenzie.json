@@ -1,0 +1,111 @@
+{
+ "zdroj": "Google Mapy, 363 staníc STK na Slovensku",
+ "datum": "2026-10-20",
+ "stanice": [
+  {
+   "nazov": "Easy Check",
+   "mesto": "Trnava",
+   "my": true,
+   "hodnotenie": 4.9,
+   "recenzie": 5719
+  },
+  {
+   "nazov": "STK Control",
+   "mesto": "Prešov",
+   "my": false,
+   "hodnotenie": 4.9,
+   "recenzie": 2780
+  },
+  {
+   "nazov": "STK Robson",
+   "mesto": "Nitra",
+   "my": false,
+   "hodnotenie": 4.8,
+   "recenzie": 981
+  },
+  {
+   "nazov": "Biga STK",
+   "mesto": "Bratislava",
+   "my": false,
+   "hodnotenie": 4.5,
+   "recenzie": 952
+  },
+  {
+   "nazov": "STK Fotes",
+   "mesto": "Dunajská Lužná",
+   "my": false,
+   "hodnotenie": 4.6,
+   "recenzie": 839
+  },
+  {
+   "nazov": "TÜV SÜD",
+   "mesto": "Žilina",
+   "my": false,
+   "hodnotenie": 5,
+   "recenzie": 823
+  },
+  {
+   "nazov": "JP Control",
+   "mesto": "Pezinok",
+   "my": false,
+   "hodnotenie": 4.8,
+   "recenzie": 786
+  },
+  {
+   "nazov": "DEKRA Petržalka",
+   "mesto": "Bratislava",
+   "my": false,
+   "hodnotenie": 4.3,
+   "recenzie": 784
+  },
+  {
+   "nazov": "TÜV SÜD Bory",
+   "mesto": "Bratislava",
+   "my": false,
+   "hodnotenie": 4.9,
+   "recenzie": 758
+  },
+  {
+   "nazov": "STK Pri prachárni",
+   "mesto": "Košice",
+   "my": false,
+   "hodnotenie": 4.6,
+   "recenzie": 736
+  },
+  {
+   "nazov": "Autotechna Baránek",
+   "mesto": "Zvolen",
+   "my": false,
+   "hodnotenie": 4.6,
+   "recenzie": 701
+  },
+  {
+   "nazov": "STK AC-car",
+   "mesto": "Horné Opatovce",
+   "my": false,
+   "hodnotenie": 4.9,
+   "recenzie": 661
+  },
+  {
+   "nazov": "STK Jazero",
+   "mesto": "Košice",
+   "my": false,
+   "hodnotenie": 4.4,
+   "recenzie": 650
+  },
+  {
+   "nazov": "DEKRA Žilina",
+   "mesto": "Žilina",
+   "my": false,
+   "hodnotenie": 4.5,
+   "recenzie": 590
+  },
+  {
+   "nazov": "STK Blusk",
+   "mesto": "Malacky",
+   "my": false,
+   "hodnotenie": 4.9,
+   "recenzie": 578
+  }
+ ]
+}

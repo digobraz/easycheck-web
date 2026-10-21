@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Ochrana osobných údajov a cookies — Easy Check STK Trnava</title>
+<meta name="description" content="Ako Easy Check, s.r.o. a Global Partner Service s.r.o. spracúvajú osobné údaje zákazníkov STK, emisnej kontroly a kontroly originality, rezervácie a cookies na webe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/zaklad/zaklad.css">
+<style>
+/* ===== /ochrana-osobnych-udajov/ — typografia článku (.clanok + .prose).
+   Zdroj: „Informácie poskytované dotknutým osobám podľa čl. 14 Nariadenia GDPR“ (PDF zo starého webu,
+   easycheck.sk/wp-content/uploads/2020/03/…), stk-web/src/pages/ochrana-osobnych-udajov.astro,
+   rezervacny-system/MOST-ECV.md. Text NIE JE právne posúdený — pozri report. ===== */
+.clanok>*{min-width:0}  /* základ: na ≤1000 px má .clanok 1fr (=minmax(auto,1fr)) a široká tabuľka by roztiahla článok */
+.prose h2{scroll-margin-top:24px}
+.prose h3{scroll-margin-top:24px}
+.prose .tab-w{margin-top:1.2em}
+.prose .tab-w table{min-width:560px;font-size:.92rem}
+.prose .tab-w td,.prose .tab-w th{border-bottom:0}
+.prose .tab-w td small{display:block;color:var(--muted);font-size:.82rem;line-height:1.35;margin-top:.15rem}
+.prose .tab-w thead th{color:var(--paper)}
+.firmy{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:var(--gap)}
+.firmy>div{padding:1.1rem 1.2rem;border:var(--ram);border-radius:var(--rad);box-shadow:4px 4px 0 0 var(--ink);background:var(--paper);line-height:1.5}
+.firmy b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.25rem;line-height:1;margin-bottom:.45rem}
+.firmy span{display:block;font-size:.95rem}
+.firmy small{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.5rem}
+.prose .box{font-size:1rem}
+.prose .box p{margin-top:.4rem}
+.prose .box.tbd2{outline-offset:5px}
+.cakanie{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;background:var(--y);border:2px solid var(--ink);border-radius:999px;padding:.12rem .6rem;vertical-align:middle;margin-left:.4rem;font-weight:500}
+.obsah{padding:1.1rem 1.2rem}
+.obsah b{display:block;font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.obsah ol{list-style:none;counter-reset:o;display:flex;flex-direction:column;gap:.1rem}
+.obsah li{counter-increment:o}
+.obsah a{display:flex;gap:.6rem;padding:.32rem .5rem;border-radius:8px;font-size:.95rem;line-height:1.3}
+.obsah a::before{content:counter(o,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;color:var(--muted);padding-top:.15rem}
+.obsah a:hover{background:var(--y)}
+.kontakt-box p{margin-top:.4rem;line-height:1.5;font-size:.95rem}
+.kontakt-box a{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:1000px){.clanok aside{order:-1}}
+</style>
+</head>
+<body>
+<div id="z-hore"></div>
+
+<main>
+  <section class="str siroka">
+    <figure class="str-foto slab plocha-f" style="--f:#FFE600"><span>GDPR</span></figure>
+    <div class="str-tit">
+      <nav class="drobky" aria-label="Omrvinky"><a href="/">Domov</a><span aria-hidden="true">/</span><span>Ochrana osobných údajov</span></nav>
+      <h1>Ochrana osobných údajov</h1>
+      <p class="lead">Kto spracúva vaše údaje, keď prídete na kontrolu alebo si rezervujete termín, prečo a ako dlho. A aké cookies používa tento web.</p>
+      <p class="str-meta"><span class="tbd2">Posledná aktualizácia: doplniť pri zverejnení</span></p>
+    </div>
+  </section>
+
+  <div class="clanok">
+    <article class="prose">
+      <h2 id="prevadzkovatelia" style="margin-top:0">Kto spracúva vaše údaje</h2>
+      <p>Stanicu Easy Check na Technickej ulici v Trnave prevádzkujú dve spoločnosti. Každá je prevádzkovateľom osobných údajov pre svoje kontroly:</p>
+      <div class="firmy">
+        <div><b>Easy Check, s.r.o.</b><span>IČO 44 466 587</span><span class="tbd2">Sídlo: Farárske 27, Trnava</span><small>technická kontrola (STK)</small></div>
+        <div><b>Global Partner Service s.r.o.</b><span>IČO 50 267 361</span><span>Sídlo: Miletičova 5B, Bratislava</span><small>emisná kontrola, kontrola originality</small></div>
+      </div>
+      <p>Kontakt pre otázky k osobným údajom pre obe spoločnosti: <a href="mailto:stk@easycheck.sk">stk@easycheck.sk</a>, tel. <a href="tel:+421332020211">033 20 20 211</a>, alebo písomne na adresu prevádzky Technická ulica, Trnava.</p>
+      <p class="tbd2">Zástupca prevádzkovateľa nebol určený. Zodpovedná osoba za dohľad nad ochranou osobných údajov nebola menovaná.</p>
+
+      <h2 id="ucely">Na čo údaje používame</h2>
+      <p>Údaje spracúvame len v rozsahu, ktorý je potrebný na daný účel. Neposielame ich do krajín bez primeranej úrovne ochrany a nezverejňujeme ich. Automatizované rozhodovanie ani profilovanie nepoužívame.</p>
+      <div class="tab-w">
+        <table>
+          <thead><tr><th>Činnosť</th><th>Účel</th><th>Právny základ</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Zákazníci STK, EK a KO</strong></td><td>Vykonanie technickej, emisnej kontroly a kontroly originality, ako to ukladajú predpisy SR</td><td>Zákonná povinnosť — čl. 6 ods. 1 písm. c) GDPR<small>zákon č. 106/2018 Z. z. a vykonávacie vyhlášky</small></td></tr>
+            <tr><td><strong>Rezervácie termínov</strong></td><td>Objednanie termínu a jeho potvrdenie</td><td class="tbd2">Súhlas — čl. 6 ods. 1 písm. a) GDPR<small>podľa dokumentu z roku 2020; posúdiť, či nejde o plnenie zmluvy, písm. b)</small></td></tr>
+            <tr><td><strong>Zmluvní partneri</strong></td><td>Uzatvorenie a plnenie zmluvy s partnermi a firemnými zákazníkmi</td><td>Plnenie zmluvy — čl. 6 ods. 1 písm. b) GDPR<small>pri právnických osobách oprávnený záujem, písm. f)</small></td></tr>
+            <tr><td><strong>Kamerový systém</strong></td><td>Ochrana majetku a zdravia, odhaľovanie kriminality v priestoroch prístupných verejnosti</td><td>Oprávnený záujem — čl. 6 ods. 1 písm. f) GDPR</td></tr>
+            <tr><td><strong>Vaše žiadosti</strong></td><td>Vybavenie žiadostí o prístup, opravu, vymazanie, obmedzenie a námietok</td><td>Oprávnený záujem — čl. 6 ods. 1 písm. f) GDPR</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="udaje">Aké údaje spracúvame</h2>
+      <ul>
+        <li><strong>Pri kontrole:</strong> meno, priezvisko a titul vlastníka alebo držiteľa vozidla, dátum narodenia alebo IČO, adresa trvalého pobytu alebo sídla, telefón a e-mail, údaje o vozidle a z osvedčenia o evidencii.</li>
+        <li><strong>Pri kontrole originality navyše:</strong> fotokópia preukazu totožnosti, obrazový záznam vozidla a informácia, či vozidlo alebo doklady nie sú v pátraní, či na vozidlo nie je vedená exekúcia a či má uzatvorené povinné zmluvné poistenie.</li>
+        <li><strong>Pri rezervácii:</strong> meno, priezvisko, e-mail, telefón a údaje o vozidle (evidenčné číslo, kategória, palivo, prípadne značka, VIN a rok výroby).</li>
+        <li><strong>Kamerový systém:</strong> obrazový záznam.</li>
+      </ul>
+      <p>Údaje, ktoré vyžaduje zákon, nám poskytnúť musíte — bez nich kontrolu vykonať nemôžeme. Zdrojom údajov ste vy alebo váš zamestnávateľ, ak vozidlo pristavuje v mene firmy.</p>
+
+      <h2 id="prijemcovia">Komu údaje odovzdávame</h2>
+      <p>Len tam, kde to vyžaduje zákon alebo kde nám niekto pomáha ako sprostredkovateľ:</p>
+      <ul>
+        <li><strong>Orgány štátu:</strong> Ministerstvo dopravy SR, schvaľovací orgán, okresný úrad, orgán odborného dozoru, technická služba technickej kontroly — podľa zákona č. 106/2018 Z. z.; súdy, exekútori a orgány činné v trestnom konaní, ak o to požiadajú.</li>
+        <li class="tbd2"><strong>Technické služby pri EK a KO:</strong> S-EKA spol. s r.o. (emisné kontroly) a IRIS IDENT (kontrola originality).</li>
+        <li><strong>Sprostredkovatelia:</strong> dodávateľ účtovníctva, advokátska kancelária, správca IT, poskytovateľ rezervačného systému (pozri <a href="#rezervacie">Rezervácie</a>).</li>
+      </ul>
+
+      <h2 id="lehoty">Ako dlho údaje uchovávame</h2>
+      <div class="tab-w">
+        <table>
+          <thead><tr><th>Údaje</th><th>Lehota</th></tr></thead>
+          <tbody>
+            <tr><td>Kontaktné údaje fyzických osôb</td><td>4 roky<small>§ 397 Obchodného zákonníka</small></td></tr>
+            <tr><td>Informácie o obchodných prípadoch (doklady, faktúry)</td><td>10 rokov<small>zákon o dani z príjmov, zákon o DPH</small></td></tr>
+            <tr><td>Záznamy z kontroly — videozáznam</td><td>2 kalendárne roky od kontroly</td></tr>
+            <tr><td>Záznamy z kontroly — snímky</td><td>20 kalendárnych rokov od kontroly</td></tr>
+            <tr><td>Kamerový systém v priestoroch</td><td>60 dní</td></tr>
+            <tr><td>Žiadosti dotknutých osôb</td><td>3 roky<small>§ 100 Občianskeho zákonníka</small></td></tr>
+            <tr><td class="tbd2">Rezervácie</td><td class="tbd2">Do odvolania súhlasu<small>overiť podľa nastavenia rezervačného systému</small></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="rezervacie">Rezervácie cez Acuity Scheduling</h2>
+      <p>Online rezervácie termínov bežia na službe <strong>Acuity Scheduling</strong>. Jej poskytovateľ spracúva vaše údaje v našom mene ako sprostredkovateľ: uloží termín a pošle vám potvrdenie e-mailom. Údaje z rezervácie nepoužívame na iný účel a nepredávame ich.</p>
+      <div class="box tbd2" style="--f:#FFF7C2"><b>Doplniť pred zverejnením</b>
+        <p>Presný názov a sídlo poskytovateľa (Acuity Scheduling patrí spoločnosti Squarespace, USA), zmluva so sprostredkovateľom a právny mechanizmus prenosu údajov do USA (napr. rámec EÚ – USA na ochranu údajov alebo štandardné zmluvné doložky). Dokument z roku 2020 uvádza pri rezervačnom systéme „žiadny sprostredkovateľ“ a „žiadny prenos do tretích krajín“ — to už neplatí.</p>
+      </div>
+
+      <h2 id="vyhladanie-ecv">Vyhľadanie vozidla podľa EČV <span class="cakanie">čaká na schválenie</span></h2>
+      <div class="tbd2">
+        <p>Pripravujeme funkciu pre stálych zákazníkov: na stránke rezervácie zadáte evidenčné číslo a web predvyplní vozidlo z vašej poslednej objednávky, aby ste nemuseli nič vypisovať.</p>
+        <ul>
+          <li><strong>Účel:</strong> rýchlejšia rezervácia pre zákazníkov, ktorí u nás už boli.</li>
+          <li><strong>Údaje:</strong> evidenčné číslo, e-mail a údaje o vozidle z predchádzajúcich rezervácií (kategória, palivo, posledná kontrola).</li>
+          <li><strong>Právny základ:</strong> oprávnený záujem — čl. 6 ods. 1 písm. f) GDPR.</li>
+          <li><strong>Ochrana:</strong> web nikdy neukáže celý e-mail, telefón, meno ani evidenčné čísla iných vozidiel — len skrátené masky. Potvrdenie rezervácie ide vždy na e-mail uložený u nás. Počet vyhľadaní je obmedzený, aby sa nedali hromadne skúšať cudzie čísla.</li>
+          <li><strong>Vaše právo:</strong> proti tomuto spracúvaniu môžete kedykoľvek namietať a vymazať vozidlo z vyhľadávania — stačí napísať na <a href="mailto:stk@easycheck.sk">stk@easycheck.sk</a>.</li>
+        </ul>
+      </div>
+
+      <h2 id="prava">Vaše práva</h2>
+      <ul>
+        <li>požadovať prístup k údajom, ktoré o vás spracúvame,</li>
+        <li>požadovať opravu nesprávnych údajov,</li>
+        <li>požadovať vymazanie údajov,</li>
+        <li>požadovať obmedzenie spracúvania a namietať proti spracúvaniu, ak jeho základom nie je zákonná povinnosť,</li>
+        <li>získať údaje, ktoré ste nám poskytli, v strojovo čitateľnom formáte (prenosnosť),</li>
+        <li>odvolať súhlas, ak je spracúvanie založené na súhlase — odvolanie nemá vplyv na spracúvanie pred ním,</li>
+        <li>vedieť, z akého zdroja údaje pochádzajú.</li>
+      </ul>
+      <p>Údaje, ktoré spracúvame pre zákonnú povinnosť (záznamy z kontrol), vymazať na žiadosť nemôžeme — zákon určuje, ako dlho ich musíme uchovať.</p>
+      <p>Ak si myslíte, že s vašimi údajmi zaobchádzame nesprávne, môžete podať sťažnosť dozornému orgánu: <strong>Úrad na ochranu osobných údajov Slovenskej republiky</strong>, Hraničná 12, Bratislava.</p>
+
+      <h2 id="cookies">Cookies</h2>
+      <p>Tento web nepoužíva vlastné cookies ani analytické či reklamné nástroje. Niektoré časti webu však načítavajú obsah od Google, ktorý môže pri tom spracúvať technické údaje:</p>
+      <div class="tab-w">
+        <table>
+          <thead><tr><th>Služba</th><th>Kde na webe</th><th>Čo robí</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Google Fonts</strong><small>Google Ireland Ltd.</small></td><td>Všetky stránky</td><td>Načíta písmo. Google pri tom dostane vašu IP adresu a údaje o prehliadači; cookies nenastavuje.</td></tr>
+            <tr><td><strong>Google Mapy</strong><small>Google Ireland Ltd.</small></td><td>Úvodná stránka, mapa „Kde nás nájdete“</td><td>Zobrazí vloženú mapu. Google môže nastaviť vlastné cookies podľa svojich <a href="https://policies.google.com/technologies/cookies?hl=sk" rel="noopener">pravidiel</a>.</td></tr>
+            <tr class="tbd2"><td><strong>Acuity Scheduling</strong></td><td>Rezervácia termínu</td><td>Rezervačný formulár môže používať technicky nevyhnutné cookies. Overiť po nasadení rezervácie.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbd2">Analytiku návštevnosti zatiaľ nepoužívame. Keď ju nasadíme, doplníme ju sem a web sa vás pred jej spustením spýta na súhlas.</p>
+      <p>Cookies môžete kedykoľvek vymazať alebo zablokovať v nastaveniach prehliadača.</p>
+
+      <h2 id="dokument">Pôvodný dokument</h2>
+      <p>Úplné znenie informácie podľa čl. 14 GDPR pre obe spoločnosti (s prílohami ku každej činnosti) je v <a href="https://easycheck.sk/wp-content/uploads/2020/03/Informácia-o-spracúvaní-osobných-údajov.pdf" rel="noopener">PDF dokumente z roku 2020</a>.</p>
+    </article>
+
+    <aside>
+      <nav class="obsah slab" aria-label="Obsah stránky">
+        <b>Obsah</b>
+        <ol>
+          <li><a href="#prevadzkovatelia">Kto spracúva vaše údaje</a></li>
+          <li><a href="#ucely">Na čo údaje používame</a></li>
+          <li><a href="#udaje">Aké údaje spracúvame</a></li>
+          <li><a href="#prijemcovia">Komu údaje odovzdávame</a></li>
+          <li><a href="#lehoty">Ako dlho ich uchovávame</a></li>
+          <li><a href="#rezervacie">Rezervácie</a></li>
+          <li><a href="#vyhladanie-ecv">Vyhľadanie podľa EČV</a></li>
+          <li><a href="#prava">Vaše práva</a></li>
+          <li><a href="#cookies">Cookies</a></li>
+        </ol>
+      </nav>
+      <div class="box kontakt-box"><b>Otázka k údajom?</b>
+        <p><a href="mailto:stk@easycheck.sk">stk@easycheck.sk</a><br><a href="tel:+421332020211">033 20 20 211</a></p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div id="z-pata"></div>
+<script src="/zaklad/zaklad.js"></script>
+</body>
+</html>

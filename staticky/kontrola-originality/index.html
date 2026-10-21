@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Kontrola originality Trnava — Easy Check STK</title>
+<meta name="description" content="Kontrola originality (KO) v Trnave pre všetky druhy vozidiel: pri dovoze, vývoze aj zmene farby. Trvá približne 60 minút. Doklady, ceny a rezervácia termínu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/zaklad/zaklad.css">
+<style>
+/* ===== /kontrola-originality/ — farba stránky KO modrá #13B4E2.
+   Zdroje: stk-web/plan/wp-texty/kontrola-originality.md, src/pages/kontrola-originality.astro,
+   Cenník 2026.xlsx (= cennik.ts KO), ACUITY-TAXONOMIA.md, zákon 106/2018 Z. z. (§ 124),
+   vyhláška 139/2018 Z. z. (§ 34, § 36), zákon 8/2009 Z. z. (§ 116 ods. 6). ===== */
+main{--f:#13B4E2}
+.str-meta b{color:var(--ink);font-weight:500}
+
+/* doklady: tri karty vedľa seba */
+.dok{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:var(--gap)}
+.dok-k{display:flex;flex-direction:column;gap:.8rem;padding:1.3rem 1.3rem 1.2rem}
+.dok-k .chip{background:var(--f)}
+.dok-k h3{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.4rem;line-height:1}
+.dok-k p{font-size:.92rem;color:#4A4436;line-height:1.45}
+.dok-k .sl-zoz li{font-size:.95rem}
+.dok-pozn{margin-top:1.2rem;max-width:70ch}
+
+/* ceny: tabuľka + bočný box */
+.ko-ceny{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(1.4rem,3vw,2.5rem);align-items:start}
+.ko-ceny .tab-w table{min-width:0}
+.ko-ceny .tab-w thead th:first-child{box-shadow:inset 8px 0 0 var(--f)}
+.ko-ceny .tab-w td small{display:block;font-size:.8rem;color:var(--muted);margin-top:.1rem}
+.ko-ceny aside{display:flex;flex-direction:column;gap:var(--gap)}
+.ko-ceny .box p{margin-top:.35rem;line-height:1.45;font-size:.95rem}
+.ko-ceny .box ul{margin:.5rem 0 0 1.1rem;font-size:.95rem;line-height:1.5}
+@media (max-width:900px){.ko-ceny{grid-template-columns:1fr}}
+
+/* FAQ v dvoch stĺpcoch na PC */
+.ko-faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 var(--gap);align-items:start}
+.ko-faq>div{display:flex;flex-direction:column}
+@media (max-width:900px){.ko-faq{grid-template-columns:1fr}}
+.faq details p+p{padding-top:0}
+.sek{scroll-margin-top:50px}
+.ko-ceny .tab-w thead th.c{font-family:var(--mono);font-weight:500;font-size:.68rem;letter-spacing:.1em}
+.ko-ceny .tab-w thead th{vertical-align:middle}
+</style>
+</head>
+<body>
+<div id="z-hore"></div>
+
+<main>
+  <section class="str">
+    <figure class="str-foto slab"><img src="/foto/img_2140.jpg" alt="Technik pri vozidle na kontrolnej linke stanice Easy Check"></figure>
+    <div class="str-tit">
+      <nav class="drobky" aria-label="Omrvinky"><a href="/">Domov</a><span aria-hidden="true">/</span><span>Kontrola originality</span></nav>
+      <h1>Kontrola originality</h1>
+      <p class="lead">Overíme pravosť vozidla a jeho dokladov — pri dovoze, vývoze aj zmene údajov v evidencii. Pre všetky druhy vozidiel, približne za hodinu.</p>
+      <div class="str-cta"><a class="btn" href="/rezervacia/?v=ko">Rezervovať KO <span aria-hidden="true">→</span></a><a class="btn sv" href="#ceny">Ceny od 100 €</a></div>
+      <p class="str-meta"><b>Trvá ~60 min</b> · motocykle, autá, nákladné, autobusy, traktory, prívesy</p>
+    </div>
+  </section>
+
+  <nav class="kotvy" aria-label="Na tejto stránke"><div class="kotvy-in">
+    <a href="#kedy" style="--f:#13B4E2"><i></i>Kedy KO potrebujete</a>
+    <a href="#priebeh" style="--f:#13B4E2"><i></i>Čo sa kontroluje</a>
+    <a href="#doklady" style="--f:#FFE600"><i></i>Čo priniesť</a>
+    <a href="#ceny" style="--f:#E2212A"><i></i>Ceny</a>
+    <a href="#prihlasenie" style="--f:#5271FF"><i></i>Prihlásenie zdarma</a>
+    <a href="#faq" style="--f:#5BBA47"><i></i>Otázky</a>
+  </div></nav>
+
+  <!-- ============ KEDY ============ -->
+  <section class="sl" id="kedy" style="--f:#13B4E2">
+    <figure class="sl-foto slab ani nal"><img src="/foto/img_7299.jpg" alt="Kontrolná linka stanice Easy Check v Trnave"><span class="chip">KO</span></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Kedy ju potrebujete</span>
+      <h2 class="ani">Dovoz, vývoz, zmena v evidencii</h2>
+      <p class="sl-lead ani">Kontrola originality overí, či údaje na vozidle sedia s dokladmi a databázami, či vozidlo nebolo neoprávnene pozmenené a či nie je hlásené ako odcudzené. Výsledkom je odborný posudok, ktorý predkladáte na dopravnom inšpektoráte.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok f ani" style="--i:1"><b>Dovoz zo zahraničia</b><span>Bez kontroly originality dovezené vozidlo na Slovensku neprihlásite — ojazdené ani nové.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Vývoz do zahraničia</b><span>Pri vyradení vozidla z evidencie do iného štátu.</span></div>
+        <div class="sl-blok ani" style="--i:3"><b>Trvalá zmena farby</b><span>Zmenu farby v evidencii hlásite s posudkom o kontrole originality.</span></div>
+        <div class="sl-blok ani tbd2" style="--i:4"><b>Nové doklady</b><span>Pri vydaní nového dokladu vozidla po strate, zničení alebo odcudzení.</span></div>
+      </div>
+      <p class="sl-pozn ani tbd2">Pri bežnom prepise (prevode držby) sa kontrola originality vyžaduje len v osobitných prípadoch. Ak si nie ste istí, zavolajte — poradíme.</p>
+      <div class="sl-cta ani"><a class="btn" href="/rezervacia/?v=ko">Rezervovať KO <span aria-hidden="true">→</span></a><a class="btn sv" href="tel:+421332020211">033 20 20 211</a></div>
+    </div>
+  </section>
+
+  <!-- ============ ČO SA KONTROLUJE ============ -->
+  <section class="sl" id="priebeh" style="--f:#13B4E2">
+    <figure class="sl-foto slab bez ani nal"><svg viewBox="0 0 64 40"><path d="M5 30h54M9 30v-7l7-11h25l11 11h5v7"/><circle cx="19" cy="31" r="5"/><circle cx="46" cy="31" r="5"/></svg><figcaption>fotka TBD</figcaption></figure>
+    <div class="sl-obs">
+      <span class="chip ani">Priebeh</span>
+      <h2 class="ani">Čo kontrola originality overuje</h2>
+      <p class="sl-lead ani">Kontrolu robí technik kontroly originality na samostatnej linke. Trvá približne 60 minút, počkať môžete v čakárni.</p>
+      <ul class="sl-zoz ani">
+        <li>Identifikátory vozidla a doklady — meranie a nedeštruktívne skúmanie, či nedošlo k neoprávnenému zásahu.</li>
+        <li>Porovnanie údajov na vozidle s údajmi v dokladoch a v dostupných databázach.</li>
+        <li>Evidencia vozidiel a pátracie databázy — či vozidlo alebo doklady nie sú odcudzené a či sa nepoužívajú falošné tabuľky s evidenčným číslom.</li>
+      </ul>
+      <div class="sl-bloky">
+        <div class="sl-blok ani" style="--i:1"><b>Pripravte vozidlo</b><span>Čisté, s povinnou výbavou a s prístupnými identifikátormi (VIN, štítky).</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Buďte pri tom</b><span>Prítomný musí byť prevádzkovateľ alebo vodič vozidla.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOKLADY ============ -->
+  <section class="sek" id="doklady">
+    <div class="sek-hl ani">
+      <div><span class="kick">Vyhláška č. 139/2018 Z. z.</span><h2>Čo si priniesť</h2></div>
+      <p>Bez predpísaných dokladov technik kontrolu začať nesmie. Vyberte si, čo platí pre vaše vozidlo.</p>
+    </div>
+    <div class="dok">
+      <div class="dok-k slab ani nal">
+        <span class="chip">Evidované na Slovensku</span>
+        <h3>Slovenské vozidlo</h3>
+        <ul class="sl-zoz">
+          <li>Preukaz totožnosti</li>
+          <li>Osvedčenie o evidencii časť I a časť II</li>
+        </ul>
+      </div>
+      <div class="dok-k slab ani nal" style="--i:1">
+        <span class="chip">Dovezené, evidované v cudzine</span>
+        <h3>Ojazdené z dovozu</h3>
+        <ul class="sl-zoz">
+          <li>Preukaz totožnosti</li>
+          <li>Doklad o nadobudnutí vozidla (faktúra, kúpna alebo darovacia zmluva a pod.)</li>
+          <li>Osvedčenie o evidencii zo štátu, kde bolo vozidlo evidované</li>
+          <li>Doklad o vyradení z evidencie v tom štáte, ak to nie je zapísané v osvedčení</li>
+        </ul>
+      </div>
+      <div class="dok-k slab ani nal" style="--i:2">
+        <span class="chip">Dovezené, ešte neevidované</span>
+        <h3>Nové z dovozu</h3>
+        <ul class="sl-zoz">
+          <li>Preukaz totožnosti</li>
+          <li>Doklad o nadobudnutí vozidla (faktúra, kúpna alebo darovacia zmluva a pod.)</li>
+          <li>Čestné vyhlásenie, že vozidlo nie je a nebolo evidované v inom štáte</li>
+          <li>Osvedčenie o zhode COC alebo doklad o schválení v štáte EÚ</li>
+        </ul>
+      </div>
+    </div>
+    <p class="pozn dok-pozn ani">Iné prípady (napr. stratené alebo zadržané osvedčenie) upravuje vyhláška č. 139/2018 Z. z. Pred príchodom zavolajte na <a href="tel:+421332020211">033 20 20 211</a> alebo napíšte na <a href="mailto:stk@easycheck.sk">stk@easycheck.sk</a> — povieme, čo presne treba.</p>
+  </section>
+
+  <!-- ============ CENY ============ -->
+  <section class="sek" id="ceny">
+    <div class="sek-hl ani">
+      <div><span class="kick">Cenník 2026 · vrátane DPH</span><h2>Ceny podľa vozidla</h2></div>
+      <p>V cene je odborný posudok. Nálepky a ODOPASS sa pripočítavajú podľa vozidla.</p>
+    </div>
+    <div class="ko-ceny">
+      <div class="tab-w ani">
+        <table>
+          <thead><tr><th>Vozidlo</th><th class="c">Cena</th></tr></thead>
+          <tbody>
+            <tr><td>Malý motocykel<small>L1E, L2E</small></td><td class="c">100 €</td></tr>
+            <tr><td>Veľký motocykel, trojkolka, štvorkolka<small>L3E, L4, L5, L6, L7E</small></td><td class="c">110 €</td></tr>
+            <tr><td>Automobil<small>M1, M1G</small></td><td class="c">120 €</td></tr>
+            <tr><td>Nákladné vozidlo do 3,5 t<small>N1, N1G</small></td><td class="c">130 €</td></tr>
+            <tr><td>Nákladné vozidlo do 12 t<small>N2, N2G</small></td><td class="c">160 €</td></tr>
+            <tr><td>Nákladné vozidlo nad 12 t<small>N3, N3G</small></td><td class="c">165 €</td></tr>
+            <tr><td>Autobus<small>M2</small></td><td class="c">195 €</td></tr>
+            <tr><td>Autobus<small>M3</small></td><td class="c">225 €</td></tr>
+            <tr><td>Pracovný stroj<small>PS</small></td><td class="c">170 €</td></tr>
+            <tr><td>Traktor<small>T1 – T5</small></td><td class="c">185 €</td></tr>
+            <tr><td>Prípojné vozidlo do 3,5 t<small>O1, O2</small></td><td class="c">100 €</td></tr>
+            <tr><td>Prípojné vozidlo nad 3,5 t<small>O3, O4</small></td><td class="c">135 €</td></tr>
+            <tr><td>Prípojné vozidlo traktora<small>R1, R2, R3, R4</small></td><td class="c">140 €</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <aside>
+        <div class="box ani" style="--f:#FFF7C2"><b>Pripočítava sa</b>
+          <ul>
+            <li>ODOPASS 4 / 6 / 7+: 5 / 7 / 10 €</li>
+            <li>Bezpečnostná nálepka MSA (3 ks): 10 €</li>
+            <li>Bezpečnostná nálepka SK-KO (12 ks): 20 €</li>
+            <li>Nálepka QR: 5 €</li>
+          </ul>
+        </div>
+        <div class="box ani tbd2" style="--f:var(--paper)"><b>KO podľa dôvodu</b><p>Dovoz (JDV), vývoz, slovenský TP, zmena farby alebo prepis majú v rezervačnom systéme vlastný termín za 109&nbsp;€. Platnú cenu potvrdíme pri objednaní.</p></div>
+        <a class="btn sv ani" href="/cennik/#ko">Celý cenník <span aria-hidden="true">→</span></a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ PRIHLÁSENIE ============ -->
+  <section class="sl" id="prihlasenie" style="--f:#5271FF">
+    <figure class="sl-foto slab bez ani nal"><svg viewBox="0 0 64 40"><path d="M10 6h44v28H10zM18 14h28M18 21h28M18 28h16"/></svg><figcaption>fotka TBD</figcaption></figure>
+    <div class="sl-obs">
+      <span class="chip biely ani">KO-čkou to nekončí</span>
+      <h2 class="ani">Prihlásenie vozidla vybavíme za vás</h2>
+      <p class="sl-lead ani">Po kontrole originality vozidlo prihlásime na základe splnomocnenia — úrady, polícia aj preklady. Bez poplatku navyše.</p>
+      <div class="sl-bloky">
+        <div class="sl-blok f biely ani" style="--i:1"><b>Prihlásenie zdarma</b><span>K termínu KO si v rezervácii označíte „Prihlasovanie vozidla cez Easy Check KOMPLET“.</span></div>
+        <div class="sl-blok ani" style="--i:2"><b>Aj STK naraz</b><span>Technickú a emisnú kontrolu urobíme v ten istý deň — stačí ich pridať k objednávke KO.</span></div>
+        <div class="sl-blok ani" style="--i:3"><b>Vyrazenie VIN</b><span>Náhradné identifikačné číslo vozidla (VIN) vyrazíme pre všetky kategórie vozidiel.</span></div>
+      </div>
+      <div class="sl-cta ani"><a class="btn" href="/rezervacia/?v=ko">Rezervovať KO <span aria-hidden="true">→</span></a><a class="btn sv" href="/sluzby/#prihlasovanie">Ako prebieha prihlásenie</a></div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="sek" id="faq">
+    <div class="sek-hl ani">
+      <div><h2>Časté otázky</h2></div>
+    </div>
+    <div class="ko-faq faq">
+      <div>
+        <details class="ani"><summary>Ako dlho kontrola originality trvá?</summary>
+          <p>Približne 60 minút. Počas kontroly môžete počkať v čakárni.</p></details>
+        <details class="ani"><summary>Musím byť pri kontrole osobne?</summary>
+          <p>Áno, prítomný musí byť prevádzkovateľ alebo vodič vozidla. Počas kontroly nesmie byť na kontrolnej linke — čaká v priestoroch pre zákazníkov.</p></details>
+        <details class="ani"><summary>Čo ak vozidlo kontrolou neprejde?</summary>
+          <p>Chyby odstránite a prídete na opakovanú kontrolu originality. Tá sa robí v čiastočnom rozsahu do 30 dní od pôvodnej kontroly.</p>
+          <p class="tbd2">Cenu opakovanej KO cenník 2026 neuvádza — potvrdíme ju telefonicky.</p></details>
+      </div>
+      <div>
+        <details class="ani"><summary>Kedy kontrolu originality nevykonáme?</summary>
+          <p>Ak z vozidla zjavne unikajú prevádzkové kvapaliny alebo má poruchu na plynovom zariadení (LPG, CNG). Takéto vozidlo najprv opravte.</p></details>
+        <details class="ani"><summary>Robíte KO aj na nákladné vozidlá a traktory?</summary>
+          <p>Áno, pre všetky druhy vozidiel — od malých motocyklov cez autobusy a kamióny až po traktory, pracovné stroje a prívesy.</p></details>
+        <details class="ani"><summary>Môžem k KO pridať aj STK?</summary>
+          <p>Áno. V rezervácii KO označíte aj technickú a emisnú kontrolu a všetko vybavíme v jeden deň.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-pas ani"><div><div><h2>Termín na KO?</h2><p>Rezervácia trvá minútu. Alebo zavolajte: 033 20 20 211.</p></div><a class="btn" href="/rezervacia/?v=ko">Rezervovať KO <span aria-hidden="true">→</span></a></div></div>
+</main>
+
+<div id="z-pata"></div>
+<script src="/zaklad/zaklad.js"></script>
+</body>
+</html>

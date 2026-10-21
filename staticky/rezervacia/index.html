@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Rezervácia termínu STK — Easy Check Trnava</title>
+<meta name="description" content="Rezervujte si termín technickej, emisnej kontroly alebo kontroly originality v Easy Check Trnava. Stálym zákazníkom stačí zadať EČV.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/zaklad/zaklad.css">
+<style>
+/* /rezervacia/ — návrh 21. 10. 2026. Kroky: 1 Vozidlo · 2 Služba · 3 Termín · 4 Kontakt.
+   Most EČV → e-mail + vozidlá: zatiaľ DEMO (falošné dáta v JS), naostro Cloudflare Worker nad dátami z Acuity.
+   Termíny = ukážka; naostro Acuity API (availability/times). */
+.rz-hl{display:flex;justify-content:space-between;align-items:end;gap:1rem 2rem;flex-wrap:wrap;max-width:1520px;margin:0 auto;padding:calc(var(--gap) + 54px + 1.6rem) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}
+.rz-hl h1{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2.4rem,4vw,4.2rem);line-height:.88}
+.rz-hl h1 small{display:block;font-family:var(--body);font-weight:500;text-transform:none;font-size:clamp(1rem,.3vw + .85rem,1.2rem);color:var(--muted);margin-bottom:.5rem}
+.postup{list-style:none;display:flex;gap:.4rem;flex-wrap:wrap}
+.postup li{display:flex;align-items:center;gap:.45rem;font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.95rem;padding:.25rem .85rem .25rem .3rem;border:2.5px solid #CFC9BA;color:#9A9384;border-radius:999px}
+.postup li i{font-style:normal;display:grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:50%;background:#EEEAE0;font-family:var(--mono);font-size:.72rem}
+.postup li.hot{border-color:var(--ink);color:var(--ink)}
+.postup li.hot i{background:var(--y);border:2px solid var(--ink)}
+.postup li.ted{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.postup li.ted i{background:var(--y);color:var(--ink)}
+.postup button{all:unset;cursor:pointer;display:contents}
+
+.rz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:clamp(1.5rem,4vw,4rem);align-items:start;max-width:1520px;margin:0 auto;padding:clamp(1.6rem,3vw,2.4rem) calc(var(--gap) + 6px + var(--okraj)) 0 calc(var(--gap) + var(--okraj))}
+.krok{display:flex;flex-direction:column;gap:clamp(1.4rem,3vw,2rem);min-width:0}
+.krok h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.7rem,2vw + .7rem,2.6rem);line-height:.92}
+.krok h2 small{display:block;font-family:var(--mono);font-weight:400;font-size:.7rem;letter-spacing:.12em;color:var(--muted);margin-bottom:.45rem}
+.medzi{display:flex;align-items:center;gap:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.medzi::before,.medzi::after{content:'';flex:1;border-top:1.5px dashed #CFC9BA}
+
+/* --- EČV ako tabuľka --- */
+.ecv-box{padding:1.4rem 1.4rem 1.3rem;background:var(--y);display:flex;flex-direction:column;gap:.9rem}
+.ecv-box b.t{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(1.4rem,1.3vw + .8rem,1.9rem);line-height:1}
+.ecv-box p{font-size:.95rem;color:#4A4436;max-width:52ch}
+.ecv-r{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+.tabulka{display:flex;align-items:stretch;background:#fff;border:3px solid var(--ink);border-radius:10px;box-shadow:4px 4px 0 0 var(--ink);overflow:hidden;flex:1 1 260px;max-width:380px}
+.tabulka .eu{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;width:42px;flex-shrink:0;background:#0B4EA2;color:#fff;font-family:var(--disp);font-weight:800;font-size:1.05rem;padding:.3rem 0 .35rem}
+.tabulka .eu svg{width:24px;height:24px}
+.tabulka input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,2vw + 1rem,2.5rem);letter-spacing:.08em;text-transform:uppercase;padding:.2rem .8rem;color:var(--ink)}
+.tabulka input::placeholder{color:#C9C3B4}
+.tabulka:focus-within{outline:3px solid var(--c);outline-offset:3px}
+.ecv-r .btn{box-shadow:4px 4px 0 0 var(--ink);background:var(--ink)}
+.ecv-r .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.ecv-pozn{font-size:.78rem!important;color:#5C5320!important}
+.ecv-pozn a{text-decoration:underline}
+
+/* výsledok vyhľadania */
+.znamy{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.9rem;background:var(--paper);animation:vyjst .35s ease both}
+@keyframes vyjst{from{opacity:0;transform:translateY(-8px)}}
+.znamy-hl{display:flex;align-items:center;gap:.7rem}
+.znamy-hl .ok{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:50%;background:var(--g);color:#fff;border:2.5px solid var(--ink);font-weight:700;flex-shrink:0}
+.znamy-hl b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.45rem;line-height:1}
+.znamy-hl small{display:block;font-size:.85rem;color:var(--muted)}
+.vozidla{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.vozidla button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.9rem;width:100%;padding:.65rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink);transition:transform .1s,box-shadow .1s}
+.vozidla button:hover{background:#FFF7C2;transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}
+.vozidla button.vyb{background:var(--y)}
+.vozidla .mini{font-family:var(--disp);font-weight:800;font-size:1.05rem;letter-spacing:.06em;background:#fff;border:2px solid var(--ink);border-left:9px solid #0B4EA2;border-radius:6px;padding:.05rem .5rem;white-space:nowrap}
+.vozidla .op b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1.05}
+.vozidla .op small{font-size:.8rem;color:var(--muted)}
+.vozidla .sip{font-weight:700}
+.nenasli{padding:.9rem 1.1rem;border:2.5px dashed var(--ink);border-radius:12px;background:var(--paper);font-size:.95rem}
+
+/* výber vozidla */
+.prepinac{display:inline-flex;border:var(--ram);border-radius:999px;padding:3px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink);width:max-content;max-width:100%}
+.prepinac button{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.05rem;padding:.4rem 1.1rem;border-radius:999px;white-space:nowrap}
+.prepinac button small{font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.06em;margin-left:.35rem;opacity:.7}
+.prepinac button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.ikony{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.9rem}
+.ik{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;padding:1rem .4rem .85rem;text-align:center}
+.ik:hover,.ik:focus-visible,.ik.vyb{background:var(--y)}
+.ik svg{width:100%;max-width:74px;height:auto;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.ik span{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;line-height:1}
+.pohon{display:flex;flex-wrap:wrap;gap:.6rem}
+.pohon button{display:flex;flex-direction:column;padding:.6rem 1rem;border:2.5px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 0 var(--ink);background:var(--paper)}
+.pohon button b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.1rem;line-height:1}
+.pohon button small{font-size:.78rem;color:var(--muted)}
+.pohon button:hover{background:#FFF7C2}
+.pohon button[aria-pressed=true]{background:var(--y)}
+
+/* služby */
+.riadky{list-style:none;overflow:hidden}
+.riadky li+li>*{border-top:1.5px dashed var(--ink)}
+.riadky li>*{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem;width:100%;padding:.9rem 1.1rem;transition:background .12s}
+.riadky li>*:hover,.riadky li>*:focus-visible{background:#FFF7C2;outline-offset:-4px}
+.riadky li>*[aria-pressed=true]{background:var(--y)}
+.riadky b{display:block;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.35rem;line-height:1}
+.riadky small{display:block;font-size:.84rem;color:var(--muted);margin-top:.2rem}
+.riadky .c{font-family:var(--disp);font-weight:800;font-size:1.35rem;white-space:nowrap;text-align:right}
+.stitok.zel{background:var(--g)}
+.doplnky{display:flex;flex-wrap:wrap;gap:.55rem}
+.doplnky label{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:.98rem;padding:.35rem .85rem .35rem .5rem;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper);cursor:pointer;user-select:none}
+.doplnky label small{font-family:var(--mono);font-weight:400;font-size:.68rem;color:var(--muted)}
+.doplnky input{appearance:none;width:1.2rem;height:1.2rem;border:2.5px solid var(--ink);border-radius:50%;margin:0;display:grid;place-items:center;background:#fff}
+.doplnky input:checked{background:var(--g)}
+.doplnky input:checked::after{content:'';width:.28rem;height:.5rem;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.doplnky label:has(input:checked){background:#E7F5E3}
+.pickup{display:flex;gap:1rem;align-items:center;padding:1rem 1.2rem;background:var(--paper)}
+.pickup .vyp{appearance:none;width:3.2rem;height:1.8rem;border:2.5px solid var(--ink);border-radius:999px;background:#EEEAE0;position:relative;flex-shrink:0;cursor:pointer;margin:0}
+.pickup .vyp::after{content:'';position:absolute;top:2px;left:2px;width:1.15rem;height:1.15rem;border-radius:50%;background:var(--ink);transition:transform .15s}
+.pickup .vyp:checked{background:#14B8A6}
+.pickup .vyp:checked::after{transform:translateX(1.35rem);background:#fff;border:2px solid var(--ink)}
+.pickup b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.2rem;line-height:1}
+.pickup span{font-size:.88rem;color:var(--muted)}
+
+/* termín */
+.dni{display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;padding:2px 8px 10px 2px;margin-right:-8px}
+.dni::-webkit-scrollbar{display:none}
+.dni button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:4.6rem;padding:.55rem .5rem;border:2.5px solid var(--ink);border-radius:14px;background:var(--paper);box-shadow:3px 3px 0 0 var(--ink)}
+.dni button small{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.dni button b{font-family:var(--disp);font-weight:900;font-size:1.7rem;line-height:1}
+.dni button span{font-size:.72rem;color:var(--muted)}
+.dni button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.dni button[aria-pressed=true] small,.dni button[aria-pressed=true] span{color:var(--y)}
+.casy{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:.55rem}
+.casy button{font-family:var(--mono);font-weight:500;font-size:.95rem;padding:.55rem 0;text-align:center;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper)}
+.casy button:hover{background:#FFF7C2}
+.casy button[aria-pressed=true]{background:var(--y);box-shadow:3px 3px 0 0 var(--ink)}
+.casy button:disabled{border-color:#DDD8CB;color:#C2BCAD;text-decoration:line-through;cursor:not-allowed;background:transparent}
+.ukazka{display:inline-block;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;outline:1px dashed currentColor;outline-offset:3px;border-radius:4px;color:var(--muted)}
+
+/* kontakt */
+.polia{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.pole{display:flex;flex-direction:column;gap:.35rem}
+.pole.cela{grid-column:1/-1}
+.pole span{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pole input,.pole textarea{font:inherit;font-size:1.05rem;padding:.75rem .9rem;border:2.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);box-shadow:3px 3px 0 0 var(--ink)}
+.pole input:focus,.pole textarea:focus{outline:3px solid var(--c);outline-offset:2px}
+.potvrd{padding:1.2rem 1.3rem;background:#E7F5E3;display:flex;flex-direction:column;gap:.5rem}
+.potvrd b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.35rem;line-height:1}
+.potvrd .mail{font-family:var(--mono);font-size:1.05rem;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:.2rem .55rem;width:max-content;max-width:100%}
+.potvrd button{font-size:.88rem;text-decoration:underline;text-underline-offset:3px;width:max-content}
+.suhlas{display:flex;gap:.6rem;align-items:flex-start;font-size:.88rem;color:#4A4436}
+.suhlas input{margin-top:.2rem;width:1.1rem;height:1.1rem;accent-color:var(--ink)}
+.suhlas a{text-decoration:underline}
+.dalej{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:.4rem}
+.dalej .btn{font-size:1.2rem;padding:.75rem 1.4rem}
+.dalej .btn[disabled]{opacity:.4;cursor:not-allowed}
+.spat{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--ink);border-radius:999px;padding:.32rem .8rem}
+.spat:hover{background:var(--ink);color:var(--paper)}
+
+/* súhrn vpravo */
+.suhrn{position:sticky;top:20px;padding:1.3rem 1.3rem 1.2rem;display:flex;flex-direction:column;gap:.2rem}
+.suhrn h3{font-family:var(--mono);font-weight:500;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.suhrn dl{display:flex;flex-direction:column}
+.suhrn dl div{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-top:1.5px dashed #D9D4C6}
+.suhrn dt{font-size:.85rem;color:var(--muted)}
+.suhrn dd{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.08rem;text-align:right;line-height:1.1}
+.suhrn dd.prazd{color:#C2BCAD;font-weight:700}
+.suhrn .spolu{display:flex;justify-content:space-between;align-items:baseline;border-top:var(--ram);margin-top:.4rem;padding-top:.8rem}
+.suhrn .spolu span{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.suhrn .spolu b{font-family:var(--disp);font-weight:900;font-size:2.3rem;line-height:1}
+.suhrn .pomoc{margin-top:.9rem;font-size:.85rem;color:var(--muted)}
+.suhrn .pomoc a{color:var(--ink);font-weight:700}
+
+/* hotovo */
+.hotovo{padding:clamp(1.5rem,3vw,2.4rem);background:var(--y);display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
+.hotovo b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2rem,3vw,3rem);line-height:.9}
+
+@media (max-width:1000px){
+  .rz{grid-template-columns:1fr}
+  .suhrn{position:static;padding:.9rem 1rem}
+  .suhrn dl div{padding:.4rem 0}
+  .suhrn .pomoc{display:none}
+}
+@media (max-width:820px){
+  .rz-hl{padding-top:calc(var(--gap) + 30px + 1.4rem)}
+  .postup li{font-size:.8rem;padding-right:.6rem}
+  .postup li span{display:none}
+  .postup li.ted span{display:inline}
+  .ikony{grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
+  .ik span{font-size:.85rem}
+  .polia{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="z-hore"></div>
+
+<main>
+  <div class="rz-hl">
+    <h1><small>Rezervácia termínu</small>Objednať na STK</h1>
+    <ol class="postup" id="postup"></ol>
+  </div>
+  <div class="rz">
+    <section class="krok" id="krok" aria-live="polite"></section>
+    <aside class="suhrn slab" id="suhrn" aria-label="Vaša rezervácia"></aside>
+  </div>
+</main>
+
+<div id="z-pata"></div>
+<script src="/zaklad/zaklad.js"></script>
+<script>
+/* ===================== DÁTA (kópia z index.html — Acuity odkazy a ceny) ===================== */
+const A = 'https://Klasik.as.me/';
+const KO_AUTO = A+'KLASIK-OSOBNY-AUTOMOBIL-Kontrola-originality';
+
+const SVG = {
+  auto:'<path d="M5 30h54M9 30v-7l7-11h25l11 11h5v7"/><circle cx="19" cy="31" r="5"/><circle cx="46" cy="31" r="5"/>',
+  dodavka:'<path d="M4 30V9h34l11 9h9v12M4 30h54M38 9v9h11"/><circle cx="16" cy="31" r="5"/><circle cx="47" cy="31" r="5"/>',
+  moto:'<circle cx="14" cy="29" r="7"/><circle cx="50" cy="29" r="7"/><path d="M14 29l11-13h11l14 13M25 16l-3-6h-7M36 16h9"/>',
+  stvorkolka:'<circle cx="15" cy="29" r="7"/><circle cx="49" cy="29" r="7"/><path d="M8 22h48l-6-8H20zM30 14l-4-7h-7M22 29h20"/>',
+  vozik:'<path d="M8 11h32v15H8zM40 22h16"/><circle cx="24" cy="30" r="5"/>',
+  kamion:'<path d="M2 7h36v19H2zM40 31V13h10l7 8v10M2 31h56"/><circle cx="10" cy="32" r="4"/><circle cx="20" cy="32" r="4"/><circle cx="49" cy="32" r="4"/>',
+  naves:'<path d="M4 8h44v19H4zM48 22h10"/><circle cx="30" cy="31" r="4"/><circle cx="40" cy="31" r="4"/>',
+  autobus:'<path d="M4 7h52v23H4zM4 17h52M14 7v10M26 7v10M38 7v10"/><circle cx="15" cy="31" r="4"/><circle cx="46" cy="31" r="4"/>',
+  traktor:'<circle cx="18" cy="26" r="10"/><circle cx="50" cy="30" r="6"/><path d="M18 16V5h14l5 15h15v6M28 5v15"/>',
+  zeriav:'<path d="M4 31V20h40v11M44 20h8l6 7v4M4 31h54M12 20L50 3M50 3v12"/><circle cx="12" cy="32" r="4"/><circle cx="24" cy="32" r="4"/><circle cx="50" cy="32" r="4"/>',
+};
+
+const BLOKY = [
+  { id:'do', ik:'/ikony/auto-biela.png', t:'Osobné', k:'do 3,5 t', p:'auto, dodávka, motorka, štvorkolka, vozík', voz:[
+    { id:'auto', t:'Auto', pohon:1 }, { id:'dodavka', t:'Dodávka', pohon:1 }, { id:'moto', t:'Motorka' },
+    { id:'stvorkolka', t:'Štvorkolka' }, { id:'vozik', t:'Vozík' } ]},
+  { id:'nad', ik:'/ikony/nakladne-biela.png', t:'Nákladné', k:'nad 3,5 t', p:'kamión, náves, autobus, traktor, žeriav', voz:[
+    { id:'kamion', t:'Kamión' }, { id:'naves', t:'Náves' }, { id:'autobus', t:'Autobus' },
+    { id:'traktor', t:'Traktor' }, { id:'zeriav', t:'Žeriav' } ]},
+];
+
+const POHON = [
+  { id:'bd',  t:'Benzín / diesel', p:'bežné auto' },
+  { id:'alt', t:'LPG, CNG, hybrid, elektro', p:'alternatívny pohon' },
+  { id:'kat', t:'NKAT / BKAT', p:'staršie benzínové ročníky' },
+];
+
+const MOTO = [
+  { t:'Kompletná STK', p:'L3, L4, L6', top:1, u:'https://klasik.as.me/motocykel-L3-L4-L6' },
+  { t:'Kompletná STK', p:'L5, L7', u:'https://klasik.as.me/motocykel-L5-L7' },
+  { t:'Technická kontrola', p:'motocykel, trojkolka, štvorkolka', c:'45 €', u:A+'Technicka-kontrola-motocykel-trojkolka-stvorkolka' },
+  { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'25 / 30 €', u:A+'Opakovana-technicka-kontrola-motocykel-trojkolka-stvorkolka' },
+];
+const NAKL_TK  = { t:'Technická kontrola', p:'pravidelná', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-kontrola' };
+const NAKL_EK  = { t:'Emisná kontrola', p:'pravidelná', u:A+'KLASIK-NAKLADNE-VOZIDLA-Emisna-kontrola' };
+const NAKL_OTK = { t:'Opakovaná technická', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-opakovana-Technicka-kontrola' };
+const NAKL_OEK = { t:'Opakovaná emisná', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-opakovana-Emisna-kontrola' };
+
+const KONTROLY = {
+  'auto:bd': [
+    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola' },
+    { t:'Technická kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola' },
+    { t:'Emisná kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-Benzin-Diesel' },
+    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'20 / 35 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Opakovana-Technicka-kontrola' },
+    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'20 / 30 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-Benzin-Diesel' },
+    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
+  ],
+  'auto:alt': [
+    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-HYBRID' },
+    { t:'Technická kontrola', p:'pravidelná', c:'65 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA' },
+    { t:'Emisná kontrola', p:'pravidelná', c:'75 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-LPG-CNG-HYBRID' },
+    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'20 / 35 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Technicka-kontrola-LPG-CNG-HYBRID-ELEKTRINA' },
+    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'35 / 50 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-LPG-CNG-HYBRID' },
+    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
+  ],
+  'auto:kat': [
+    { t:'Technická + emisná', p:'kompletná STK naraz', top:1, u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-Emisna-kontrola-BKAT-NKAT' },
+    { t:'Technická kontrola', p:'pravidelná', c:'60 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Technicka-kontrola' },
+    { t:'Emisná kontrola', p:'pravidelná', c:'75 €', u:A+'KLASIK-OSOBNE-VOZIDLA-Emisna-kontrola-NKAT-BKAT' },
+    { t:'Opakovaná emisná', p:'v deň / do 60 dní', c:'30 / 45 €', u:A+'KLASIK-OSOBNE-VOZIDLA-opakovana-Emisna-kontrola-NKAT-BKAT' },
+    { t:'Kontrola originality', p:'automobil M1', c:'120 €', u:KO_AUTO },
+  ],
+  moto: [ ...MOTO,
+    { t:'Kontrola originality', p:'malý motocykel', u:A+'KLASIK-MALY-MOTOCYKEL-Kontrola-originality' },
+    { t:'Kontrola originality', p:'veľký motocykel', u:A+'KLASIK-VELKY-MOTOCYKEL-Kontrola-originality' } ],
+  stvorkolka: MOTO,
+  vozik: [
+    { t:'Technická kontrola', p:'O1, O2 · pravidelná', top:1, c:'35 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola' },
+    { t:'Opakovaná technická', p:'do 60 dní', c:'20 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola' },
+  ],
+  kamion: [
+    { t:'Kompletná STK — ťahač', p:'technická + emisná', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-TAHAC-NAVESOV-Technicka-Emisna-kontrola' },
+    { t:'Kompletná STK — súprava', p:'ťahač + náves', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola' },
+    { t:'Kompletná STK — sólo', p:'technická + emisná', u:A+'KLASIK-NAKLADNE-VOZIDLA-SOLO-Technicka-Emisna-kontrola' },
+    { ...NAKL_TK, c:'85 €' }, { ...NAKL_EK, c:'75 €' }, { ...NAKL_OTK, c:'30 / 50 €' }, { ...NAKL_OEK, c:'30 / 42 €' },
+  ],
+  naves: [
+    { t:'Technická kontrola', p:'O3, O4 · pravidelná', top:1, c:'75 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-Technicka-kontrola' },
+    { t:'Opakovaná technická', p:'do 60 dní', c:'40 €', u:A+'KLASIK-NAKLADNY-NAVES-PRIVES-opakovana-Technicka-kontrola' },
+    { t:'Kompletná STK — súprava', p:'ťahač + náves', u:A+'KLASIK-NAKLADNE-VOZIDLA-SUPRAVA-Technicka-Emisna-kontrola' },
+  ],
+  autobus: [ { ...NAKL_TK, top:1 }, NAKL_EK, NAKL_OTK, NAKL_OEK ],
+  traktor: [
+    { t:'Kompletná STK', p:'traktor, pracovný stroj', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Technicka-Emisna-kontrola' },
+    { t:'Traktorová súprava', p:'traktor + prípojné vozidlo', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOROVA-SUPRAVA-Technicka-Emisna-kontrola' },
+    { t:'Technická kontrola', p:'pravidelná', c:'90 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PS-technicka-kontrola' },
+    { t:'Opakovaná technická', p:'v deň / do 60 dní', u:A+'KLASIK-NAKLADNE-VOZIDLA-TRAKTOR-PRACOVNY-STROJ-Opakovana-technicka-kontrola' },
+  ],
+  zeriav: [
+    { t:'Kompletná STK', p:'špeciálne, terénne vozidlo', top:1, u:A+'KLASIK-NAKLADNE-VOZIDLA-SPECIALNE-Technicka-Emisna-kontrola' },
+    { t:'Technická kontrola', p:'N2G, N3G · pravidelná', c:'120 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TERENNE-Technicka-kontrola' },
+    { t:'Opakovaná technická', p:'v deň / do 60 dní', c:'45 / 70 €', u:A+'KLASIK-NAKLADNE-VOZIDLA-TERENNE-opakovana-Technicka-kontrola' },
+  ],
+};
+const POZN = {
+  kamion:'ADR a CEMT majú vlastné termíny → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',
+  naves:'ADR a CEMT náves → <a href="/rezervacia/#adr-cemt">ADR / CEMT</a>',
+};
+
+/* doplnky z Acuity „EXTRA SERVIS“ (ACUITY-TAXONOMIA.md) — ceny overiť s cenníkom 2026 */
+const DOPLNKY = [ ['Test tlmičov',16], ['Kontrola bŕzd',16], ['Kontrola dezénu',16], ['Meranie svietivosti',16], ['Test geometrie',11], ['Diagnostika',26] ];
+
+/* ===================== DEMO: most EČV → e-mail + vozidlá =====================
+   Naostro: GET /api/ecv?v=TT123AB (Cloudflare Worker nad tabuľkou z Acuity). Odpoveď nikdy nevráti celý e-mail
+   ani celé EČV iných vozidiel — len masku. Tu sú vymyslené dáta, aby sa dal flow vyskúšať. */
+const DEMO = {
+  TT123AB: { meno:'Ján', email:'ja•••@gmail.com', vozidla:[
+    { ecv:'TT123AB', blok:'do', voz:'auto', pohon:'bd', popis:'Osobné auto · benzín / diesel', posledna:'Technická + emisná · 3/2024' },
+    { ecv:'TT•••KL', blok:'do', voz:'moto', popis:'Motocykel', posledna:'Kompletná STK · 5/2025' },
+  ]},
+  TT777XY: { meno:'Firma', email:'fl•••@doprava.sk', vozidla:[
+    { ecv:'TT777XY', blok:'nad', voz:'kamion', popis:'Ťahač návesov', posledna:'Kompletná STK — ťahač · 9/2025' },
+    { ecv:'TT•••AC', blok:'nad', voz:'naves', popis:'Náves O4', posledna:'Technická kontrola · 9/2025' },
+    { ecv:'TT•••BD', blok:'nad', voz:'kamion', popis:'Ťahač návesov', posledna:'Kompletná STK — ťahač · 2/2026' },
+    { ecv:'TT•••FF', blok:'do', voz:'dodavka', pohon:'bd', popis:'Dodávka · diesel', posledna:'Technická + emisná · 6/2025' },
+  ]},
+};
+
+/* ===================== STAV ===================== */
+const $ = id => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const st = { krok:1, blok: q.get('v') === 'nakladne' ? 'nad' : 'do', ko: q.get('v') === 'ko', voz:null, pohon:null, sluzba:null,
+             doplnky:[], pickup:false, den:null, cas:null, ecv:'', znamy:null, hladane:false, inyMail:false };
+const vsetkyVoz = BLOKY.flatMap(b => b.voz);
+const najdi = id => vsetkyVoz.find(v => v.id === id);
+const KROKY = ['Vozidlo','Služba','Termín','Kontakt'];
+const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const normEcv = s => s.toUpperCase().replace(/[^A-Z0-9]/g, '');
+const pekneEcv = s => s.length === 7 ? `${s.slice(0,2)} ${s.slice(2,5)}${s.slice(5)}` : s;
+const cena = s => { const m = s && s.c && s.c.match(/^(\d+)/); return m ? +m[1] : null; };
+const zoznamKontrol = () => {
+  const v = najdi(st.voz); if(!v) return [];
+  let z = KONTROLY[v.pohon ? `auto:${st.pohon || 'bd'}` : v.id] || [];
+  if(st.ko) z = [...z].sort((a,b) => /originality/i.test(b.t) - /originality/i.test(a.t));
+  return z;
+};
+const vozOk = () => st.voz && (!najdi(st.voz).pohon || st.pohon);
+
+/* ===================== VYKRESLENIE ===================== */
+function postup(){
+  $('postup').innerHTML = KROKY.map((t, i) => {
+    const n = i + 1, cls = n === st.krok ? 'ted' : n < st.krok ? 'hot' : '';
+    const inner = `<i>${n < st.krok ? '✓' : n}</i><span>${t}</span>`;
+    return `<li class="${cls}">${n < st.krok ? `<button data-na="${n}">${inner}</button>` : inner}</li>`;
+  }).join('');
+}
+
+function suhrn(){
+  const v = najdi(st.voz), s = st.sluzba, d = st.doplnky.map(i => DOPLNKY[i]);
+  const p = st.pohon ? POHON.find(x => x.id === st.pohon).t : '';
+  const den = st.den ? new Date(st.den).toLocaleDateString('sk-SK', { weekday:'short', day:'numeric', month:'numeric' }) : '';
+  const spolu = s && cena(s) !== null ? cena(s) + d.reduce((a, x) => a + x[1], 0) : null;
+  const r = (t, h) => `<div><dt>${t}</dt><dd class="${h ? '' : 'prazd'}">${h || '—'}</dd></div>`;
+  $('suhrn').innerHTML = `<h3>Vaša rezervácia</h3><dl>
+    ${r('EČV', st.ecv ? pekneEcv(st.ecv) : '')}
+    ${r('Vozidlo', v ? v.t + (p ? `<br><small style="font-family:var(--body);font-weight:400;text-transform:none;font-size:.8rem">${p}</small>` : '') : '')}
+    ${r('Služba', s ? s.t : '')}
+    ${d.length ? r('Doplnky', d.map(x => x[0]).join(', ')) : ''}
+    ${st.pickup ? r('Pickup servis', 'áno') : ''}
+    ${r('Termín', st.cas ? `${den} · ${st.cas}` : '')}
+  </dl>
+  <div class="spolu"><span>Spolu</span><b>${spolu !== null ? spolu + ' €' : s ? '<small style="font-size:1rem">podľa <a href="/cennik/" style="text-decoration:underline">cenníka</a></small>' : '—'}</b></div>
+  <p class="pomoc">Neviete si rady? Zavolajte <a href="tel:+421332020211">033 20 20 211</a> — vyberieme za vás.</p>`;
+}
+
+function krok1(){
+  const b = BLOKY.find(x => x.id === st.blok);
+  const zn = st.znamy;
+  return `
+    <div class="ecv-box slab perf">
+      <b class="t">Už ste u nás boli?</b>
+      <p>Zadajte EČV. Ak vás poznáme, doplníme vozidlo aj kontakt — nič nevypisujete.</p>
+      <form class="ecv-r" id="ecv-f">
+        <label class="tabulka"><span class="eu"><svg viewBox="0 0 24 24" aria-hidden="true">${Array.from({length:12}, (_, i) => { const a = i * Math.PI / 6; return `<circle cx="${12 + 8*Math.cos(a)}" cy="${12 + 8*Math.sin(a)}" r="1.3" fill="#FFE600"/>`; }).join('')}</svg>SK</span>
+          <input id="ecv" name="ecv" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="10" placeholder="TT 123AB" value="${esc(pekneEcv(st.ecv))}" aria-label="Evidenčné číslo vozidla"></label>
+        <button class="btn" type="submit" id="ecv-b">Nájsť <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="ecv-pozn">Demo: skúste <b>TT123AB</b> (vodič) alebo <b>TT777XY</b> (firma so 4 vozidlami). · <a href="/ochrana-osobnych-udajov/">Ako narábame s údajmi</a></p>
+    </div>
+    ${zn ? `
+      <div class="znamy slab">
+        <div class="znamy-hl"><span class="ok" aria-hidden="true">✓</span><div><b>Poznáme vás</b><small>Potvrdenie pošleme na ${zn.email}. Vyberte vozidlo:</small></div></div>
+        <ul class="vozidla">${zn.vozidla.map((v, i) => `
+          <li><button type="button" data-zv="${i}" class="${st.ecv === normEcv(v.ecv) && st.voz === v.voz ? 'vyb' : ''}">
+            <span class="mini">${pekneEcv(v.ecv)}</span>
+            <span class="op"><b>${v.popis}</b><small>Naposledy: ${v.posledna}</small></span>
+            <span class="sip" aria-hidden="true">→</span></button></li>`).join('')}</ul>
+      </div>` : st.hladane ? `<div class="nenasli">Toto EČV u nás zatiaľ nemáme. Nevadí — vyberte vozidlo nižšie, kontakt vyplníte raz a nabudúce ho už doplníme.</div>` : ''}
+    <div class="medzi">alebo vyberte vozidlo</div>
+    <div class="prepinac" role="group" aria-label="Hmotnosť vozidla">
+      ${BLOKY.map(x => `<button type="button" data-blok="${x.id}" aria-pressed="${x.id === st.blok}">${x.t}<small>${x.k}</small></button>`).join('')}
+    </div>
+    <div class="ikony">${b.voz.map(v => `
+      <button type="button" class="ik slab zatlac${st.voz === v.id ? ' vyb' : ''}" data-voz="${v.id}" aria-pressed="${st.voz === v.id}"><svg viewBox="0 0 64 40" aria-hidden="true">${SVG[v.id]}</svg><span>${v.t}</span></button>`).join('')}
+    </div>
+    ${st.voz && najdi(st.voz).pohon ? `
+      <div><h2 style="font-size:1.5rem;margin-bottom:.8rem">Aký má pohon?</h2>
+      <div class="pohon">${POHON.map(p => `<button type="button" data-pohon="${p.id}" aria-pressed="${st.pohon === p.id}"><b>${p.t}</b><small>${p.p}</small></button>`).join('')}</div></div>` : ''}
+    <div class="dalej"><span></span><button class="btn" data-dalej ${vozOk() ? '' : 'disabled'}>Pokračovať <span aria-hidden="true">→</span></button></div>`;
+}
+
+function krok2(){
+  const v = najdi(st.voz), z = zoznamKontrol();
+  return `
+    <ul class="riadky slab">${z.map((k, i) => `
+      <li><button type="button" data-sl="${i}" aria-pressed="${st.sluzba === k}"><span><b>${k.t}${k.top && !st.ko ? '<span class="stitok">najčastejšie</span>' : ''}${st.posledna && st.posledna.startsWith(k.t) ? '<span class="stitok zel">ako minule</span>' : ''}</b><small>${k.p}</small></span>
+        <span class="c">${k.c || '→'}</span></button></li>`).join('')}</ul>
+    ${POZN[v.id] ? `<p class="pozn">${POZN[v.id]}</p>` : ''}
+    <div><h2 style="font-size:1.5rem;margin-bottom:.8rem">Pridať k tomu?</h2>
+      <div class="doplnky">${DOPLNKY.map(([t, c], i) => `<label><input type="checkbox" data-dop="${i}" ${st.doplnky.includes(i) ? 'checked' : ''}>${t}<small>+${c} €</small></label>`).join('')}</div></div>
+    <label class="pickup slab"><input type="checkbox" class="vyp" data-pickup ${st.pickup ? 'checked' : ''}>
+      <span><b>Pickup servis</b><br><span>Vozidlo vyzdvihneme na vašej adrese a vrátime. Zdarma do 15 km.</span></span></label>
+    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-dalej ${st.sluzba ? '' : 'disabled'}>Vybrať termín <span aria-hidden="true">→</span></button></div>`;
+}
+
+/* ukážkové termíny: 10 pracovných dní dopredu, 20-min sloty podľa otváracích hodín, „obsadené“ pseudonáhodne */
+const HODINY = {1:[7,20],2:[7,20],3:[7,20],4:[7,20],5:[7,20],6:[7,13]};
+function dni(){
+  const o = [], d = new Date(); d.setHours(0,0,0,0);
+  while(o.length < 12){ if(HODINY[d.getDay()]) o.push(new Date(d)); d.setDate(d.getDate() + 1); }
+  return o;
+}
+function casy(den){
+  const [a, b] = HODINY[new Date(den).getDay()], o = [], ted = new Date();
+  for(let m = a * 60; m < b * 60 - 20; m += 20){
+    const t = `${String(m / 60 | 0).padStart(2,'0')}:${String(m % 60).padStart(2,'0')}`;
+    const d = new Date(den); d.setHours(m / 60 | 0, m % 60);
+    const obs = d < ted || ((m * 7 + new Date(den).getDate() * 13) % 5 === 0);
+    o.push([t, obs]);
+  }
+  return o;
+}
+function krok3(){
+  const D = dni(); if(!st.den) st.den = +D[0];
+  return `
+    <div class="dni" role="group" aria-label="Deň">${D.map(d => `
+      <button type="button" data-den="${+d}" aria-pressed="${+d === st.den}"><small>${d.toLocaleDateString('sk-SK', { weekday:'short' })}</small><b>${d.getDate()}</b><span>${d.toLocaleDateString('sk-SK', { month:'short' })}</span></button>`).join('')}
+    </div>
+    <div class="casy" role="group" aria-label="Čas">${casy(st.den).map(([t, obs]) => `<button type="button" data-cas="${t}" ${obs ? 'disabled' : ''} aria-pressed="${st.cas === t}">${t}</button>`).join('')}</div>
+    <p class="pozn"><span class="ukazka">ukážka</span> Naostro sa voľné časy načítajú priamo z rezervačného systému. Trvanie: cca 20 min na linke, vyhraďte si cca 60 min.</p>
+    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-dalej ${st.cas ? '' : 'disabled'}>Pokračovať <span aria-hidden="true">→</span></button></div>`;
+}
+
+function krok4(){
+  const zn = st.znamy && !st.inyMail;
+  return `
+    ${zn ? `
+      <div class="potvrd slab"><b>Kontakt máme</b>
+        <span>Potvrdenie a pripomienku pred termínom pošleme na</span><span class="mail">${st.znamy.email}</span>
+        <button type="button" data-inymail>Chcem použiť iný e-mail</button></div>` : `
+      <div class="polia">
+        <label class="pole"><span>Meno a priezvisko</span><input name="meno" autocomplete="name" required></label>
+        <label class="pole"><span>Telefón</span><input name="tel" type="tel" autocomplete="tel" placeholder="09xx xxx xxx" required></label>
+        <label class="pole cela"><span>E-mail — pošleme naň potvrdenie</span><input name="email" type="email" autocomplete="email" required></label>
+        ${st.ecv ? '' : `<label class="pole"><span>EČV (nepovinné)</span><input name="ecv2" autocapitalize="characters" placeholder="TT 123AB"></label>`}
+        <label class="pole cela"><span>Poznámka (nepovinné)</span><textarea name="pozn" rows="2"></textarea></label>
+      </div>`}
+    <label class="suhlas"><input type="checkbox" id="suhlas" ${zn ? 'checked' : ''}><span>Súhlasím so <a href="/ochrana-osobnych-udajov/">spracovaním údajov</a> na účel rezervácie.</span></label>
+    <div class="dalej"><button class="spat" data-spat>← Späť</button><button class="btn" data-potvrd>Potvrdiť rezerváciu <span aria-hidden="true">→</span></button></div>`;
+}
+
+function hotovo(){
+  const den = new Date(st.den).toLocaleDateString('sk-SK', { weekday:'long', day:'numeric', month:'long' });
+  return `<div class="hotovo slab perf"><b>Hotovo, tešíme sa</b>
+    <p>${najdi(st.voz).t} · ${st.sluzba.t} · <strong>${den} o ${st.cas}</strong>.<br>Potvrdenie sme poslali${st.znamy && !st.inyMail ? ' na ' + st.znamy.email : ' e-mailom'}.</p>
+    <p class="pozn"><span class="ukazka">ukážka</span> V prototype sa nič neodosiela.</p>
+    <a class="btn sv" href="/">Späť na úvod</a></div>`;
+}
+
+const NADPIS = ['', 'Aké vozidlo vám skontrolujeme?', 'Akú službu potrebujete?', 'Kedy vám to vyhovuje?', 'Kam pošleme potvrdenie?'];
+function render(){
+  postup(); suhrn();
+  const el = $('krok');
+  if(st.krok === 5){ el.innerHTML = hotovo(); return; }
+  el.innerHTML = `<h2><small>Krok ${st.krok} / 4</small>${NADPIS[st.krok]}</h2>` + [krok1, krok2, krok3, krok4][st.krok - 1]();
+}
+
+/* ===================== UDALOSTI ===================== */
+function hladaj(){
+  st.ecv = normEcv($('ecv').value);
+  st.hladane = !!st.ecv; st.znamy = DEMO[st.ecv] || null;
+  if(st.znamy){ const v = st.znamy.vozidla.find(x => normEcv(x.ecv) === st.ecv); if(v) vyberZname(v, false); }
+  render();
+}
+function vyberZname(v, dalej = true){
+  st.blok = v.blok; st.voz = v.voz; st.pohon = v.pohon || null; st.posledna = v.posledna;
+  if(!v.ecv.includes('•')) st.ecv = normEcv(v.ecv);
+  if(dalej){ st.krok = 2; st.sluzba = zoznamKontrol().find(k => v.posledna.startsWith(k.t)) || null; }
+}
+document.addEventListener('submit', e => { if(e.target.id === 'ecv-f'){ e.preventDefault(); hladaj(); } });
+document.addEventListener('input', e => {
+  if(e.target.id === 'ecv'){ const p = e.target.selectionStart; e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(p, p); }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if(t.dataset.dop !== undefined){ const i = +t.dataset.dop; st.doplnky = t.checked ? [...st.doplnky, i] : st.doplnky.filter(x => x !== i); suhrn(); }
+  if('pickup' in t.dataset){ st.pickup = t.checked; suhrn(); }
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-blok],[data-voz],[data-pohon],[data-dalej],[data-spat],[data-sl],[data-den],[data-cas],[data-zv],[data-na],[data-inymail],[data-potvrd]');
+  if(!b || !b.closest('main')) return;
+  const d = b.dataset, hore = () => $('krok').closest('.rz').scrollIntoView({ behavior:'smooth', block:'start' });
+  if(d.blok){ st.blok = d.blok; st.voz = st.pohon = null; }
+  else if(d.voz){ st.voz = d.voz; st.pohon = null; st.sluzba = null; }
+  else if(d.pohon){ st.pohon = d.pohon; st.sluzba = null; }
+  else if(d.zv){ vyberZname(st.znamy.vozidla[+d.zv]); hore(); }
+  else if(d.sl){ st.sluzba = zoznamKontrol()[+d.sl]; }
+  else if(d.den){ st.den = +d.den; st.cas = null; }
+  else if(d.cas){ st.cas = d.cas; }
+  else if(d.na){ st.krok = +d.na; }
+  else if('inymail' in d){ st.inyMail = true; }
+  else if('dalej' in d){ if(b.disabled) return; st.krok++; hore(); }
+  else if('spat' in d){ st.krok--; hore(); }
+  else if('potvrd' in d){
+    if(!$('suhlas').checked){ $('suhlas').closest('label').style.color = 'var(--r)'; return; }
+    const f = [...document.querySelectorAll('.polia input[required]')];
+    const zle = f.find(i => !i.checkValidity()); if(zle){ zle.reportValidity(); return; }
+    st.krok = 5; hore();
+  }
+  render();
+});
+render();
+</script>
+</body>
+</html>

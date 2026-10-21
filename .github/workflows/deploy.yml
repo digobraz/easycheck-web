@@ -1,4 +1,6 @@
-name: Deploy Astro to GitHub Pages
+# Od 21. 10. 2026 sa nasadzuje statický web SOFT SLAB zo staticky/ (pripraví ~/AI/EASYCHECK/scripts/web-nasad.sh).
+# Astro (src/) ostáva v repe na neskorší prenos, ale nebuildí sa.
+name: Deploy staticky/ to GitHub Pages
 
 on:
   push:
@@ -19,15 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npx astro build
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: staticky
 
   deploy:
     needs: build

@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Cenník STK, emisnej kontroly a kontroly originality 2026 — Easy Check STK Trnava</title>
+<meta name="description" content="Cenník 2026 STK Easy Check Trnava: technická a emisná kontrola, kontrola originality, ADR a CEMT, tachografy, doplnkové merania. Ceny v eurách vrátane DPH.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/zaklad/zaklad.css">
+<style>
+/* ===== /cennik/ — zdroj cien: vstupy/Cenník 2026.xlsx (= stk-web/src/data/cennik.ts); kde xlsx cenu nemá,
+   je z Acuity (rezervacny-system/acuity-dump) a označená .tbd2. Kotvy #tk #ek #ko #administrativna
+   #tk-opakovana #ek-opakovana #odopass používa starý web a rezervacia.ts — nemeniť. ===== */
+
+/* rýchly prehľad pod kotvami */
+.cn-rych{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:var(--gap);margin-top:clamp(2rem,4vw,3rem)}
+.cn-rych a{display:flex;flex-direction:column;gap:.35rem;padding:1rem 1.1rem;border:var(--ram);border-radius:var(--rad);box-shadow:4px 4px 0 0 var(--ink);background:var(--paper);position:relative;overflow:hidden;transition:transform .1s,box-shadow .1s}
+.cn-rych a::before{content:'';position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--f);border-right:2.5px solid var(--ink)}
+.cn-rych a>*{padding-left:12px}
+.cn-rych a:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 0 var(--ink)}
+.cn-rych small{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cn-rych b{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.2rem;line-height:1}
+.cn-rych strong{font-family:var(--disp);font-weight:900;font-size:2.2rem;line-height:.9;margin-top:.2rem}
+.cn-dph{margin-top:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* sekcia kategórie: vľavo nadpis + poznámky + tlačidlo (sticky), vpravo tabuľky */
+.cn{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.6fr);gap:clamp(1.5rem,4vw,4rem);align-items:start;padding-top:clamp(3.5rem,7vw,5.5rem);scroll-margin-top:64px}
+.cn-hl{position:sticky;top:76px;display:flex;flex-direction:column;gap:1rem}
+.cn-hl h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(2rem,3.2vw,3.3rem);line-height:.9;text-wrap:balance}
+.cn-hl p{color:#4A4436;line-height:1.5;max-width:46ch}
+.cn-hl .btn{align-self:flex-start}
+.cn-hl .pozn{line-height:1.45}
+.cn-pr>[id]{scroll-margin-top:80px}
+.cn-pr{display:flex;flex-direction:column;gap:clamp(1.4rem,2.5vw,2rem);min-width:0}
+.cn-pr h3{display:flex;align-items:center;gap:.6rem;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:1.3rem;line-height:1;margin-bottom:.7rem;scroll-margin-top:80px}
+.cn-pr h3::before{content:'';width:.9rem;height:.9rem;border-radius:50%;background:var(--f);border:2px solid var(--ink);flex-shrink:0}
+.cn-pr .pod{font-size:.88rem;color:var(--muted);margin:-.35rem 0 .7rem;line-height:1.45}
+/* tabuľky: 2 stĺpce sa zmestia aj na mobil, 3 stĺpce sa posúvajú v kontajneri */
+.cn .tab-w table{min-width:0}
+.cn .tab-w table.t3{min-width:340px}
+.cn .tab-w thead th.c{white-space:normal}
+.cn .tab-w td small{display:block;font-size:.8rem;color:var(--muted);margin-top:.1rem}
+.cn .tab-w thead th{background:var(--ink)}
+.cn .tab-w thead th:first-child{box-shadow:inset 8px 0 0 var(--f)}
+.cn .tab-w tr.sk td{background:#F3EFE2;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:#4A4436;padding-block:.45rem}
+.cn .tab-w tbody tr.sk:hover td{background:#F3EFE2}
+.cn .tab-w td.c.nic{color:var(--muted);font-weight:600}
+.cn .tab-w td.c .tbd2{outline-offset:2px}
+.tab-w .tbd2-r td{background:repeating-linear-gradient(-45deg,transparent 0 8px,rgba(35,31,32,.035) 8px 16px)}
+.cn-cta{display:flex;flex-wrap:wrap;gap:.7rem}
+@media (max-width:900px){
+  .cn{grid-template-columns:1fr;gap:1.4rem}
+  .cn-hl{position:static}
+  .cn .tab-w td.c{font-size:1.05rem}
+  .cn .tab-w th,.cn .tab-w td{padding:.6rem .75rem}
+}
+.cn .tab-w thead th.c{font-family:var(--mono);font-weight:500;font-size:.68rem;letter-spacing:.1em}
+.cn .tab-w thead th{vertical-align:middle}
+</style>
+</head>
+<body>
+<div id="z-hore"></div>
+
+<main>
+  <section class="str">
+    <figure class="str-foto slab"><img src="/foto/img_9365.jpg" alt="Firemné autá Easy Check pred stanicou technickej kontroly v Trnave"></figure>
+    <div class="str-tit">
+      <nav class="drobky" aria-label="Omrvinky"><a href="/">Domov</a><span aria-hidden="true">/</span><span>Cenník</span></nav>
+      <h1>Cenník 2026</h1>
+      <p class="lead">Bežné osobné auto na benzín alebo diesel: technická kontrola 60&nbsp;€, emisná 60&nbsp;€. Nižšie sú ceny pre všetky vozidlá a kontroly.</p>
+      <div class="str-cta"><a class="btn" href="/rezervacia/">Rezervovať termín <span aria-hidden="true">→</span></a><a class="btn sv" href="tel:+421332020211">033 20 20 211</a></div>
+      <p class="str-meta">Ceny v eurách vrátane DPH</p>
+    </div>
+  </section>
+
+  <nav class="kotvy" aria-label="Na tejto stránke"><div class="kotvy-in">
+    <a href="#osobne" style="--f:#E2212A"><i></i>Osobné</a>
+    <a href="#motocykle" style="--f:#E2212A"><i></i>Motocykle</a>
+    <a href="#privesy" style="--f:#E2212A"><i></i>Prívesy</a>
+    <a href="#nakladne" style="--f:#E2212A"><i></i>Nákladné</a>
+    <a href="#adr-cemt" style="--f:#FF914B"><i></i>ADR / CEMT</a>
+    <a href="#ko" style="--f:#13B4E2"><i></i>Kontrola originality</a>
+    <a href="#opakovane" style="--f:#FFE600"><i></i>Opakovaná a administratívna</a>
+    <a href="#doplnkove" style="--f:#5BBA47"><i></i>Doplnkové merania</a>
+    <a href="#tachografy" style="--f:#F27BB4"><i></i>Tachografy</a>
+    <a href="#pickup" style="--f:#14B8A6"><i></i>Pickup servis</a>
+  </div></nav>
+
+  <div class="obal">
+    <!-- rýchly prehľad: najčastejšie úkony (cennik.ts NAJCASTEJSIE + súčet TK + EK) -->
+    <div class="cn-rych">
+      <a href="#osobne" class="ani" style="--f:#E2212A"><small>Osobné auto · benzín / diesel</small><b>STK + emisná</b><strong>120 €</strong></a>
+      <a href="#nakladne" class="ani" style="--f:#E2212A;--i:1"><small>Nákladné nad 3,5 t · sólo</small><b>STK + emisná</b><strong>160 €</strong></a>
+      <a href="#ko" class="ani" style="--f:#13B4E2;--i:2"><small>Automobil M1, M1G</small><b>Kontrola originality</b><strong>120 €</strong></a>
+      <a href="#motocykle" class="ani" style="--f:#E2212A;--i:3"><small>L1, L2, L3, L4, L6</small><b>Motocykel · STK</b><strong>45 €</strong></a>
+    </div>
+
+    <!-- ============ OSOBNÉ ============ -->
+    <section class="cn" id="osobne" style="--f:#E2212A" aria-labelledby="h-osobne">
+      <div class="cn-hl ani">
+        <span class="chip biely">TK · EK</span>
+        <h2 id="h-osobne">Osobné vozidlá do 3,5&nbsp;t</h2>
+        <p>Autá a dodávky kategórie M1, M1G, N1, N1G. Pravidelná aj zvláštna kontrola v plnom rozsahu majú rovnakú cenu.</p>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=osobne">Rezervovať <span aria-hidden="true">→</span></a></div>
+        <p class="pozn">Auto neprejde? Opakovaná kontrola je v deň kontroly lacnejšia — <a href="#opakovane">ceny opakovanej kontroly</a>.</p>
+      </div>
+      <div class="cn-pr">
+        <div class="ani" id="tk">
+          <h3>Technická kontrola</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Vozidlo</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Benzín, diesel<small>M1, M1G, N1, N1G, L5, L7</small></td><td class="c">60 €</td></tr>
+              <tr><td>Mild hybrid, elektrina<small>M1, M1G, N1, N1G</small></td><td class="c">65 €</td></tr>
+              <tr><td>Historické vozidlo</td><td class="c">60 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani" id="ek">
+          <h3>Emisná kontrola</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Pohon</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Benzín, diesel</td><td class="c">60 €</td></tr>
+              <tr><td>LPG, CNG, LNG, plug-in hybrid</td><td class="c">75 €</td></tr>
+              <tr><td>Benzín BKAT, NKAT<small>staršie benzínové ročníky</small></td><td class="c">75 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani">
+          <h3>Kompletná STK naraz</h3>
+          <p class="pod">Technická + emisná kontrola v jednom termíne.</p>
+          <div class="tab-w"><table>
+            <thead><tr><th>Pohon</th><th class="c">Spolu</th></tr></thead>
+            <tbody>
+              <tr><td>Benzín, diesel</td><td class="c">120 €</td></tr>
+              <tr><td>Benzín BKAT, NKAT</td><td class="c">135 €</td></tr>
+              <tr class="tbd2-r"><td>LPG, CNG, hybrid, elektrina<small>súčet cenníka 65 + 75 €; rezervačný systém uvádza 150 €</small></td><td class="c"><span class="tbd2" title="Rozpor: súčet cenníka 2026 = 140 €, Acuity = 150 € — overiť">140 €</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MOTOCYKLE ============ -->
+    <section class="cn" id="motocykle" style="--f:#E2212A" aria-labelledby="h-moto">
+      <div class="cn-hl ani">
+        <span class="chip biely">TK</span>
+        <h2 id="h-moto">Motocykle, trojkolky, štvorkolky</h2>
+        <p>Motocykle majú len technickú kontrolu, emisná sa nerobí.</p>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=osobne">Rezervovať <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Technická kontrola</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Vozidlo</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Motocykel, trojkolka, štvorkolka<small>L1, L2, L3, L4, L6</small></td><td class="c">45 €</td></tr>
+              <tr><td>Ťažká trojkolka a štvorkolka<small>L5, L7</small></td><td class="c">60 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani">
+          <h3>Opakovaná technická kontrola</h3>
+          <div class="tab-w"><table class="t3">
+            <thead><tr><th>Vozidlo</th><th class="c">V deň kontroly</th><th class="c">Do 60 dní</th></tr></thead>
+            <tbody>
+              <tr><td>L1, L2, L3, L4, L6</td><td class="c">25 €</td><td class="c">30 €</td></tr>
+              <tr class="tbd2-r"><td>L5, L7<small>cenník 2026 ich nemá samostatne; rezervačný systém uvádza 27 €</small></td><td class="c" colspan="2"><span class="tbd2" title="Len Acuity — overiť">27 €</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRÍVESY ============ -->
+    <section class="cn" id="privesy" style="--f:#E2212A" aria-labelledby="h-privesy">
+      <div class="cn-hl ani">
+        <span class="chip biely">TK</span>
+        <h2 id="h-privesy">Prívesy a návesy</h2>
+        <p>Prípojné vozidlá majú len technickú kontrolu. Opakovaná kontrola sa platí v cene „do 60 dní“.</p>
+        <div class="cn-cta">
+          <a class="btn" href="/rezervacia/?v=osobne">Vozík do 3,5 t <span aria-hidden="true">→</span></a>
+          <a class="btn sv" href="/rezervacia/?v=nakladne">Náves nad 3,5 t <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Technická kontrola</h3>
+          <div class="tab-w"><table class="t3">
+            <thead><tr><th>Vozidlo</th><th class="c">Pravidelná</th><th class="c">Opakovaná do 60 dní</th></tr></thead>
+            <tbody>
+              <tr><td>Prívesný vozík do 3,5 t<small>O1, O2, R1, R2</small></td><td class="c">35 €</td><td class="c">20 €</td></tr>
+              <tr><td>Príves, náves nad 3,5 t<small>O3, O4, R3, R4</small></td><td class="c">75 €</td><td class="c">40 €</td></tr>
+            </tbody>
+          </table></div>
+          <p class="pozn" style="margin-top:.8rem">Návesy a prívesy ADR a CEMT → <a href="#adr-cemt">ADR / CEMT</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NÁKLADNÉ ============ -->
+    <section class="cn" id="nakladne" style="--f:#E2212A" aria-labelledby="h-nakl">
+      <div class="cn-hl ani">
+        <span class="chip biely">TK · EK</span>
+        <h2 id="h-nakl">Nákladné vozidlá, autobusy, traktory</h2>
+        <p>Vozidlá nad 3,5&nbsp;t: kamióny, ťahače, autobusy, terénne a špeciálne vozidlá, traktory a pracovné stroje.</p>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=nakladne">Rezervovať <span aria-hidden="true">→</span></a></div>
+        <p class="pozn">Máte flotilu? <a href="/sluzby/#flotily">Služby pre firmy</a>.</p>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Technická kontrola</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Vozidlo</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Nákladné vozidlo, autobus nad 3,5 t<small>M2, M3, N2, N3</small></td><td class="c">85 €</td></tr>
+              <tr><td>Terénne, špeciálne vozidlo<small>N2G, N3G</small></td><td class="c">120 €</td></tr>
+              <tr><td>Traktor<small>T</small></td><td class="c">90 €</td></tr>
+              <tr><td>Staré nákladné vozidlo<small>N2, N3 vyrobené pred rokom 1995</small></td><td class="c">160 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani">
+          <h3>Emisná kontrola</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Vozidlo</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Nákladné vozidlo nad 3,5 t</td><td class="c">75 €</td></tr>
+              <tr><td>Staré nákladné vozidlo nad 3,5 t<small>vyrobené pred rokom 1995</small></td><td class="c">155 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani">
+          <h3>Kompletná STK naraz</h3>
+          <p class="pod">Technická + emisná kontrola v jednom termíne, podľa zostavy.</p>
+          <div class="tab-w"><table>
+            <thead><tr><th>Zostava</th><th class="c">Spolu</th></tr></thead>
+            <tbody>
+              <tr><td>Sólo vozidlo</td><td class="c">160 €</td></tr>
+              <tr><td>Ťahač návesov</td><td class="c">160 €</td></tr>
+              <tr><td>Súprava<small>ťahač + náves</small></td><td class="c">235 €</td></tr>
+              <tr><td>Terénne sólo<small>N2G, N3G</small></td><td class="c">195 €</td></tr>
+              <tr><td>Terénna súprava</td><td class="c">270 €</td></tr>
+              <tr><td>Traktor, pracovný stroj</td><td class="c">165 €</td></tr>
+              <tr><td>Traktorová súprava<small>traktor + prípojné vozidlo</small></td><td class="c">240 €</td></tr>
+              <tr class="tbd2-r"><td>Staré sólo vozidlo<small>pred r. 1995; súčet cenníka 160 + 155 = 315 €</small></td><td class="c"><span class="tbd2" title="Acuity 310 €, súčet cenníka 2026 = 315 € — overiť">310 €</span></td></tr>
+              <tr class="tbd2-r"><td>Stará súprava<small>pred r. 1995</small></td><td class="c"><span class="tbd2" title="Len Acuity, cenník 2026 súpravu nemá — overiť">385 €</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ADR / CEMT ============ -->
+    <section class="cn" id="adr-cemt" style="--f:#FF914B" aria-labelledby="h-adr">
+      <div class="cn-hl ani">
+        <span class="chip">ADR · CEMT</span>
+        <h2 id="h-adr">ADR a CEMT</h2>
+        <p>Technická kontrola pre vozidlá na prepravu nebezpečných vecí (ADR) a pre medzinárodné prepravné povolenia (CEMT/ECMT).</p>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=nakladne">Rezervovať <span aria-hidden="true">→</span></a></div>
+        <p class="pozn">Viac o kontrolách → <a href="/sluzby/#adr-cemt">ADR a CEMT v službách</a>.</p>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Technická kontrola</h3>
+          <div class="tab-w"><table class="t3">
+            <thead><tr><th>Vozidlo</th><th class="c">Pravidelná</th><th class="c">Opakovaná</th></tr></thead>
+            <tbody>
+              <tr class="sk"><td colspan="3">ADR</td></tr>
+              <tr><td>Nákladné vozidlo ADR</td><td class="c">175 €</td><td class="c">45 €</td></tr>
+              <tr><td>Náves, príves ADR</td><td class="c">175 €</td><td class="c">45 €</td></tr>
+              <tr class="sk"><td colspan="3">CEMT / ECMT</td></tr>
+              <tr><td>Nákladné vozidlo CEMT</td><td class="c">155 €</td><td class="c">45 €</td></tr>
+              <tr><td>Náves, príves CEMT</td><td class="c">155 €</td><td class="c">45 €</td></tr>
+            </tbody>
+          </table></div>
+          <p class="pozn" style="margin-top:.8rem">Opakovaná ADR / CEMT má rovnakú cenu v deň kontroly aj do 60 dní.</p>
+        </div>
+        <div class="ani">
+          <h3>Kompletná STK naraz</h3>
+          <p class="pod">Technická kontrola ADR / CEMT + emisná kontrola ťahača.</p>
+          <div class="tab-w"><table>
+            <thead><tr><th>Zostava</th><th class="c">Spolu</th></tr></thead>
+            <tbody>
+              <tr><td>Ťahač návesov ADR</td><td class="c">250 €</td></tr>
+              <tr><td>Súprava ADR<small>ťahač + náves</small></td><td class="c">425 €</td></tr>
+              <tr><td>Ťahač návesov CEMT / ECMT</td><td class="c">230 €</td></tr>
+              <tr><td>Súprava CEMT / ECMT<small>ťahač + náves</small></td><td class="c">385 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KONTROLA ORIGINALITY ============ -->
+    <section class="cn" id="ko" style="--f:#13B4E2" aria-labelledby="h-ko">
+      <div class="cn-hl ani">
+        <span class="chip">KO</span>
+        <h2 id="h-ko">Kontrola originality</h2>
+        <p>V cene je tlačivo „Odborný posudok“. Bezpečnostné nálepky, nálepka QR a ODOPASS sa pripočítavajú podľa vozidla.</p>
+        <div class="cn-cta">
+          <a class="btn" href="/rezervacia/?v=ko">Rezervovať KO <span aria-hidden="true">→</span></a>
+          <a class="btn sv" href="/kontrola-originality/">Ako prebieha KO</a>
+        </div>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Podľa vozidla</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Vozidlo</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr class="sk"><td colspan="2">Motocykle a osobné</td></tr>
+              <tr><td>Malý motocykel<small>L1E, L2E</small></td><td class="c">100 €</td></tr>
+              <tr><td>Veľký motocykel, trojkolka, štvorkolka<small>L3E, L4, L5, L6, L7E</small></td><td class="c">110 €</td></tr>
+              <tr><td>Automobil<small>M1, M1G</small></td><td class="c">120 €</td></tr>
+              <tr><td>Nákladné vozidlo do 3,5 t<small>N1, N1G</small></td><td class="c">130 €</td></tr>
+              <tr class="sk"><td colspan="2">Nákladné a autobusy</td></tr>
+              <tr><td>Nákladné vozidlo do 12 t<small>N2, N2G</small></td><td class="c">160 €</td></tr>
+              <tr><td>Nákladné vozidlo nad 12 t<small>N3, N3G</small></td><td class="c">165 €</td></tr>
+              <tr><td>Autobus<small>M2</small></td><td class="c">195 €</td></tr>
+              <tr><td>Autobus<small>M3</small></td><td class="c">225 €</td></tr>
+              <tr class="sk"><td colspan="2">Traktory, stroje, prípojné</td></tr>
+              <tr><td>Pracovný stroj<small>PS</small></td><td class="c">170 €</td></tr>
+              <tr><td>Traktor<small>T1 – T5</small></td><td class="c">185 €</td></tr>
+              <tr><td>Prípojné vozidlo do 3,5 t<small>O1, O2</small></td><td class="c">100 €</td></tr>
+              <tr><td>Prípojné vozidlo nad 3,5 t<small>O3, O4</small></td><td class="c">135 €</td></tr>
+              <tr><td>Prípojné vozidlo traktora<small>R1, R2, R3, R4</small></td><td class="c">140 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani">
+          <h3>Podľa dôvodu</h3>
+          <p class="pod">Rezervačný systém má samostatné termíny pre tieto prípady. Cenník 2026 ich neuvádza — cenu potvrdíme pri objednaní.</p>
+          <div class="tab-w"><table>
+            <thead><tr><th>Dôvod</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr class="tbd2-r"><td>Dovoz jednotlivo dovezeného vozidla (JDV)</td><td class="c"><span class="tbd2" title="Len Acuity — overiť">109 €</span></td></tr>
+              <tr class="tbd2-r"><td>Vývoz vozidla do zahraničia</td><td class="c"><span class="tbd2" title="Len Acuity — overiť">109 €</span></td></tr>
+              <tr class="tbd2-r"><td>Slovenský TP, zmena farby, prepis</td><td class="c"><span class="tbd2" title="Len Acuity — overiť">109 €</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani" id="odopass">
+          <h3>ODOPASS a nálepky</h3>
+          <p class="pod">Pripočítavajú sa k cene kontroly originality.</p>
+          <div class="tab-w"><table>
+            <thead><tr><th>Položka</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>ODOPASS 4</td><td class="c">5 €</td></tr>
+              <tr><td>ODOPASS 6</td><td class="c">7 €</td></tr>
+              <tr><td>ODOPASS 7+</td><td class="c">10 €</td></tr>
+              <tr><td>Bezpečnostná nálepka MSA<small>3 ks</small></td><td class="c">10 €</td></tr>
+              <tr><td>Bezpečnostná nálepka SK-KO<small>12 ks</small></td><td class="c">20 €</td></tr>
+              <tr><td>Nálepka QR</td><td class="c">5 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OPAKOVANÁ, ADMINISTRATÍVNA, ZVLÁŠTNA ============ -->
+    <section class="cn" id="opakovane" style="--f:#FFE600" aria-labelledby="h-opak">
+      <div class="cn-hl ani">
+        <span class="chip">Opakovaná · admin</span>
+        <h2 id="h-opak">Opakovaná, administratívna a zvláštna</h2>
+        <p>Keď vozidlo na kontrole nevyhovie, po oprave prídete na opakovanú kontrolu v čiastočnom rozsahu — skontroluje sa len to, čo bolo chybné. V deň pôvodnej kontroly je lacnejšia, do 60 dní platí vyššia cena.</p>
+        <p class="tbd2">Zvláštna kontrola v plnom rozsahu stojí ako pravidelná, v čiastočnom rozsahu ako opakovaná.</p>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=osobne">Rezervovať <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="cn-pr">
+        <div class="ani" id="tk-opakovana">
+          <h3>Opakovaná technická kontrola</h3>
+          <div class="tab-w"><table class="t3">
+            <thead><tr><th>Vozidlo</th><th class="c">V deň kontroly</th><th class="c">Do 60 dní</th></tr></thead>
+            <tbody>
+              <tr><td>Osobné vozidlo do 3,5 t<small>M1, N1 · aj mild hybrid, elektrina</small></td><td class="c">20 €</td><td class="c">35 €</td></tr>
+              <tr><td>Motocykel<small>L1, L2, L3, L4, L6</small></td><td class="c">25 €</td><td class="c">30 €</td></tr>
+              <tr><td>Prípojné vozidlo<small>O1, O2, R1, R2</small></td><td class="c nic">—</td><td class="c">20 €</td></tr>
+              <tr><td>Nákladné vozidlo nad 3,5 t<small>N2, N3</small></td><td class="c">30 €</td><td class="c">50 €</td></tr>
+              <tr><td>Terénne, špeciálne vozidlo<small>N2G, N3G</small></td><td class="c">45 €</td><td class="c">70 €</td></tr>
+              <tr><td>Prípojné vozidlo<small>O3, O4, R3, R4</small></td><td class="c nic">—</td><td class="c">40 €</td></tr>
+              <tr><td>ADR, CEMT<small>vozidlo aj náves, príves</small></td><td class="c">45 €</td><td class="c">45 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani" id="ek-opakovana">
+          <h3>Opakovaná emisná kontrola</h3>
+          <div class="tab-w"><table class="t3">
+            <thead><tr><th>Vozidlo</th><th class="c">V deň kontroly</th><th class="c">Do 60 dní</th></tr></thead>
+            <tbody>
+              <tr><td>Osobné do 3,5 t — benzín, diesel</td><td class="c">20 €</td><td class="c">30 €</td></tr>
+              <tr><td>Osobné do 3,5 t — benzín BKAT, NKAT</td><td class="c">30 €</td><td class="c">45 €</td></tr>
+              <tr><td>Osobné do 3,5 t — LPG, CNG, LNG, plug-in hybrid</td><td class="c">35 €</td><td class="c">50 €</td></tr>
+              <tr><td>Nákladné vozidlo nad 3,5 t</td><td class="c">30 €</td><td class="c">42 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani" id="administrativna">
+          <h3>Administratívna kontrola</h3>
+          <p class="pod">Bez fyzickej kontroly vozidla, na základe platného protokolu o technickej alebo emisnej kontrole. Cena za každú kontrolu (TK alebo EK).</p>
+          <div class="tab-w"><table>
+            <thead><tr><th>Posledná kontrola bola</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>U nás (Easy Check)</td><td class="c">16 €</td></tr>
+              <tr><td>Na inej stanici</td><td class="c">26 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DOPLNKOVÉ MERANIA A SLUŽBY ============ -->
+    <section class="cn" id="doplnkove" style="--f:#5BBA47" aria-labelledby="h-dopl">
+      <div class="cn-hl ani">
+        <span class="chip biely">Doplnky</span>
+        <h2 id="h-dopl">Doplnkové merania a služby</h2>
+        <p>Predkontrola „nanečisto“ ukáže stav vozidla ešte pred oficiálnou kontrolou. Merania si pridáte k termínu kontroly.</p>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=osobne">Rezervovať <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Merania a predkontrola</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Úkon</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Predkontrola emisnej kontroly<small>meranie emisií</small></td><td class="c">16 €</td></tr>
+              <tr><td>Kontrola bŕzd<small>do 3,5 t</small></td><td class="c">16 €</td></tr>
+              <tr><td>Test tlmičov</td><td class="c">16 €</td></tr>
+              <tr><td>Kontrola ďalšej nápravy<small>vozidlá s viac ako 3 nápravami</small></td><td class="c">10 €</td></tr>
+              <tr><td>Priťažovanie</td><td class="c">31 €</td></tr>
+              <tr class="tbd2-r"><td>Diagnostika a mazanie chýb — osobné<small>rezervačný systém uvádza 26 €</small></td><td class="c"><span class="tbd2" title="Cenník 2026 = 30 €, Acuity = 26 € — overiť">30 €</span></td></tr>
+              <tr><td>Diagnostika a mazanie chýb — nákladné</td><td class="c">52 €</td></tr>
+              <tr class="tbd2-r"><td>Kontrola dezénu pneumatík</td><td class="c"><span class="tbd2" title="Len Acuity — overiť">16 €</span></td></tr>
+              <tr class="tbd2-r"><td>Meranie svietivosti svetiel</td><td class="c"><span class="tbd2" title="Len Acuity — overiť">16 €</span></td></tr>
+              <tr class="tbd2-r"><td>Test geometrie</td><td class="c"><span class="tbd2" title="Len Acuity — overiť">11 €</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="ani">
+          <h3>Servis, výbava, nálepky</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Položka</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Malý servis<small>do 3,5 t</small></td><td class="c">32 €</td></tr>
+              <tr><td>Veľký servis</td><td class="c">55 €</td></tr>
+              <tr><td>Manipulácia s vozidlom</td><td class="c">11 €</td></tr>
+              <tr><td>Žiarovka malá</td><td class="c">6 €</td></tr>
+              <tr><td>Žiarovka veľká</td><td class="c">11 €</td></tr>
+              <tr><td>Lekárnička</td><td class="c">15 €</td></tr>
+              <tr><td>Výstražný trojuholník</td><td class="c">15 €</td></tr>
+              <tr><td>Označenie ťažkého, dlhého vozidla</td><td class="c">19 €</td></tr>
+              <tr><td>AdBlue</td><td class="c">25 €</td></tr>
+              <tr><td>Nálepka rýchlosti</td><td class="c">6 €</td></tr>
+              <tr><td>Euro plaketa (emisná nálepka DE)</td><td class="c">26 €</td></tr>
+              <tr><td>Kotúčik papiera do tachografu</td><td class="c">5 €</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TACHOGRAFY ============ -->
+    <section class="cn" id="tachografy" style="--f:#F27BB4" aria-labelledby="h-tacho">
+      <div class="cn-hl ani">
+        <span class="chip">Tachografy</span>
+        <h2 id="h-tacho">Tachografy</h2>
+        <p>Overenie tachografu urobíme v ten istý deň ako STK, na jednom mieste.</p>
+        <div class="box" style="--f:#FFF7C2"><b>Tachograf za polovicu</b><p style="margin-top:.3rem">Absolvujte u nás s vozidlom STK a na overenie tachografu máte 50&nbsp;% zľavu.</p></div>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=nakladne">Rezervovať <span aria-hidden="true">→</span></a><a class="btn sv" href="/sluzby/#tachografy">Viac o tachografoch</a></div>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Overenie a výmena</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Úkon</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Overenie tachografu<small>1. generácia</small></td><td class="c">164 €</td></tr>
+              <tr><td>Overenie tachografu<small>2. generácia</small></td><td class="c">216 €</td></tr>
+              <tr><td>Overenie tachografu<small>2. generácia, verzia 2</small></td><td class="c">308 €</td></tr>
+              <tr class="tbd2-r"><td>Výmena tachografu za 2. generáciu v2 vrátane overenia<small>rezervačný systém uvádza 1 599 €</small></td><td class="c"><span class="tbd2" title="Cenník 2026 = 1 750 €, Acuity = 1 599 € — overiť">1 750 €</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PICKUP ============ -->
+    <section class="cn" id="pickup" style="--f:#14B8A6" aria-labelledby="h-pickup">
+      <div class="cn-hl ani">
+        <span class="chip biely">Pickup</span>
+        <h2 id="h-pickup">Pickup servis</h2>
+        <p>Vozidlo vyzdvihneme na vašej adrese, skontrolujeme a vrátime. Platí pre kompletnú TK + EK osobných vozidiel, výzdvih od 07:00 do 16:00.</p>
+        <div class="cn-cta"><a class="btn" href="/rezervacia/?v=osobne">Rezervovať <span aria-hidden="true">→</span></a><a class="btn sv" href="/sluzby/#vyzdvihnutie">Ako to funguje</a></div>
+      </div>
+      <div class="cn-pr">
+        <div class="ani">
+          <h3>Vzdialenosť od stanice</h3>
+          <div class="tab-w"><table>
+            <thead><tr><th>Výzdvih</th><th class="c">Cena</th></tr></thead>
+            <tbody>
+              <tr><td>Do 15 km<small>platíte iba kontrolu</small></td><td class="c">zdarma</td></tr>
+              <tr class="tbd2-r"><td>Nad 15 km do 25 km<small>rezervačný systém má pickup za 15 €</small></td><td class="c"><span class="tbd2" title="Cenník 2026 = 26 €, Acuity a MASTERPROMPT = 15 € — overiť">26 €</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="cn-dph ani">Všetky ceny sú v eurách vrátane DPH · cenník platný pre rok 2026</p>
+  </div>
+
+  <div class="cta-pas ani"><div><div><h2>Termín do 24 hodín</h2><p>Rezervácia trvá minútu. Alebo zavolajte: 033 20 20 211.</p></div><a class="btn" href="/rezervacia/">Rezervovať <span aria-hidden="true">→</span></a></div></div>
+</main>
+
+<div id="z-pata"></div>
+<script src="/zaklad/zaklad.js"></script>
+</body>
+</html>
