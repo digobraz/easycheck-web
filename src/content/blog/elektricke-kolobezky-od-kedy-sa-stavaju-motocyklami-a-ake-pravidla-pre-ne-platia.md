@@ -1,55 +1,68 @@
 ---
 title: "Elektrické kolobežky – od kedy sa stávajú motocyklami a aké pravidlá pre ne platia?"
 titulSeo: "Elektrické kolobežky: od kedy sa stávajú motocyklami?"
-popis: "Elektrické kolobežky v poslednom období zažívajú veľkú popularitu pre osobnú prepravu po celom svete, ale i na Slovensku..."
+popis: "Od 1. 9. 2026 platia pre elektrické kolobežky nové pravidlá: chodník je zakázaný, jazdí sa po cyklotrase, vodič musí mať viac ako 15 rokov. Kedy kolobežka prestáva byť malým elektrickým vozidlom a kedy potrebuje PZP."
 datum: 2023-10-23
 kategorie: ["uzitocne-info-a-upozornenia"]
 obrazok: "/blog/2023/2-1024x709.png"
 zdroj: "https://easycheck.sk/blog/elektricke-kolobezky-od-kedy-sa-stavaju-motocyklami-a-ake-pravidla-pre-ne-platia/"
 prazdny: false
+overene: "21. 10. 2026"
 ---
+*Aktualizované 21. 10. 2026 podľa novely zákona o cestnej premávke č. 131/2026 Z. z., ktorá platí od 1. septembra 2026. Pôvodný článok z 23. 10. 2023 opisoval stav pred touto novelou.*
+
 Elektrické kolobežky v poslednom období zažívajú veľkú popularitu pre osobnú prepravu po celom svete, ale i na Slovensku.
 
 Mnohí ich považujú za ekologické, efektívne a cenovo dostupné prostriedky, vďaka čomu sa stávajú ideálnym spôsobom, ako sa pohybovať bez potreby automobilu či MHD medzi krátkymi vzdialenosťami.
 
-V súčasnosti na Slovensku podľa zákona elektrokolobežky patria do skupiny V, spolu s elektrobicyklami a samovyvažovacími vozidlami. Vodič takéhoto prostriedku je vodičom nemotorového vozidla a nepotrebuje naň vodičské oprávnenie. **Jazdiť však na ňom môžu iba osoby staršie ako 15 rokov.**
+## **Čo je elektrická kolobežka podľa zákona**
 
-## **Akými zákonmi podliehajú elektrické kolobežky na Slovensku?**
+Od 1. 9. 2026 zákon o cestnej premávke zaraďuje elektrickú kolobežku medzi **malé elektrické vozidlá**. Je to vozidlo s elektromotorom, ktorý **neumožňuje vyvinúť rýchlosť vyššiu ako 25 km/h**. Patrí sem:
 
-Na Slovensku sú elektrické kolobežky klasifikované ako osobný elektrický mikromobilitný prostriedok. To znamená, že nepatria medzi klasické dopravné prostriedky ako osobné autá či bicykle. Preto podliehajú špeciálnemu legislatívnemu rámcu, ktorý upravuje ich používanie a bezpečnosť na cestách. Tieto pravidlá sú navrhnuté tak, aby minimalizovali riziká pre vodičov elektrických kolobežiek, chodcov a ďalších účastníkov cestnej premávky.
+- kolobežka s pomocným motorčekom – bez sedadla, so zachovaným charakterom kolobežky,
+- samovyvažovacie vozidlo (napríklad segway),
+- iné malé elektrické vozidlo na individuálne presuny.
+
+Malé elektrické vozidlo nie je motorové vozidlo, takže naň netreba vodičský preukaz. Kto jazdí na kolobežke bez motorčeka, je podľa zákona chodec. Zdroj: [§ 2 ods. 2 písm. g), m) a n) zákona č. 8/2009 Z. z.](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2009/8/)
 
 ![Elektricke kolobezky a zakon](/blog/2023/2-1024x709.png)
 
-*Pri jazde na klasickej kolobežke je potrebné vychádzať z ustanovenia § 2 ods. 2 písm. f) zákona č. 8/2009 Z. z. o cestnej premávke, v zmysle ktorého je osoba pohybujúca sa na kolobežke bez pomocného motorčeka chodcom, a preto pre ňu platia pravidlá cestnej premávky vzťahujúce sa ku chodcom. Podľa Prezídia Policajného zboru, naproti tomu je kolobežka s pomocným motorčekom v zmysle ustanovenia § 2 ods. 2 písm. m) zákona o cestnej premávke nemotorovým vozidlom, a preto pre ňu platia pravidlá cestnej premávky vzťahujúce sa k vodičovi vozidla (t. j. k osobe, ktoré vedie vozidlo), pričom ustanovenie § 55a upravuje špecifiká jazdy na kolobežke s pomocným motorčekom, ako aj jazdy na segway.*
+## **Pravidlá pre elektrické kolobežky od 1. 9. 2026**
 
-## **Pravidlá pre kolobežky**
+- **Vek:** na ceste ju smie viesť len osoba **staršia ako 15 rokov** (§ 55a ods. 1).
+- **Kde jazdiť:** prednostne po pravej strane **cyklopruhu, cestičky pre cyklistov alebo priechodu pre cyklistov** (§ 55a ods. 2). Ak tam nie sú, platia pravidlá pre cyklistov – jazdí sa pri pravom okraji vozovky (§ 55a ods. 3, § 55 ods. 1).
+- **Chodník je zakázaný.** Jazda po chodníku je dovolená len tam, kde to povoľuje dopravná značka. Na chodníku smiete kolobežku odstaviť, ak ostane voľná šírka aspoň 1,5 m (§ 52 ods. 2).
+- **Pravidlá pre cyklistov platia primerane:** napríklad nejazdiť bez držania riadidiel, nedržať sa iného vozidla, nevoziť predmety, ktoré sťažujú jazdu (§ 55 ods. 2), a na jednomiestnom vozidle sa nevozí ďalšia osoba (§ 55 ods. 3).
+- **Svetlá:** za zníženej viditeľnosti musia byť rozsvietené svietidlá (§ 32 ods. 1).
+- **Mobil:** platí rovnaký zákaz držať v ruke telefón ako pre každého vodiča (§ 4 ods. 2 písm. m)). Počas jazdy sa nesmie jesť, piť ani fajčiť (§ 5 ods. 2).
+- **Alkohol:** jazda pod vplyvom alkoholu je zakázaná. Výnimka platí len pri jazde v obci alebo po cestičke pre cyklistov, ak hodnota nepresiahne 0,24 mg etanolu na liter vydýchnutého vzduchu (§ 4 ods. 2 písm. d)).
+- **Prilba:** zákon ju vodičovi staršiemu ako 15 rokov neukladá (povinná je pre cyklistov mladších ako 15 rokov, § 55 ods. 9). Odporúčame ju aj tak.
 
-- Možnosť riadenia od veku 15 rokov
-- Jazdiť sa smie po pravej strane chodníka, cestičky pre chodcov/priechodu pre chodcov, ak neohrozí a neobmedzí chodcov. Nesmie však prekročiť rýchlosť chôdze.
-- Po jazdnom pruhu pre cyklistov, cyklistických chodníkov či priechodu pre cyklistov – na kolobežke a segway smie vodič jazdiť po pravej strane, ak neohrozí a neobmedzí cyklistov.
-- Smie sa jazdiť len jednotlivo za sebou, nie dvaja či traja na jednom vozidle
-- Helma je odporúčaná
-- Rýchlosť na verejných cestách je obmedzená na 25 km/h.
-- Jazda pod vplyvom alkoholu či iných omamných látok je zakázaná
-- Elektrické kolobežky musia byť vybavené osvetlením a reflexnými prvkami, ktoré zvyšujú viditeľnosť v noci a za zlých poveternostných podmienok
-
-## **Povinné zmluvné poistenie pre kolobežky od roku 2024**
-
-Z automobilov či motocyklov ich poznáme, no slovenská legislatíva momentálne žiadnym špecifickým spôsobom neupravuje poistenie pri jazde na elektrickej kolobežke.
-
-Zákon, ktorý upravuje aj takéto poistenie pri jazde už prešla medzirezortným konaním, no jej ďalší legislatívny proces je už na novej vláde. Tento nový zákon sa však má týkať iba pre akékoľvek motorové vozidlo s maximálnou konštrukčnou rýchlosťou viac ako 25 km/hod., resp. vozidlo ťažšie ako 25 kg s maximálnou konštrukčnou rýchlosťou viac ako 14 km/hod., čo väčšina na Slovensku používaných kolobežiek nespĺňa a tak sa nebude týkať každého majiteľa kolobežiek. Takéto kolobežky by mali mať aj vlastné EČV.
+Zdroj: [zákon č. 8/2009 Z. z. o cestnej premávke, znenie účinné od 1. 9. 2026](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2009/8/); [novela č. 131/2026 Z. z.](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2026/131/), čl. X – účinnosť 1. 9. 2026.
 
 ![Clanok o elektrickych kolobezkach Easy Check STK](/blog/2023/elektricke-kolobezky-easy-check-stk-3--1024x709.png)
 
-## **Kedy sa elektrická kolobežka stáva motocyklom?**
+## **Kedy kolobežka prestáva byť malým elektrickým vozidlom?**
 
-Elektrická kolobežka sa stáva motocyklom, ak jej konštrukčná rýchlosť dosahuje vyššiu hodnotu ako 25 km/hod., je vybavená sedadlom alebo opierkou na nohy pre vodiča či má väčší výkon, ako je povolený pre osobné elektrické kolobežky.
+Keď jej elektromotor **umožňuje vyvinúť viac ako 25 km/h**. Potom už nejde o malé elektrické vozidlo, ale o motorové vozidlo (§ 2 ods. 2 písm. m) a n)).
 
-Konkrétnejšie pravidlá o jazde na kolobežiek má priblížiť už zmieňovaný zákon, ktorý by mal po úspešnom legislatívnom konaní vstúpiť do platnosti od 1.1.2024 (resp. 23.12.2023)
+Od 1. 9. 2026 je jazda na kolobežke – **so sedadlom aj bez neho** – alebo na samovyvažovacom vozidle, ktorého motor umožňuje viac ako 25 km/h, výslovne **porušením pravidiel cestnej premávky závažným spôsobom** (§ 137 ods. 2 písm. o) bod 7). Zdroj: [zákon č. 8/2009 Z. z.](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2009/8/)
+
+<span class="tbd2">Rýchlejšie vozidlo by muselo spĺňať podmienky pre motorové vozidlá kategórie L (ľahké motocykle) – schválenie, evidenciu s EČV a vodičské oprávnenie.</span>
 
 ![Je rychla elektricka kolobežka motocykel?](/blog/2023/elektricke-kolobezky-easy-check-stk-4-1024x709.png)
 
+## **Povinné zmluvné poistenie (PZP)**
+
+Od 1. 8. 2024 podlieha PZP každé vozidlo s vlastným pohonom, ktoré
+
+- má najväčšiu konštrukčnú rýchlosť **viac ako 25 km/h**, alebo
+- má prevádzkovú hmotnosť **viac ako 25 kg** a konštrukčnú rýchlosť **viac ako 14 km/h**.
+
+Bežnej kolobežky do 25 km/h a do 25 kg sa PZP netýka. Kolobežka ťažšia ako 25 kg ho potrebuje už pri konštrukčnej rýchlosti nad 14 km/h. Zdroj: [§ 2 písm. a) zákona č. 381/2001 Z. z. v znení zákona č. 177/2024 Z. z.](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2024/177/) (účinnosť 1. 8. 2024).
+
 ## **Rezervuj si termín kontroly a overenia ešte dnes**
+
 
 Nájdete nás v Trnave, Farárske 27, smer Dolná Krupá  
 **Termín kontroly garantujeme do 24 hodín**  

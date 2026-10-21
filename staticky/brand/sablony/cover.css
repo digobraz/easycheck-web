@@ -1,0 +1,87 @@
+/* COVER — obrázky pre blog a sociálne siete, štýl SOFT SLAB (brand manuál /brand/, 21. 10. 2026).
+   Jeden zdroj pre ukážky v manuáli aj pre šablónu sablony/cover.html (screenshot → PNG).
+   Všetky rozmery sú v cqw (percentá šírky plátna), takže cover vyzerá rovnako pri 360 px aj pri 1920 px.
+   --h = výška plátna v cqw (blog/fb 1200×630 = 52.5 · wide 16:9 = 56.25 · ig 4:5 = 125 · story 9:16 = 177.78). */
+.cv{
+  --ink:#231F20; --paper:#FFFDF5; --y:#FFE600;
+  --f:var(--y); --ft:var(--ink);
+  --h:52.5; --m:4cqw; --b:.55cqw; --s:1.1cqw; --r:2.2cqw; --pas:4.6cqw;
+  container-type:inline-size; position:relative; overflow:hidden; width:100%;
+  aspect-ratio:1200/630; background:var(--f); color:var(--ft);
+  font-family:'DM Sans',system-ui,sans-serif;
+}
+.cv *{box-sizing:border-box;margin:0;padding:0}
+.cv.f-wide{aspect-ratio:16/9;--h:56.25}
+.cv.f-ig{aspect-ratio:4/5;--h:125}
+.cv.f-story{aspect-ratio:9/16;--h:177.78}
+
+/* perforácia celej plochy — v odtieni textu, nie čiernou (inak zhrubne obrys) */
+.cv-perf{position:absolute;left:1.5cqw;right:1.5cqw;top:1.5cqw;bottom:calc(var(--pas) + 1.5cqw);border:.22cqw dashed currentColor;border-radius:2cqw;opacity:.45;pointer-events:none}
+
+/* fotka = nálepka: rámik + tvrdý tieň, nikdy rozmazaný */
+.cv-foto{position:absolute;overflow:hidden;background:var(--ink);border:var(--b) solid var(--ink);border-radius:var(--r);box-shadow:var(--s) var(--s) 0 0 var(--ink)}
+.cv-foto img{width:100%;height:100%;object-fit:cover;display:block}
+/* bez fotky: papierová nálepka s veľkým slovom + ikonou */
+.cv-foto.bez{background:var(--paper);color:var(--ink);display:grid;place-items:center}
+.cv-foto.bez::before{content:'';position:absolute;inset:.9cqw;border:.2cqw dashed var(--ink);border-radius:1.4cqw;opacity:.4}
+.cv-foto.bez .slovo{position:absolute;left:2cqw;bottom:.6cqw;font-family:'Saira Condensed','Arial Narrow',sans-serif;font-weight:900;text-transform:uppercase;font-size:15cqw;line-height:.82;letter-spacing:-.01em;opacity:.1;white-space:nowrap}
+.cv-foto.bez .ik{position:relative;width:52%;height:auto;object-fit:contain;mix-blend-mode:multiply}
+
+/* logo vždy na žltej nálepke (logo má čierne časti — na tmavej ploche by zmizli) */
+.cv-logo{position:absolute;z-index:2;background:var(--y);border:var(--b) solid var(--ink);border-radius:calc(var(--r) * .8);box-shadow:calc(var(--s) * .7) calc(var(--s) * .7) 0 0 var(--ink);padding:.9cqw 1.3cqw}
+.cv-logo img{display:block;width:100%;height:auto}
+
+.cv-tx{position:absolute;display:flex;flex-direction:column;justify-content:space-between;gap:2cqw;min-width:0}
+.cv-chip{display:inline-flex;align-items:center;gap:.7em;align-self:flex-start;font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;font-size:1.55cqw;letter-spacing:.1em;text-transform:uppercase;background:var(--paper);color:var(--ink);border:.4cqw solid var(--ink);border-radius:999px;padding:.35em 1em;box-shadow:.5cqw .5cqw 0 0 var(--ink);white-space:nowrap}
+.cv-chip i{width:.8em;height:.8em;border-radius:50%;background:var(--f);border:.18cqw solid var(--ink);flex-shrink:0}
+.cv-spod{display:flex;flex-direction:column;gap:1.4cqw;min-height:0;flex:1;justify-content:flex-end}
+/* nadpis: Saira 900, verzálky, line-height ≥ 1 (Ž, Č, Š majú mäkčeň nad verzálkou) */
+.cv-h{font-family:'Saira Condensed','Arial Narrow',sans-serif;font-weight:900;text-transform:uppercase;line-height:1.02;letter-spacing:.005em;font-size:7cqw;overflow-wrap:normal;hyphens:manual}
+.cv-pod{font-size:1.9cqw;font-weight:500;line-height:1.35;opacity:.88;max-width:38ch}
+
+/* čierny pás dole = topbar webu */
+.cv-pas{position:absolute;left:0;right:0;bottom:0;height:var(--pas);background:var(--ink);color:var(--paper);display:flex;align-items:center;gap:2.2cqw;padding:0 var(--m);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:1.35cqw;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+.cv-pas b{font-weight:500}
+.cv-pas .pp{margin-left:auto;font-family:'Saira Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:1.7cqw;letter-spacing:.05em;background:var(--y);color:var(--ink);border-radius:999px;padding:.1em .9em}
+.cv-pas .bod{width:.75cqw;height:.75cqw;border-radius:50%;background:var(--f);box-shadow:0 0 0 .3cqw rgba(255,253,245,.18)}
+
+/* ---------- LANDSCAPE (blog 1200×630, fb 1200×630, wide 1920×1080) ----------
+   fotka vľavo zasunutá pod logo (ako hlavička webu), text vpravo */
+.cv.f-blog .cv-foto,.cv.f-fb .cv-foto,.cv.f-wide .cv-foto{left:6cqw;top:6.5cqw;width:49cqw;height:calc(var(--h) * 1cqw - var(--pas) - 6.5cqw - 3.6cqw)}
+.cv.f-blog .cv-logo,.cv.f-fb .cv-logo,.cv.f-wide .cv-logo{left:3cqw;top:3cqw;width:19cqw}
+.cv.f-blog .cv-tx,.cv.f-fb .cv-tx,.cv.f-wide .cv-tx{left:59cqw;right:4.2cqw;top:4.6cqw;bottom:calc(var(--pas) + 4cqw)}
+
+/* ---------- IG POST 1080×1350 ---------- */
+.cv.f-ig{--m:5cqw;--b:.75cqw;--s:1.5cqw;--r:3cqw;--pas:7cqw}
+.cv.f-ig .cv-perf{left:2.2cqw;right:2.2cqw;top:2.2cqw;bottom:calc(var(--pas) + 2.2cqw);border-width:.32cqw;border-radius:3cqw}
+.cv.f-ig .cv-foto{left:7cqw;right:6cqw;top:9cqw;height:62cqw}
+.cv.f-ig .cv-logo{left:3.6cqw;top:3.6cqw;width:30cqw;padding:1.3cqw 2cqw}
+.cv.f-ig .cv-tx{left:7cqw;right:6cqw;top:77cqw;bottom:calc(var(--pas) + 5.5cqw);gap:3cqw}
+.cv.f-ig .cv-chip{font-size:2.6cqw;border-width:.55cqw;box-shadow:.8cqw .8cqw 0 0 var(--ink)}
+.cv.f-ig .cv-h{font-size:11cqw}
+.cv.f-ig .cv-pod{font-size:3.2cqw}
+.cv.f-ig .cv-pas{font-size:2.3cqw;gap:3cqw}
+.cv.f-ig .cv-pas .pp{font-size:2.9cqw}
+.cv.f-ig .cv-pas .bod{width:1.2cqw;height:1.2cqw}
+.cv.f-ig .cv-foto.bez .slovo{font-size:24cqw}
+
+/* ---------- STORY 1080×1920 ----------
+   bezpečné zóny: hore 250 px (23 cqw) a dole 340 px (31.5 cqw) prekrýva rozhranie Instagramu/Facebooku */
+.cv.f-story{--m:6cqw;--b:.75cqw;--s:1.5cqw;--r:3cqw;--pas:7cqw}
+.cv.f-story .cv-perf{left:2.2cqw;right:2.2cqw;top:2.2cqw;bottom:calc(var(--pas) + 2.2cqw);border-width:.32cqw;border-radius:3cqw}
+.cv.f-story .cv-foto{left:8cqw;right:7cqw;top:30cqw;height:64cqw}
+.cv.f-story .cv-logo{left:4.5cqw;top:23.5cqw;width:34cqw;padding:1.4cqw 2.2cqw}
+.cv.f-story .cv-tx{left:8cqw;right:7cqw;top:101cqw;bottom:34cqw;gap:3.4cqw}
+.cv.f-story .cv-chip{font-size:2.9cqw;border-width:.55cqw;box-shadow:.8cqw .8cqw 0 0 var(--ink)}
+.cv.f-story .cv-h{font-size:12cqw}
+.cv.f-story .cv-pod{font-size:3.6cqw}
+.cv.f-story .cv-pas{height:29cqw;align-items:flex-start;padding-top:4cqw;font-size:2.6cqw;gap:3cqw}
+.cv.f-story .cv-pas .pp{font-size:3.2cqw}
+.cv.f-story .cv-pas .bod{width:1.3cqw;height:1.3cqw}
+.cv.f-story .cv-foto.bez .slovo{font-size:26cqw}
+.cv.f-story .cv-perf{bottom:31.2cqw}
+/* pomocné vodidlá bezpečných zón (len v manuáli / ?vodidla=1) */
+.cv .zona{position:absolute;left:0;right:0;background:repeating-linear-gradient(45deg,rgba(35,31,32,.16) 0 1cqw,transparent 1cqw 2cqw);outline:.25cqw dashed rgba(35,31,32,.6);outline-offset:-.25cqw;z-index:5;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:2.4cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.cv .zona span{background:var(--paper);padding:.2em .6em;border-radius:999px}
+/* story: bod, text a pill v páse zarovnané na jednu os (pás zasahuje do spodnej zóny rozhrania, obsah drží hore) */
+.cv.f-story .cv-pas{align-items:center;padding-top:0;padding-bottom:22cqw}

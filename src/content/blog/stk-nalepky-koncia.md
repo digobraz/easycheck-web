@@ -1,13 +1,26 @@
 ---
 title: "STK nálepky, končia?!"
 titulSeo: "Easy Check Trnava - STK nálepky, končia?!"
-popis: "Ak Vaše vozidlo podlieha povinnosti vykonaniu technickej či emisnej kontroly alebo kontroly originality, je potrebné mať “dôkaz” v podobe STK nálepky..."
+popis: "Nálepky z technickej kontroly, emisnej kontroly a kontroly originality sa od 1. 7. 2021 nevydávajú. Dokladom je protokol a osvedčenie o kontrole technického stavu, pri KO odborný posudok."
 datum: 2020-06-30
 kategorie: ["uzitocne-info-a-upozornenia"]
 obrazok: "/blog/2020/koniec-nalepkam-stk-a-ek.png"
 zdroj: "https://easycheck.sk/blog/stk-nalepky-koncia/"
 prazdny: false
+overene: "21. 10. 2026"
 ---
+**Aktualizované 21. 10. 2026: STK nálepky naozaj skončili – od 1. 7. 2021.**
+
+- **Technická kontrola:** dokladom je vyznačený protokol a osvedčenie o kontrole technického stavu časť A – technická kontrola (§ 111 ods. 1).
+- **Emisná kontrola:** vyznačený protokol a osvedčenie o kontrole technického stavu časť B – emisná kontrola (§ 120 ods. 1).
+- **Kontrola originality:** odborný posudok o kontrole originality (§ 127 ods. 1).
+
+Kontrolná nálepka medzi dokladmi od 1. 7. 2021 už nie je; do 30. 6. 2021 ju zákon pri všetkých troch kontrolách ešte uvádzal. Zdroj: [zákon č. 106/2018 Z. z. o prevádzke vozidiel](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2018/106/) – porovnanie znení účinných do 30. 6. 2021 a od 1. 7. 2021; zmenu priniesol [zákon č. 198/2020 Z. z.](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2020/198/)
+
+Pôvodný článok z 30. 6. 2020 nižšie ponechávame pre úplnosť.
+
+---
+
 ## Koniec pre STK nálepky?
 
 Ak Vaše vozidlo podlieha povinnosti vykonaniu technickej či emisnej kontroly alebo kontroly originality, je potrebné mať “dôkaz” v podobe STK nálepky na čelnom skle.
@@ -35,7 +48,7 @@ V dôvodovej správe sa konštatuje: „Lepenie nálepiek považujeme v súčasn
 Prečo sa to ide meniť?  
 Tento návrh má viesť k úspore financií a výraznému zjednodušeniu administratívnych konaní a ich výdávania
 
-## Zatiaľ stále lepíme…
+## Zatiaľ stále lepíme… (stav v júni 2020)
 
 Aktuálne sa o zrušení nálepok vedie iba odborná diskusia. Po návšteve STK ešte zatiaľ dostanete nálepky, na ktoré ste zvyknutí.
 

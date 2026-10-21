@@ -1,0 +1,188 @@
+{
+  "meta": {
+    "nazov": "Brand manuál Easy Check STK Trnava",
+    "verzia": "1.0",
+    "datum": "2026-10-21",
+    "smer": "SOFT SLAB — oblý rámik, tvrdý tieň, perforácia, plné farby",
+    "zdroj": "/brand/ (ľudská verzia), /brand/brand.md (text pre AI), /brand/brand.json (tento súbor)",
+    "pravidlo_priority": "Ak je niečo v rozpore, platí živý web (easycheck.sk, zaklad/zaklad.css) a potom tento súbor."
+  },
+  "firma": {
+    "znacka": "Easy Check",
+    "pisat_ako": "Easy Check (dve slová, veľké E a C). Nie EasyCheck, EASYCHECK, Easycheck.",
+    "co_robi": "Stanica technickej kontroly v Trnave: technická kontrola (TK), emisná kontrola (EK), kontrola originality (KO), ADR a CEMT, tachografy, prihlasovanie vozidiel, výzdvih vozidla.",
+    "prevadzkovatelia": [
+      { "nazov": "Easy Check, s.r.o.", "ico": "44 466 587" },
+      { "nazov": "Global Partner Service s.r.o.", "ico": "50 267 361" }
+    ],
+    "adresa": "Technická ulica, Trnava (smer Dolná Krupá)",
+    "telefon": "033 20 20 211",
+    "mobil": "0908 731 178",
+    "email": "stk@easycheck.sk",
+    "web": "easycheck.sk",
+    "otvaracie_hodiny": "Neuvádzať z pamäti — vždy prevziať z aktuálneho webu alebo od stanice. Sviatky a výnimky potvrdzuje stanica."
+  },
+  "farby": {
+    "zakladne": {
+      "zlta":      { "hex": "#FFE600", "rgb": [255, 230, 0],   "token": "--y",     "pouzitie": "hlavná farba značky: hlavička, päta, podklad loga, tieň tlačidla, TK + EK" },
+      "ink":       { "hex": "#231F20", "rgb": [35, 31, 32],    "token": "--ink",   "pouzitie": "text, rámiky, tvrdé tiene, čierny pás, tlačidlo" },
+      "papier":    { "hex": "#FFFDF5", "rgb": [255, 253, 245], "token": "--paper", "pouzitie": "pozadie stránky a kariet; nikdy nie čistá biela #FFFFFF" },
+      "cervena":   { "hex": "#E12128", "rgb": [225, 33, 40],   "token": "--r",     "pouzitie": "z loga; zatvorené, upozornenie, štítok" },
+      "zelena":    { "hex": "#5BBA47", "rgb": [91, 186, 71],   "token": "--g",     "pouzitie": "z loga; otvorené, dnes, aktualizované, EK" },
+      "azurova":   { "hex": "#18B6E4", "rgb": [24, 182, 228],  "token": "--c",     "pouzitie": "z loga; fokus, odkazy v UI, KO" },
+      "seda_text": { "hex": "#6E6A63", "token": "--muted", "pouzitie": "sekundárny text, popisky (na papieri kontrast 5,3 : 1)" }
+    },
+    "doplnkove": {
+      "svetla_zlta": { "hex": "#FFF7C2", "pouzitie": "otvorená FAQ, hover riadku tabuľky, box s poznámkou" },
+      "text_odsek":  { "hex": "#4A4436", "pouzitie": "dlhší text odsekov (teplejší než ink)" },
+      "ciara":       { "hex": "#D9D4C6", "pouzitie": "prerušované deliace čiary 1,5 px dashed" },
+      "zlta_hviezda":{ "hex": "#F2B400", "pouzitie": "hviezdičky hodnotenia" }
+    },
+    "sluzby": {
+      "_pravidlo": "Každá služba má svoju farbu. Rovnakú farbu použi v cenníku, dlaždiciach, čipoch a kotvách. Text na farbe podľa stĺpca text.",
+      "tk_ek":         { "nazov": "TK + EK (kompletná kontrola)", "hex": "#FFE600", "text": "#231F20" },
+      "tk":            { "nazov": "Technická kontrola samostatne", "hex": "#E12128", "text": "#FFFDF5" },
+      "ek":            { "nazov": "Emisná kontrola", "hex": "#5BBA47", "text": "#231F20" },
+      "ko":            { "nazov": "Kontrola originality", "hex": "#18B6E4", "text": "#231F20" },
+      "adr_cemt":      { "nazov": "ADR a CEMT", "hex": "#FF914B", "text": "#231F20" },
+      "tachografy":    { "nazov": "Tachografy", "hex": "#F27BB4", "text": "#231F20" },
+      "prihlasovanie": { "nazov": "Prihlasovanie vozidiel", "hex": "#5271FF", "text": "#FFFDF5", "pozor": "kontrast 4 : 1 — biely text len veľký (≥ 24 px alebo tučný ≥ 19 px)" },
+      "vyzdvih":       { "nazov": "Výzdvih vozidla", "hex": "#14B8A6", "text": "#231F20" },
+      "dalsie":        { "nazov": "Ďalšie služby", "hex": "#5BBA47", "text": "#231F20" },
+      "vin":           { "nazov": "Vyrazenie VIN", "hex": "#957221", "text": "#FFFDF5" }
+    },
+    "kategorie_blogu": {
+      "_pravidlo": "Farba kategórie = plocha coveru, bodka v čipe a filtri blogu. Slug = parameter kat v šablóne.",
+      "sprievodca":   { "nazov": "Sprievodca STK",        "hex": "#FFE600", "text": "#231F20", "na_co": "návody: lehoty, doklady, príprava, kategórie vozidiel" },
+      "sezona":       { "nazov": "Sezóna",                "hex": "#5BBA47", "text": "#231F20", "na_co": "pneumatiky, zima, leto, dovolenka, batéria" },
+      "novinky":      { "nazov": "Novinky a legislatíva", "hex": "#5271FF", "text": "#FFFDF5", "na_co": "zmeny zákonov a vyhlášok, nové povinnosti" },
+      "upozornenia":  { "nazov": "Upozornenia",           "hex": "#E12128", "text": "#FFFDF5", "na_co": "pokuty, neplatná STK, termíny, ktoré sa oplatí nezmeškať" },
+      "zaujimavosti": { "nazov": "Zaujímavosti",          "hex": "#FF914B", "text": "#231F20", "na_co": "autá, história, technika" },
+      "zo-stanice":   { "nazov": "Zo stanice",            "hex": "#F27BB4", "text": "#231F20", "na_co": "oznamy, sviatky, novinky v Easy Check, ľudia zo stanice" },
+      "archiv":       { "nazov": "Archív",                "hex": "#CFC8B6", "text": "#231F20", "na_co": "COVID 2020–21 a staré súťaže — len filter na blogu, bez coveru (nie je v cover.js)" }
+    },
+    "kontrast_wcag": [
+      { "popredie": "#231F20", "pozadie": "#FFE600", "pomer": 12.9, "ok": "všetko" },
+      { "popredie": "#231F20", "pozadie": "#FFFDF5", "pomer": 16.0, "ok": "všetko" },
+      { "popredie": "#FFFDF5", "pozadie": "#231F20", "pomer": 16.0, "ok": "všetko" },
+      { "popredie": "#FFFDF5", "pozadie": "#E12128", "pomer": 4.6,  "ok": "text aj nadpisy" },
+      { "popredie": "#231F20", "pozadie": "#5BBA47", "pomer": 6.6,  "ok": "všetko" },
+      { "popredie": "#231F20", "pozadie": "#18B6E4", "pomer": 6.7,  "ok": "všetko" },
+      { "popredie": "#231F20", "pozadie": "#FF914B", "pomer": 7.3,  "ok": "všetko" },
+      { "popredie": "#231F20", "pozadie": "#F27BB4", "pomer": 6.4,  "ok": "všetko" },
+      { "popredie": "#FFFDF5", "pozadie": "#5271FF", "pomer": 4.0,  "ok": "len veľký text" },
+      { "popredie": "#6E6A63", "pozadie": "#FFFDF5", "pomer": 5.3,  "ok": "sekundárny text" }
+    ],
+    "zakazane_kombinacie": [
+      "biely/papierový text na žltej, zelenej, azúrovej, oranžovej, ružovej (kontrast pod 2,5 : 1)",
+      "žltý text na papieri",
+      "červený text na čiernej (3,5 : 1, kmitá)",
+      "farebné prechody (gradienty) — farby sú vždy plné"
+    ]
+  },
+  "typografia": {
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+    "licencia": "SIL Open Font License — voľne použiteľné aj v grafike",
+    "pisma": {
+      "nadpis": { "font": "Saira Condensed", "fallback": "'Arial Narrow', sans-serif", "vahy": [700, 800, 900], "pravidla": "VERZÁLKY, hlavné nadpisy 900, menšie 800, menu a pills 700; letter-spacing 0 až 0,07 em; line-height 1,0 až 1,05 — nikdy pod 1 (mäkčene Ž, Č, Š, Ď, Ť, Ň, Ľ nad verzálkami by narážali do riadku nad)" },
+      "text":   { "font": "DM Sans", "fallback": "system-ui, sans-serif", "vahy": [400, 500, 700], "pravidla": "bežný text, malé písmená, line-height 1,45 až 1,7, odsek max. 70 znakov na riadok" },
+      "mono":   { "font": "IBM Plex Mono", "fallback": "ui-monospace, monospace", "vahy": [400, 500], "pravidla": "čipy, štítky, dátumy, pás, kicker nad nadpisom; VERZÁLKY, letter-spacing 0,08 až 0,12 em, malé veľkosti 0,6 až 0,75 rem" }
+    },
+    "hierarchia_web": [
+      { "uroven": "H1 stránky",   "font": "Saira Condensed 900", "velkost": "clamp(2.6rem, 4.4vw, 4.8rem)", "line_height": 1 },
+      { "uroven": "H2 sekcie",    "font": "Saira Condensed 900", "velkost": "clamp(2.2rem, 4.2vw, 4.2rem)", "line_height": 1 },
+      { "uroven": "H3 karta",     "font": "Saira Condensed 800", "velkost": "1.35rem – 2rem", "line_height": 1 },
+      { "uroven": "Lead",         "font": "DM Sans 400", "velkost": "1.02 – 1.2rem", "line_height": 1.5 },
+      { "uroven": "Text",         "font": "DM Sans 400", "velkost": "1 – 1.06rem", "line_height": 1.6 },
+      { "uroven": "Kicker / čip", "font": "IBM Plex Mono 400/500", "velkost": "0.68 – 0.72rem", "letter_spacing": "0.1em" },
+      { "uroven": "Tlačidlo",     "font": "Saira Condensed 800", "velkost": "1.05rem", "letter_spacing": "0.05em" }
+    ]
+  },
+  "tvar": {
+    "ramik": "3px solid #231F20",
+    "ramik_maly": "2.5px solid #231F20 (čipy, menšie karty, pills)",
+    "radius": "16px karty a fotky · 14px menšie karty · 999px tlačidlá, čipy, pills",
+    "tien": "6px 6px 0 0 #231F20 — tvrdý, bez rozmazania; menší 4px 4px alebo 3px 3px",
+    "tien_tlacidla": "4px 4px 0 0 #FFE600 (čierne tlačidlo) / 4px 4px 0 0 #231F20 (svetlé tlačidlo)",
+    "perforacia": "vnútorná prerušovaná čiara: inset 5px, 1.5px dashed currentColor, radius 11px, opacity 0.5 — farbou textu karty, nie čiernou",
+    "hover": "posun translate(3px,3px) a tieň sa zmenší na polovicu (karta sa „zatlačí“)",
+    "medzery": "gap clamp(12px, 1.4vw, 20px); sekcie clamp(4rem, 9vw, 7.5rem) nad nadpisom",
+    "zakazane": ["rozmazané tiene (blur)", "gradienty", "ostré rohy na kartách", "tenké 1px rámiky", "sklo / glassmorphism", "neón a žiara"]
+  },
+  "komponenty": {
+    "tlacidlo_hlavne": "čierna pill, text papier, Saira 800 verzálky, rámik 3px, tieň 4px 4px 0 žltý, šípka →",
+    "tlacidlo_svetle": "papierová pill, čierny text, tieň 4px 4px 0 čierny",
+    "cip": "IBM Plex Mono 0.68rem verzálky, pill, rámik 2.5px, výplň farbou služby/kategórie",
+    "pas": "čierny pruh, IBM Plex Mono verzálky, bežiaci text (pomaly, zastaví sa pri hover), žlté pills",
+    "karta": "papier alebo farba služby, rámik 3px, radius 16px, tieň 6px, perforácia, nadpis Saira 900",
+    "dlazdica_sluzby": "karta vo farbe služby + ikona + nadpis so šípkou + biele pills so značkami (TK, EK, KO…)",
+    "kotvy": "rad pills pod hlavičkou stránky, farebná bodka podľa sekcie, aktívna = čierna"
+  },
+  "logo": {
+    "subory": {
+      "logo": "/easycheck-logo.svg (pomer 2126 : 1031)",
+      "symbol": "/ikony/easycheck-symbol.svg (kruh + vozidlo, bez nápisu)",
+      "favicon": "/favicon.svg, /favicon.ico, /apple-touch-icon.png"
+    },
+    "podklad": "logo vždy na žltej #FFE600 alebo na papieri #FFFDF5; na fotke a tmavej ploche len na žltej nálepke s čiernym rámikom",
+    "ochranna_zona": "okolo loga voľné miesto aspoň 1/4 výšky loga",
+    "min_velkost": "logo 120 px na šírku (tlač 30 mm), symbol 24 px",
+    "nerob": ["nedeformovať pomer", "nemeniť farby ani neprefarbovať na jednu farbu", "neotáčať", "nedávať priamo na fotku alebo čiernu plochu", "nepridávať tieň, žiaru ani obrys k samotným písmenám", "neprepisovať nápis iným písmom", "neskladať logo z textu a ikony"]
+  },
+  "ikony": {
+    "vozidla": "štýl variant C: hrubý čierny obrys so zaoblenými koncami, jedna plochá žltá výplň (#FFE600) na okne alebo pruhu, bočný pohľad smerom doprava, bez tieňov a prechodov",
+    "subory": ["/ikony/auto-cierna.webp", "/ikony/dodavka-cierna.webp", "/ikony/cisterna-cierna.webp", "/ikony/preprava-cierna.webp", "/ikony/auto-biela.webp", "/ikony/nakladne-biela.webp", "/ikony/kie/variant-C.png (celá kolekcia 18 vozidiel)"],
+    "ui_ikony": "inline SVG, viewBox 64, stroke #231F20 3.2, round caps/joins, fill none + jedna žltá plocha (class zl)",
+    "prompt_ilustracia": "Flat vector illustration of {MOTÍV}, thick uniform black outline (#231F20, about 6% of the object height) with fully rounded line caps and joins, simple geometric shapes, exactly one flat accent fill in bright yellow #FFE600, everything else white or off-white #FFFDF5, side view where it makes sense, no text, no letters, no shadows, no gradients, no ground line, plain off-white background #FFFDF5, bold friendly look, very few details, instantly readable silhouette."
+  },
+  "fotografie": {
+    "styl": "reálne fotky zo stanice v Trnave: hala, linky, technici pri práci, vozidlá všetkých veľkostí, VW chrobáky vo farbách značky, robot pri vjazde",
+    "subory": ["/foto/hala.webp", "/foto/img_2140.webp", "/foto/img_4781.webp", "/foto/img_5020.webp", "/foto/img_7299.webp", "/foto/img_7424.webp", "/foto/img_7703.webp", "/foto/img_9260.webp", "/foto/img_9365.webp", "/foto/optimus-2376.webp", "/foto/optimus-7328.webp", "/foto/optimus-vstup.webp"],
+    "pravidla": ["žiadne fotobanky a žiadne AI fotky „stanice“", "bez filtrov a prechodov; jemná korekcia jasu je ok", "fotka vždy v rámiku 3px s radius 16px a tvrdým tieňom", "na sociálnych sieťach rozmazať EČV a tváre zákazníkov, ak nedali súhlas", "výrez: hlavný objekt v strednej tretine, horizont rovno"]
+  },
+  "ton": {
+    "oslovenie": "vykanie (vy, vám, váš) — vždy, aj na sociálnych sieťach",
+    "styl": "vecný, praktický, dôveryhodný; krátke vety; najprv informácia, potom detail; čísla a termíny konkrétne",
+    "pravidla": [
+      "jedna myšlienka = jedna veta",
+      "píšte, čo človek získa alebo čo musí urobiť — nie ako sme úžasní",
+      "skratky TK, EK, KO pri prvom výskyte rozpísať",
+      "dátumy s medzerami: 15. 11. 2026; rozsahy s pomlčkou: 07–20; ceny: 65 €",
+      "telefón vždy 033 20 20 211",
+      "výkričník max. jeden na celý text, nikdy viac za sebou",
+      "emoji v texte webu nie; na sociálnych sieťach max. jedno a len ak nesie význam (📅, ⚠️)"
+    ],
+    "zakazane": ["tykanie", "VERZÁLKY v texte na kričanie (POZOR!!!)", "strašenie a tlak („neriskujte“, „posledná šanca“)", "superlatívy bez dôkazu („najlepšia STK“) — namiesto toho číslo, napr. počet Google recenzií a hodnotenie (aktuálne údaje z webu)", "frázy „v dnešnej dobe“, „ako nikdy predtým“", "vymyslené fakty, hodiny, ceny alebo paragrafy"],
+    "priklady": [
+      { "zle": "Vodiči, POZOR! Neriskujte zbytočné problémy na cestách!", "dobre": "Platnosť STK si overíte za pár sekúnd. Ak vám končí, termín nájdete online." },
+      { "zle": "Toto je zďaleka najjednoduchšia a najlepšia možnosť!", "dobre": "Na STK nemusíte ísť. Vyzdvihneme, skontrolujeme, vrátime." },
+      { "zle": "Prečítaj si aké máme novinky na STK stanici!", "dobre": "Čo je nové na stanici: tri zmeny, ktoré skrátia vašu kontrolu." },
+      { "zle": "V dnešnej dobe je bezpečnosť dôležitejšia ako kedykoľvek predtým.", "dobre": "Brzdy, svetlá, pneumatiky. Toto sa kontroluje najčastejšie." }
+    ]
+  },
+  "obrazky": {
+    "princip": "Plocha vo farbe kategórie + reálna fotka ako nálepka (rámik, tvrdý tieň) zasunutá pod žlté logo + veľký nadpis Saira 900 + čip + čierny pás dole. Ako hlavička webu, len na jednom obrázku.",
+    "sablona": "/brand/sablony/cover.html?nadpis={TEXT}&kat={SLUG}&format={FORMAT}&foto={FOTO}&pod={PODNADPIS}",
+    "parametre": {
+      "nadpis": "max. ~45 znakov, 2 až 6 slov; „|“ = nový riadok",
+      "kat": "sprievodca | sezona | novinky | upozornenia | zaujimavosti | zo-stanice",
+      "format": "blog | fb | wide | ig | story",
+      "foto": "meno súboru z /foto/ bez .jpg, vlastná cesta /… alebo ziadna (papierová nálepka s veľkým slovom a ikonou vozidla)",
+      "pod": "nepovinný podnadpis, max. 90 znakov (na story a IG radšej vynechať)",
+      "chip": "nepovinný text čipu, predvolene názov kategórie",
+      "slovo": "veľké slovo na nálepke bez fotky (STK, § , POZOR…)",
+      "pozicia": "object-position fotky, napr. 50% 30%",
+      "vodidla": "1 = ukáže bezpečné zóny story (len na kontrolu, nie do exportu)"
+    },
+    "formaty": {
+      "blog": { "px": [1200, 630], "na_co": "cover článku, OG obrázok pri zdieľaní" },
+      "fb":   { "px": [1200, 630], "na_co": "Facebook príspevok s odkazom" },
+      "wide": { "px": [1920, 1080], "na_co": "16:9 — YouTube, prezentácia, veľký cover" },
+      "ig":   { "px": [1080, 1350], "na_co": "Instagram / Facebook príspevok 4:5" },
+      "story":{ "px": [1080, 1920], "na_co": "Instagram / Facebook story, bezpečné zóny hore 250 px a dole 340 px" }
+    },
+    "mriezka": "okraj 4 % šírky; fotka zaberá ľavých 49 % (landscape) alebo hornú polovicu (IG, story); logo prekrýva ľavý horný roh fotky; text vpravo / pod fotkou; čierny pás dole 4,6 % (landscape) / 7 % (IG) šírky",
+    "export": "okno prehliadača nastav presne na rozmer formátu, počkaj na <html data-hotovo=\"1\"> a urob screenshot (napr. Playwright: page.setViewportSize, page.waitForSelector('html[data-hotovo]'), page.screenshot). Pre ostrý PNG deviceScaleFactor 1.",
+    "nerob": ["text cez fotku bez plochy", "viac ako jedna fotka na coveri", "logo inde než na žltej nálepke", "AI fotky stanice alebo ľudí", "nadpis dlhší ako 3 riadky na landscape", "iné písma, gradienty, rozmazané tiene", "dôležitý text v bezpečných zónach story"]
+  }
+}

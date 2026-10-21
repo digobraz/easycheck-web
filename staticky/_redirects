@@ -11,9 +11,10 @@
 /vyhraj-auto-sutaz-stk/ /sluzby/#koleso 301
 /chat/ / 301
 /uzitocne-informacie/ /clanky/ 301
+/blog/viete-co-obsahuje-povinna-vybava/ /povinna-vybava/ 301
 /rezervacia-vip/ /rezervacia/ 302
 /dakujeme/ / 301
-/brand-manual/ / 302
+/brand-manual/ /brand/ 301
 /lehoty-tk-ek/ /lehoty-stk/ 301
 /kategorie-vozidiel/ /kategorie-vozidiel-stk/ 301
 /prehlad-platnych-predpisov/ /platne-predpisy-stk/ 301

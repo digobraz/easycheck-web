@@ -7,6 +7,7 @@ kategorie: ["tipy-triky-rady"]
 obrazok: "/blog/2024/prezuvanie-pneumatik-easy-check-stk-trnava-1024x576.jpg"
 zdroj: "https://easycheck.sk/blog/prezuvanie-pneumatik-kedy-je-ten-spravny-cas/"
 prazdny: false
+overene: "21. 10. 2026"
 ---
 Hoci nás v marci slnečné lúče a teplé denné teploty lákajú k výmene zimných pneumatík za letné, nočné mrazy sú pripomienkou, že zimu netreba podceniť. Ako teda zistiť, kedy je ten pravý čas na prezúvanie pneumatík?
 
@@ -24,9 +25,9 @@ Ak sa už rozhodnete prezuť, vždy si najskôr dôkladne skontrolujte stav vaš
 
 ![](/blog/2024/prezuvanie-pneumatik-easy-check-stk-trnava-1024x576.jpg)
 
-Vyhláška Ministerstva dopravy [č. 134/2018 Z. z.](https://www.zakonypreludi.sk/zz/2018-134), stanovuje, že hĺbka dezénu letných pneumatík musí byť **minimálne 1,6 mm**. (platí to pre všetky typy vozidiel s výnimkou mopedov do 50 cm3, ktoré majú **povolenú hranicu** **1,0 mm**) V prípade zimných pneumatík sa minimálna hĺbka dezénu líši podľa hmotnosti vozidla. Pre klasické **automobily do 3,5 t** je stanovená minimálna hĺbka dezénu **3 mm**. Pre **vozidlá nad 3,5 t** platí minimálna hĺbka dezénu **6 mm**.
+Vyhláška Ministerstva dopravy [č. 134/2018 Z. z.](https://www.zakonypreludi.sk/zz/2018-134), stanovuje, že hĺbka dezénu letných pneumatík musí byť **minimálne 1,6 mm**. (platí to pre všetky typy vozidiel s výnimkou mopedov do 50 cm3, ktoré majú **povolenú hranicu** **1,0 mm**) Ak zákon pre osobné a nákladné vozidlá (kategórie M a N) vyžaduje zimné pneumatiky, hĺbka hlavných drážok musí byť **najmenej 3 mm** – bez ohľadu na hmotnosť vozidla. Zdroj: [§ 14 ods. 10 vyhlášky č. 134/2018 Z. z.](https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2018/134/), znenie účinné od 1. 1. 2025.
 
-Pozor: V rôznych krajinách sa minimálna hĺbka dezénu líši. Napríklad, v Nemecku a Česku je minimálna hĺbka pre zimné pneumatiky stanovená na 4 mm, zatiaľ čo na Slovensku je to 3 mm. Je dôležité mať na pamäti tieto rozdiely, najmä ak plánujete cesty do zahraničia.
+Pozor: v rôznych krajinách sa minimálna hĺbka dezénu líši. V **Česku** musia mať zimné pneumatiky v zimnom období najmenej **4 mm**, pri vozidlách nad 3,5 t **6 mm** (zdroj: [§ 40a zákona č. 361/2000 Sb.](https://www.zakonyprolidi.cz/cs/2000-361#p40a)). V **Nemecku** je zákonné minimum **1,6 mm** pre všetky pneumatiky vrátane zimných, prísnejšiu hranicu pre zimné pneumatiky zákon nemá (zdroj: [§ 36 ods. 3 StVZO](https://www.gesetze-im-internet.de/stvzo_2012/__36.html)). Na Slovensku sú to 3 mm. Ak plánujete cestu do zahraničia, overte si pravidlá krajiny, kam idete.
 
 ## Rozdiely v brzdných dráhach pneumatík pri rýchlosti 80km/h:
 
