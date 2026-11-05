@@ -46,7 +46,7 @@
 </main>
 
 <div id="z-pata"></div>
-<script src="/zaklad/zaklad.bfd934df.js"></script>
+<script src="/zaklad/zaklad.f0f526f5.js"></script>
 <script>(()=>{const e=[...document.querySelectorAll(".filtre button")],o=[...document.querySelectorAll("#vsetky .kc")],c=t=>{e.forEach(a=>a.setAttribute("aria-pressed",a.dataset.kat===t)),o.forEach(a=>a.hidden=t==="vsetky"?a.dataset.kat==="archiv":a.dataset.kat!==t);const s=new URL(location);t==="vsetky"?s.searchParams.delete("kat"):s.searchParams.set("kat",t),history.replaceState(null,"",s)};e.forEach(t=>t.addEventListener("click",()=>c(t.dataset.kat)));const r=new URLSearchParams(location.search).get("kat");r&&e.some(t=>t.dataset.kat===r)&&c(r)})();</script>
 </body>
 </html>
