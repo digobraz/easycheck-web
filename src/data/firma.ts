@@ -33,7 +33,7 @@ export const KONTAKT = {
 
 /** Otváracie hodiny — MASTERPROMPT §5 */
 export const HODINY = [
-  { den: "Pondelok – Piatok", cas: "07:00 – 19:00" },
+  { den: "Pondelok – Piatok", cas: "07:00 – 20:00" },
   { den: "Sobota", cas: "07:00 – 13:00" },
   { den: "Nedeľa", cas: "Zatvorené" },
   { den: "Sviatky", cas: "07:00 – 15:00" },
